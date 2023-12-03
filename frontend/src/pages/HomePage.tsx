@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
   const text3Ref = useRef(null);
 
   useEffect(() => {
-    // Intersection Observer는 각 요소가 뷰포트에 들어오는지 감지
+    // 각 요소가 뷰포트에 들어오는지 감지
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         // 각 요소가 뷰포트에 들어오면 isVisible 상태 업데이트
