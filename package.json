@@ -1,10 +1,16 @@
 {
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0"
   },
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd backend && npm start",
-    "client": "cd frontend && npm run dev"
+    "client": "cd frontend && npm run dev",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write ."
   }
 }
