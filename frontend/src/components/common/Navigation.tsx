@@ -48,7 +48,7 @@ const Navigation: React.FC = () => {
         <NavLink to="/">Home</NavLink>
         <NavLink to="/about">About</NavLink>
         <RightSection>
-          <Button>Sign Up</Button>
+          <Button><NavLink to="/signup">Sign Up</NavLink></Button>
           <Button>Log In</Button>
         </RightSection>
       </NavInner>
