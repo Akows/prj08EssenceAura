@@ -1,59 +1,60 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-const navStyle = {
-  position: 'fixed',
-  top: 0,
-  width: '100%',
-  backgroundColor: '#333',
-  color: 'white',
-  padding: '10px 0',
-  zIndex: 1000,
-};
+const Nav = styled.nav`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #333;
+  color: white;
+  padding: 10px 0;
+  z-index: 1000;
+`;
 
-const navInnerStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  maxWidth: '1200px',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  padding: '0 20px',
-};
+const NavInner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+`;
 
-const linkStyle = {
-  color: 'white',
-  textDecoration: 'none',
-  margin: '0 10px',
-};
+const NavLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+`;
 
-const rightSectionStyle = {
-  display: 'flex',
-};
+const RightSection = styled.div`
+  display: flex;
+`;
 
-const buttonStyle = {
-  backgroundColor: 'transparent',
-  border: '1px solid white',
-  color: 'white',
-  padding: '5px 10px',
-  cursor: 'pointer',
-  marginLeft: '10px',
-};
-
+const Button = styled.button`
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+`;
 
 const Navigation: React.FC = () => {
   return (
-    <nav style={navStyle}>
-      <div style={navInnerStyle}>
-        <Link to="/" style={linkStyle}>Home</Link>
-        <Link to="/about" style={linkStyle}>About</Link>
-        <div style={rightSectionStyle}>
-          <button style={buttonStyle}>Sign Up</button>
-          <button style={buttonStyle}>Log In</button>
-        </div>
-      </div>
-    </nav>
+    <Nav>
+      <NavInner>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/about">About</NavLink>
+        <RightSection>
+          <Button>Sign Up</Button>
+          <Button>Log In</Button>
+        </RightSection>
+      </NavInner>
+    </Nav>
   );
 };
 
 export default Navigation;
+
