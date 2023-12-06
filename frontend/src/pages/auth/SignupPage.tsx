@@ -6,7 +6,6 @@ const Container = styled.div`
   align-items: center; /* 세로 중앙 정렬 */
   justify-content: center; /* 가로 중앙 정렬 */
   height: 100vh; /* 뷰포트 높이 전체를 사용 */
-  padding-top: 60px; /* 네비게이션 바 높이만큼 패딩 추가 */
   box-sizing: border-box; /* 패딩을 높이에 포함 */
   background-color: #f7f7f7;
 `;

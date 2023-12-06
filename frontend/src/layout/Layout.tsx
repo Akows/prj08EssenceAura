@@ -9,7 +9,7 @@ const MainContent = styled.main`
   flex-direction: column;
   align-items: center; // 가로축에서 중앙 정렬
   min-height: calc(100vh - 60px); // 전체 높이에서 네비게이션 바와 푸터 높이를 뺀 만큼
-  padding-top: 60px; // 네비게이션 바 높이만큼 상단 패딩을 줍니다.
+  padding-top: 40px; // 네비게이션 바 높이만큼 상단 패딩을 줍니다.
 `;
 
 const Layout: React.FC = () => {
