@@ -1,5 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { validateAuthInput } from '../../utils/auth';
+
+interface ValidationErrors {
+  username?: string;
+  email?: string;
+  password?: string;
+  passwordConfirm?: string;
+}
 
 const Container = styled.div`
   display: flex;
@@ -46,13 +54,43 @@ const Title = styled.h2`
 `;
 
 const SignupPage: React.FC = () => {
+
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    passwordConfirm: ''
+  });
+  const [errors, setErrors] = useState<ValidationErrors>({});
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const validationErrors = validateAuthInput(formData, true);
+    setErrors(validationErrors);
+    console.log(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      console.log('회원가입 성공:', formData);
+    }
+  };
+
   return (
     <Container>
-      <SignupForm>
+      <SignupForm onSubmit={handleSubmit}>
         <Title>Sign Up</Title>
-        <Input type="text" placeholder="Name" />
-        <Input type="email" placeholder="Email" />
-        <Input type="password" placeholder="Password" />
+        <Input type="text" placeholder="Name" name="username" value={formData.username} onChange={handleChange} />
+        {errors.username && <p>{errors.username}</p>}
+        <Input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} />
+        {errors.email && <p>{errors.email}</p>}
+        <Input type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} />
+        {errors.password && <p>{errors.password}</p>}
+        <Input type="password" placeholder="Confirm Password" name="passwordConfirm" value={formData.passwordConfirm} onChange={handleChange} />
+        {errors.passwordConfirm && <p>{errors.passwordConfirm}</p>}
         <Button type="submit">Sign Up</Button>
       </SignupForm>
     </Container>

@@ -105,4 +105,4 @@ function validateAuthInput(data: AuthFormData, isSignup: boolean = false): Recor
   }
   
 
-export default { validateAuthInput };
+export { validateAuthInput };
