@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useChangeTheme } from '../../hooks/useChangeTheme';
+import { useChangeLanguage } from '../../hooks/useChangeLanguage';
 
 const Nav = styled.nav`
   position: fixed;
@@ -42,6 +44,9 @@ const Button = styled.button`
 `;
 
 const Navigation: React.FC = () => {
+  const changeTheme = useChangeTheme();
+  const changeLanguage = useChangeLanguage();
+
   return (
     <Nav>
       <NavInner>
@@ -50,6 +55,12 @@ const Navigation: React.FC = () => {
         <RightSection>
           <Button><NavLink to="/signup">Sign Up</NavLink></Button>
           <Button>Log In</Button>
+          {/* 언어 변경 버튼 */}
+          <Button onClick={() => changeLanguage('en')}>EN</Button>
+          <Button onClick={() => changeLanguage('ko')}>KO</Button>
+          {/* 테마 변경 버튼 */}
+          <Button onClick={() => changeTheme('light')}>Light</Button>
+          <Button onClick={() => changeTheme('dark')}>Dark</Button>
         </RightSection>
       </NavInner>
     </Nav>
