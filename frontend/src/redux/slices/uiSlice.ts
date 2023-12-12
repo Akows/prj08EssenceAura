@@ -1,48 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// 인터페이스 정의: UI의 상태를 나타내는 타입.
 interface UIState {
   theme: 'light' | 'dark';
   language: 'ko' | 'en';
 }
 
-// 초기 상태를 설정.
 const initialState: UIState = {
-  theme: 'light', // 기본 테마
-  language: 'ko', // 기본 언어
+  theme: 'light',
+  language: 'ko',
 };
 
-// uiSlice를 생성. 이는 Redux Toolkit의 createSlice 함수를 사용.
 export const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    // 테마를 토글하는 리듀서.
-    toggleTheme: (state) => {
-      const newTheme = state.theme === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme); // localStorage에도 저장.
-      state.theme = newTheme;
-    },
-    // 언어를 설정하는 리듀서.
-    toggleLanguage: (state) => {
-      const nextLanguage = state.language === 'ko' ? 'en' : 'ko' ;
-      localStorage.setItem('language', nextLanguage);
-      state.language = nextLanguage;
-    },
-    setTheme: (state, action) => {
+    setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
       state.theme = action.payload;
-      localStorage.setItem('theme', action.payload);
     },
-    setLanguage: (state, action) => {
+    setLanguage: (state, action: PayloadAction<'ko' | 'en'>) => {
       state.language = action.payload;
-      localStorage.setItem('language', action.payload);
     },
   },
 });
 
 // uiSlice에서 액션 생성 함수를 내보낸다.
-export const { toggleTheme, toggleLanguage, setTheme, setLanguage } = uiSlice.actions;
-
+export const { setTheme, setLanguage } = uiSlice.actions;
 // uiSlice의 리듀서를 기본 내보내기로 설정.
 export default uiSlice.reducer;
 
