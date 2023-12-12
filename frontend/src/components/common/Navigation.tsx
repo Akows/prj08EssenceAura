@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
+import { useChangeTheme } from '../../hooks/useChangeTheme';
+import { useChangeLanguage } from '../../hooks/useChangeLanguage';
+import { useStoredSettings } from '../../hooks/useStoredSettings';
 
 const NavigationContainer = styled.nav`
   background-color: #333;
@@ -64,21 +67,15 @@ const Section = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 2rem; // 섹션 간 간격
+  margin-right: 1rem; // 섹션 간 간격
 `;
 
 const SectionTitle = styled.h4`
-  margin: 0;
-  padding-bottom: 0.5rem;
+  margin: 0 0 1rem 0; // 하단 마진 추가
   font-size: 1rem;
   color: #333;
-  margin-right: 10px; // 타이틀과 버튼 사이의 간격
 `;
 
-const ButtonColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 const Button = styled.button`
   background: none;
@@ -88,9 +85,19 @@ const Button = styled.button`
   padding: 0.25rem 0;
   cursor: pointer;
   
+  &.selected {
+    background-color: #e0e0e0; // 선택된 버튼의 배경색
+  }
+
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const ButtonColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%; // 너비 조정
 `;
 
 const MobileMenu = styled.div`
@@ -118,6 +125,10 @@ const SettingsMenu = styled.div`
 const Navigation: React.FC = () => {
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+
+  const changeTheme = useChangeTheme();
+  const changeLanguage = useChangeLanguage();
+  const { storedTheme, storedLanguage } = useStoredSettings();
 
   // 메뉴를 닫는 함수
   const closeMenus = () => {
@@ -147,15 +158,35 @@ const Navigation: React.FC = () => {
           <Section>
             <SectionTitle>언어 선택</SectionTitle>
             <ButtonColumn>
-              <Button onClick={() => {/* 언어 변경 로직 */}}>English</Button>
-              <Button onClick={() => {/* 언어 변경 로직 */}}>한국어</Button>
+              <Button
+                onClick={() => changeLanguage('en')}
+                className={storedLanguage === 'en' ? 'selected' : ''}
+              >
+                English
+              </Button>
+              <Button
+                onClick={() => changeLanguage('ko')}
+                className={storedLanguage === 'ko' ? 'selected' : ''}
+              >
+                한국어
+              </Button>
             </ButtonColumn>
           </Section>
           <Section>
             <SectionTitle>테마 선택</SectionTitle>
             <ButtonColumn>
-              <Button onClick={() => {/* 테마 변경 로직 */}}>화이트</Button>
-              <Button onClick={() => {/* 테마 변경 로직 */}}>블랙</Button>
+              <Button
+                onClick={() => changeTheme('light')}
+                className={storedTheme === 'light' ? 'selected' : ''}
+              >
+                화이트
+              </Button>
+              <Button
+                onClick={() => changeTheme('dark')}
+                className={storedTheme === 'dark' ? 'selected' : ''}
+              >
+                블랙
+              </Button>
             </ButtonColumn>
           </Section>
         </DropdownMenu>
