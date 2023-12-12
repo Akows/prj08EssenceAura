@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
@@ -6,6 +6,9 @@ import { FiSettings } from 'react-icons/fi';
 import { useChangeTheme } from '../../hooks/useChangeTheme';
 import { useChangeLanguage } from '../../hooks/useChangeLanguage';
 import { useStoredSettings } from '../../hooks/useStoredSettings';
+import { setLanguage, setTheme } from '../../redux/slices/uiSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const NavigationContainer = styled.nav`
   background-color: #333;
@@ -126,9 +129,22 @@ const Navigation: React.FC = () => {
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
 
-  const changeTheme = useChangeTheme();
-  const changeLanguage = useChangeLanguage();
+  const dispatch = useDispatch();
+
   const { storedTheme, storedLanguage } = useStoredSettings();
+  const currentTheme = useSelector((state: RootState) => state.ui.theme);
+  const currentLanguage = useSelector((state: RootState) => state.ui.language);
+
+  useEffect(() => {
+    // 로컬 스토리지의 값으로 Redux 스토어 업데이트
+    if (storedTheme !== currentTheme) {
+      dispatch(setTheme(storedTheme));
+    }
+    if (storedLanguage !== currentLanguage) {
+      dispatch(setLanguage(storedLanguage));
+    }
+  }, [dispatch, storedTheme, storedLanguage, currentTheme, currentLanguage]);
+
 
   // 메뉴를 닫는 함수
   const closeMenus = () => {
