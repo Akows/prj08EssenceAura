@@ -1,26 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UIState {
-  theme: 'light' | 'dark';
-  language: 'ko' | 'en';
+    theme: 'light' | 'dark';
+    language: 'ko' | 'en';
 }
 
 const initialState: UIState = {
-  theme: 'light',
-  language: 'ko',
+    theme: 'light',
+    language: 'ko',
 };
 
 export const uiSlice = createSlice({
-  name: 'ui',
-  initialState,
-  reducers: {
-    setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
-      state.theme = action.payload;
+    name: 'ui',
+    initialState,
+    reducers: {
+        setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
+            state.theme = action.payload;
+        },
+        setLanguage: (state, action: PayloadAction<'ko' | 'en'>) => {
+            state.language = action.payload;
+        },
     },
-    setLanguage: (state, action: PayloadAction<'ko' | 'en'>) => {
-      state.language = action.payload;
-    },
-  },
 });
 
 // uiSlice에서 액션 생성 함수를 내보낸다.

@@ -4,14 +4,14 @@ import { setTheme } from '../redux/slices/uiSlice';
 import { RootState } from '../redux/store';
 
 export const useChangeTheme = () => {
-  const dispatch = useDispatch();
-  const theme = useSelector((state: RootState) => state.ui.theme);
+    const dispatch = useDispatch();
+    const theme = useSelector((state: RootState) => state.ui.theme);
 
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    useEffect(() => {
+        localStorage.setItem('theme', theme);
+    }, [theme]);
 
-  return (newTheme: 'light' | 'dark') => {
-    dispatch(setTheme(newTheme));
-  };
+    return (newTheme: 'light' | 'dark') => {
+        dispatch(setTheme(newTheme));
+    };
 };

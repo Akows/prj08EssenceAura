@@ -1,28 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
-  isAuthenticated: boolean;
-  token: string | null;
+    isAuthenticated: boolean;
+    token: string | null;
 }
 
 const initialState: AuthState = {
-  isAuthenticated: false,
-  token: null,
+    isAuthenticated: false,
+    token: null,
 };
 
 export const authSlice = createSlice({
-  name: 'auth',
-  initialState,
-  reducers: {
-    login: (state, action) => {
-      state.isAuthenticated = true;
-      state.token = action.payload;
+    name: 'auth',
+    initialState,
+    reducers: {
+        login: (state, action) => {
+            state.isAuthenticated = true;
+            state.token = action.payload;
+        },
+        logout: (state) => {
+            state.isAuthenticated = false;
+            state.token = null;
+        },
     },
-    logout: (state) => {
-      state.isAuthenticated = false;
-      state.token = null;
-    },
-  },
 });
 
 export const { login, logout } = authSlice.actions;

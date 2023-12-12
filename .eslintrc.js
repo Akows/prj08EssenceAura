@@ -17,7 +17,12 @@ module.exports = {
         'no-unused-vars': ['warn', { 'vars': 'all', 'args': 'after-used' }], // 사용하지 않는 변수에 대해 경고
         'no-console': 'error', // 콘솔 사용 금지
         'curly': 'error', // 모든 제어문에 중괄호 사용
-    
+
+         // 들여쓰기 규칙
+        'indent': ['error', 4], // 일반 JavaScript 들여쓰기 (4칸)
+        'react/jsx-indent': ['error', 4], // JSX 들여쓰기 (4칸)
+        'react/jsx-indent-props': ['error', 4], // JSX 속성 들여쓰기 (4칸)
+
         // React 규칙
         'react/prop-types': 'off', // React prop-types 규칙 비활성화 (TypeScript 사용 시)
         'react/react-in-jsx-scope': 'off', // React 17 이상의 새 JSX 변환 사용 시
