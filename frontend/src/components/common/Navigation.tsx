@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
@@ -8,6 +8,7 @@ import { useChangeLanguage } from '../../hooks/useChangeLanguage';
 import { useStoredSettings } from '../../hooks/useStoredSettings';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { useMenuState } from '../../hooks/useMenuState';
 
 const NavigationContainer = styled.nav`
     background-color: #333;
@@ -124,8 +125,14 @@ const SettingsMenu = styled.div`
 `;
 
 const Navigation: React.FC = () => {
-    const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
-    const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+    // 드롭다운 메뉴 관련 로직을 커스텀 훅으로 분리하여 사용.
+    const {
+        isHamburgerMenuOpen,
+        isSettingsMenuOpen,
+        toggleHamburgerMenu,
+        toggleSettingsMenu,
+        closeMenus,
+    } = useMenuState();
 
     useStoredSettings(); // 로컬 스토리지에서 설정 가져오기
     const changeLanguage = useChangeLanguage();
@@ -135,12 +142,6 @@ const Navigation: React.FC = () => {
     const currentLanguage = useSelector(
         (state: RootState) => state.ui.language
     );
-
-    // 메뉴를 닫는 함수
-    const closeMenus = () => {
-        setIsHamburgerMenuOpen(false);
-        setIsSettingsMenuOpen(false);
-    };
 
     return (
         <NavigationContainer>
@@ -155,14 +156,10 @@ const Navigation: React.FC = () => {
                 {/* ... 기타 링크 ... */}
             </NavLinks>
             <div>
-                <SettingsMenu
-                    onClick={() => setIsSettingsMenuOpen(!isSettingsMenuOpen)}
-                >
+                <SettingsMenu onClick={() => toggleSettingsMenu()}>
                     <FiSettings size={24} color="white" />
                 </SettingsMenu>
-                <HamburgerMenu
-                    onClick={() => setIsHamburgerMenuOpen(!isHamburgerMenuOpen)}
-                >
+                <HamburgerMenu onClick={() => toggleHamburgerMenu()}>
                     <FaBars size={24} color="white" />
                 </HamburgerMenu>
             </div>
