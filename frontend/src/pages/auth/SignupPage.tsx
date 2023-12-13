@@ -54,70 +54,70 @@ const Title = styled.h2`
 `;
 
 const SignupPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    passwordConfirm: '',
-  });
-  const [errors, setErrors] = useState<ValidationErrors>({});
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+    });
+    const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const validationErrors = validateAuthInput(formData, true);
-    setErrors(validationErrors);
-    console.log(validationErrors);
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const validationErrors = validateAuthInput(formData, true);
+        setErrors(validationErrors);
+        console.log(validationErrors);
 
-    if (Object.keys(validationErrors).length === 0) {
-      console.log('회원가입 성공:', formData);
-    }
-  };
+        if (Object.keys(validationErrors).length === 0) {
+            console.log('회원가입 성공:', formData);
+        }
+    };
 
-  return (
-    <Container>
-      <SignupForm onSubmit={handleSubmit}>
-        <Title>Sign Up</Title>
-        <Input
-          type="text"
-          placeholder="Name"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-        {errors.username && <p>{errors.username}</p>}
-        <Input
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        {errors.email && <p>{errors.email}</p>}
-        <Input
-          type="password"
-          placeholder="Password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        {errors.password && <p>{errors.password}</p>}
-        <Input
-          type="password"
-          placeholder="Confirm Password"
-          name="passwordConfirm"
-          value={formData.passwordConfirm}
-          onChange={handleChange}
-        />
-        {errors.passwordConfirm && <p>{errors.passwordConfirm}</p>}
-        <Button type="submit">Sign Up</Button>
-      </SignupForm>
-    </Container>
-  );
+    return (
+        <Container>
+            <SignupForm onSubmit={handleSubmit}>
+                <Title>Sign Up</Title>
+                <Input
+                    type="text"
+                    placeholder="Name"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                />
+                {errors.username && <p>{errors.username}</p>}
+                <Input
+                    type="email"
+                    placeholder="Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                {errors.email && <p>{errors.email}</p>}
+                <Input
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+                {errors.password && <p>{errors.password}</p>}
+                <Input
+                    type="password"
+                    placeholder="Confirm Password"
+                    name="passwordConfirm"
+                    value={formData.passwordConfirm}
+                    onChange={handleChange}
+                />
+                {errors.passwordConfirm && <p>{errors.passwordConfirm}</p>}
+                <Button type="submit">Sign Up</Button>
+            </SignupForm>
+        </Container>
+    );
 };
 
 export default SignupPage;

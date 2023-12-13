@@ -15,15 +15,15 @@ const MainContent = styled.main`
 `;
 
 const Layout: React.FC = () => {
-  return (
-    <>
-      <Navigation />
-      <MainContent>
-        <Outlet />
-      </MainContent>
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <Navigation />
+            <MainContent>
+                <Outlet />
+            </MainContent>
+            <Footer />
+        </>
+    );
 };
 
 export default Layout;
