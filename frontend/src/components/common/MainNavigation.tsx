@@ -18,7 +18,7 @@ const NavigationContainer = styled.nav`
     top: 0;
     left: 0;
     right: 0;
-    z-index: 10;
+    z-index: 20;
     display: flex;
     justify-content: space-between;
     align-items: center;

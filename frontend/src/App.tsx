@@ -2,14 +2,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
 import ShopPage from './pages/ShopPage';
 import SignupPage from './pages/auth/SignupPage';
-import HomePage from './pages/HomePage';
+import MainPage from './pages/MainPage';
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route index element={<HomePage />} />
+                    <Route index element={<MainPage />} />
                     <Route path="shop" element={<ShopPage />} />
                     <Route path="signup" element={<SignupPage />} />
                 </Route>
