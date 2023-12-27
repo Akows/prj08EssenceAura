@@ -124,7 +124,7 @@ const SettingsMenu = styled.div`
     cursor: pointer;
 `;
 
-const Navigation: React.FC = () => {
+const ShopNavigation: React.FC = () => {
     // 드롭다운 메뉴 관련 로직을 커스텀 훅으로 분리하여 사용.
     const {
         isHamburgerMenuOpen,
@@ -150,7 +150,7 @@ const Navigation: React.FC = () => {
                 <NavLink to="/" onClick={closeMenus}>
                     Home
                 </NavLink>
-                <NavLink to="/about" onClick={closeMenus}>
+                <NavLink to="/shop" onClick={closeMenus}>
                     About
                 </NavLink>
                 {/* ... 기타 링크 ... */}
@@ -216,7 +216,7 @@ const Navigation: React.FC = () => {
                     <NavLink to="/" onClick={closeMenus}>
                         Home
                     </NavLink>
-                    <NavLink to="/about" onClick={closeMenus}>
+                    <NavLink to="/shop" onClick={closeMenus}>
                         About
                     </NavLink>
                     {/* ... 기타 링크 ... */}
@@ -226,4 +226,4 @@ const Navigation: React.FC = () => {
     );
 };
 
-export default Navigation;
+export default ShopNavigation;

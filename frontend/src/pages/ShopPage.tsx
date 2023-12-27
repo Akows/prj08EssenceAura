@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 
-const AboutPage: React.FC = () => {
+const ShopPage: React.FC = () => {
     // 프론트엔드 -> 백엔드 -> 데이터베이스 연동 확인용 임시 기능.
     // 각 파트의 연동이 정상 동작함을 확인하고 코드를 주석 처리함.
     const handleCreate = () => {
@@ -10,11 +10,11 @@ const AboutPage: React.FC = () => {
         axios
             .post('http://3.36.128.6:3001/api/create', { data: testData })
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 alert('Data created successfully');
             })
             .catch((error) => {
-                console.error('Error creating data', error);
+                // console.error('Error creating data', error);
                 alert('Error creating data');
             });
     };
@@ -23,11 +23,11 @@ const AboutPage: React.FC = () => {
         axios
             .get('http://3.36.128.6:3001/api/getAll')
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 alert('Data fetched successfully');
             })
             .catch((error) => {
-                console.error('Error fetching data', error);
+                // console.error('Error fetching data', error);
                 alert('Error fetching data');
             });
     };
@@ -42,4 +42,4 @@ const AboutPage: React.FC = () => {
     );
 };
 
-export default AboutPage;
+export default ShopPage;
