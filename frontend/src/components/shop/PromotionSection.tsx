@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const PromotionContainer = styled.section`
@@ -59,7 +59,7 @@ const PromotionSection: React.FC = () => {
                     <img src={promo.imageUrl} alt={promo.title} />
                     <h3>{promo.title}</h3>
                     <p>{promo.description}</p>
-                    <button onClick={handlePromotionClick}>자세히 보기</button>
+                    <Link to="/shoplist">자세히 보기</Link>
                     {/* 필요한 경우 여기에 버튼 추가 */}
                 </PromotionItem>
             ))}

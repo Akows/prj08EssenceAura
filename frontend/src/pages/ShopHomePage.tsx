@@ -245,7 +245,7 @@ const bestProducts: BestProducts = {
     // ... 기타 카테고리
 };
 
-const HomePage: React.FC = () => {
+const ShopHomePage: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     // 'keyof BestProducts' 타입을 'activeTab' 상태에 적용
     const [activeTab, setActiveTab] =
@@ -346,4 +346,4 @@ const HomePage: React.FC = () => {
     );
 };
 
-export default HomePage;
+export default ShopHomePage;

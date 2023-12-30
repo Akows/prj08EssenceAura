@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 // TabButton에 적용할 타입을 확장하여 isActive 속성을 포함시킵니다.
@@ -127,7 +128,9 @@ const ProductDetailPage: React.FC = () => {
                             <QuantityButton>+</QuantityButton>
                         </QuantitySelector>
                         {/* 장바구니 버튼 */}
-                        <AddToCartButton>장바구니</AddToCartButton>
+                        <AddToCartButton>
+                            <Link to="/shopcart">장바구니</Link>
+                        </AddToCartButton>
                         {/* 바로 구매 버튼 */}
                         <BuyNowButton>바로구매</BuyNowButton>
                     </BuyOptions>
