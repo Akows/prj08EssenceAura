@@ -150,7 +150,7 @@ const ShopNavigation: React.FC = () => {
                 <NavLink to="/" onClick={closeMenus}>
                     Home
                 </NavLink>
-                <NavLink to="/shop" onClick={closeMenus}>
+                <NavLink to="/home" onClick={closeMenus}>
                     About
                 </NavLink>
                 {/* ... 기타 링크 ... */}
