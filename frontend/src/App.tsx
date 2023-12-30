@@ -5,6 +5,7 @@ import SignupPage from './pages/auth/SignupPage';
 import MainPage from './pages/MainPage';
 import HomePage from './pages/HomePage';
 import ProductListPage from './pages/shop/ProductListPage';
+import ProductDetailPage from './pages/shop/ProductDetailPage';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                     <Route index element={<MainPage />} />
                     <Route path="shop" element={<HomePage />} />
                     <Route path="shoplist" element={<ProductListPage />} />
+                    <Route path="shopdetail" element={<ProductDetailPage />} />
 
                     <Route path="home" element={<ShopPage />} />
                     <Route path="signup" element={<SignupPage />} />
