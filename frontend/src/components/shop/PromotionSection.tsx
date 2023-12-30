@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const PromotionContainer = styled.section`
@@ -30,21 +31,35 @@ const PromotionItem = styled.div`
 const promotions = [
     {
         id: 1,
-        title: 'Winter Event',
+        title: 'Happy New Year Event',
         imageUrl: '/path/to/promotion1.jpg',
         description: '새해맞이 할인 이벤트 진행 중!',
+    },
+    {
+        id: 2,
+        title: 'Winter Event',
+        imageUrl: '/path/to/promotion1.jpg',
+        description: '연말 할인 이벤트 진행 중!',
     },
     // ... 여기에 다른 프로모션 항목 추가
 ];
 
 const PromotionSection: React.FC = () => {
+    const navigate = useNavigate();
+
+    const handlePromotionClick = () => {
+        // 'shoplist' 경로로 이동합니다.
+        navigate('/shoplist');
+    };
+
     return (
         <PromotionContainer>
             {promotions.map((promo) => (
-                <PromotionItem key={promo.id}>
+                <PromotionItem key={promo.id} onClick={handlePromotionClick}>
                     <img src={promo.imageUrl} alt={promo.title} />
                     <h3>{promo.title}</h3>
                     <p>{promo.description}</p>
+                    <button onClick={handlePromotionClick}>자세히 보기</button>
                     {/* 필요한 경우 여기에 버튼 추가 */}
                 </PromotionItem>
             ))}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 // 제품 카드를 위한 스타일 컴포넌트
@@ -47,8 +48,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
     title,
     price,
 }) => {
+    const navigate = useNavigate();
+
+    const handleItemClick = () => {
+        navigate('/shopdetail');
+    };
+
     return (
-        <Card>
+        <Card onClick={handleItemClick}>
             <CardImage src={imageUrl} alt={title} />
             <CardBody>
                 <CardTitle>{title}</CardTitle>
