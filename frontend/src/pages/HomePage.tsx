@@ -8,6 +8,23 @@ interface DotProps {
     isActive: boolean;
 }
 
+interface Product {
+    id: number;
+    imageUrl: string;
+    title: string;
+    price: string;
+}
+
+interface BestProducts {
+    'WOMAN BEST': Product[];
+    'MAN BEST': Product[];
+}
+
+// Tab 컴포넌트 정의
+interface TabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    isActive: boolean;
+}
+
 const PageContainer = styled.div`
     max-width: 1200px; // 최대 너비를 설정하여 너무 넓은 화면에서 콘텐츠가 흩어지지 않도록 합니다.
     margin: 0 auto; // 좌우 마진을 auto로 설정하여 컨테이너를 화면 중앙에 배치합니다.
@@ -91,7 +108,7 @@ const TabList = styled.div`
     margin-bottom: 20px;
 `;
 
-const Tab = styled.button`
+const Tab = styled.button<TabProps>`
     padding: 10px 20px;
     margin: 0 5px;
     border: none;
@@ -142,7 +159,7 @@ const products = [
 ];
 
 // 상품 데이터의 예시 - 실제로는 API에서 가져올 것입니다.
-const mdProducts = [
+const mdProducts: Product[] = [
     {
         id: 1,
         imageUrl: '/product1.jpg',
@@ -170,7 +187,7 @@ const mdProducts = [
     // ... MD'S CHOICE 제품 데이터
 ];
 
-const bestProducts = {
+const bestProducts: BestProducts = {
     'WOMAN BEST': [
         // 여성 베스트 제품 데이터
         {
@@ -230,7 +247,9 @@ const bestProducts = {
 
 const HomePage: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [activeTab, setActiveTab] = useState('WOMAN BEST');
+    // 'keyof BestProducts' 타입을 'activeTab' 상태에 적용
+    const [activeTab, setActiveTab] =
+        useState<keyof BestProducts>('WOMAN BEST');
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -304,7 +323,9 @@ const HomePage: React.FC = () => {
                         <Tab
                             key={category}
                             isActive={activeTab === category}
-                            onClick={() => setActiveTab(category)}
+                            onClick={() =>
+                                setActiveTab(category as keyof BestProducts)
+                            }
                         >
                             {category}
                         </Tab>
