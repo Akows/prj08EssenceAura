@@ -1,141 +1,180 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { ChangeEvent, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 // TabButton에 적용할 타입을 확장하여 isActive 속성을 포함시킵니다.
 interface TabButtonProps {
     isActive: boolean;
 }
 
-const ProductDetailContainer = styled.div`
+const PageContainer = styled.div`
+    margin: auto;
+    max-width: 800px;
+`;
+
+const ProductSection = styled.section`
     display: flex;
-    flex-direction: column; // 자식 요소들을 수직으로 쌓기 위해 변경
-    padding: 40px;
-    background: #fff;
+    margin-top: 20px;
 `;
 
 const ProductImage = styled.img`
-    width: 50%;
-    max-width: 500px; // 이미지 최대 너비 설정
+    max-width: 300px;
     margin-right: 20px;
 `;
 
-const ProductInfo = styled.div`
-    flex-grow: 1;
+const ProductDetails = styled.div`
+    flex: 1;
 `;
 
-const ProductTitle = styled.h1`
-    font-size: 24px;
-    margin-bottom: 10px;
-`;
-
-const ProductPrice = styled.div`
-    margin: 20px 0;
+const Title = styled.h2`
     font-size: 20px;
     color: #333;
 `;
 
-const BuyOptions = styled.div`
-    // 스타일 작성
+const Description = styled.p`
+    color: #666;
+`;
+
+const PriceSection = styled.div`
+    margin-top: 20px;
+`;
+
+const Price = styled.span`
+    font-size: 18px;
+    color: #e44d26;
+    font-weight: bold;
+`;
+
+const OptionsSection = styled.div`
+    margin-top: 20px;
+`;
+
+const Select = styled.select`
+    padding: 5px;
+    margin-right: 10px;
 `;
 
 const QuantitySelector = styled.div`
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+    margin-top: 20px;
 `;
 
-const QuantityButton = styled.button`
-    padding: 5px 10px;
-    margin: 0 5px;
+const QuantityInput = styled.input`
+    width: 50px;
+    padding: 5px;
 `;
 
-const AddToCartButton = styled.button`
-    background-color: black;
+const PurchaseSection = styled.div`
+    margin-top: 20px;
+`;
+
+const Button = styled.button`
+    background-color: #e44d26;
     color: white;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    width: 100%;
-`;
-
-const BuyNowButton = styled.button`
-    background-color: red;
-    color: white;
-    padding: 10px 20px;
-    width: 100%;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+    &:hover {
+        background-color: #f55f3b;
+    }
 `;
 
 const Tabs = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 20px;
 `;
 
 const TabButton = styled.button<TabButtonProps>`
     padding: 10px 20px;
-    border: 1px solid #ccc;
-    background-color: ${(props) => (props.isActive ? '#fff' : '#f0f0f0')};
+    border: none;
+    background-color: #f3f3f3;
     cursor: pointer;
-    outline: none;
+    border-bottom: 3px solid transparent;
 
-    &:not(:last-child) {
-        border-right: none; // 중간 탭 버튼들의 우측 테두리 제거
+    ${({ isActive }) =>
+        isActive &&
+        css`
+            background-color: white;
+            border-color: #e44d26;
+            color: #e44d26;
+        `}
+
+    &:hover {
+        background-color: white;
     }
 `;
 
 const ContentArea = styled.div`
-    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    margin-top: -3px; // Adjust for the TabButton border
 `;
 
 const Section = styled.section`
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    color: #666;
 `;
 
 const ProductDetailPage: React.FC = () => {
+    const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('details');
+
+    const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setQuantity(Number(e.target.value));
+    };
 
     const renderContent = () => {
         switch (activeTab) {
-            case 'details':
-                return <Section>상품 상세정보</Section>;
-            case 'reviews':
-                return <Section>구매후기</Section>;
-            case 'info':
-                return <Section>안내사항</Section>;
-            default:
-                return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
+        case 'details':
+            return <Section>상품 상세정보</Section>;
+        case 'reviews':
+            return <Section>구매후기</Section>;
+        case 'info':
+            return <Section>안내사항</Section>;
+        default:
+            return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
         }
     };
 
     return (
-        <>
-            <ProductDetailContainer>
+        <PageContainer>
+            <ProductSection>
                 <ProductImage
-                    src="/path/to/product/image.jpg"
-                    alt="Product Name"
+                    src="https://via.placeholder.com/300"
+                    alt="Product"
                 />
-                <ProductInfo>
-                    <ProductTitle>[브랜드] 상품명</ProductTitle>
-                    <ProductPrice>380,000원</ProductPrice>
-                    {/* 다른 상품 정보와 옵션을 여기에 포함 */}
-                    <BuyOptions>
-                        {/* 수량 선택 */}
-                        <QuantitySelector>
-                            <QuantityButton>-</QuantityButton>
-                            <span>1</span>
-                            <QuantityButton>+</QuantityButton>
-                        </QuantitySelector>
-                        {/* 장바구니 버튼 */}
-                        <AddToCartButton>
-                            <Link to="/shopcart">장바구니</Link>
-                        </AddToCartButton>
-                        {/* 바로 구매 버튼 */}
-                        <BuyNowButton>바로구매</BuyNowButton>
-                    </BuyOptions>
-                </ProductInfo>
-            </ProductDetailContainer>
+                <ProductDetails>
+                    <Title>멋진 향수</Title>
+                    <Description>
+                        이 향수는 당신의 매력을 더해줄 멋진 향기를 가지고
+                        있습니다.
+                    </Description>
+                </ProductDetails>
+            </ProductSection>
+            <PriceSection>
+                <Price>₩35,000</Price>
+            </PriceSection>
+            <OptionsSection>
+                <Select>
+                    <option>50ml</option>
+                    <option>100ml</option>
+                </Select>
+                <Select>
+                    <option>Red</option>
+                    <option>Blue</option>
+                </Select>
+            </OptionsSection>
+            <QuantitySelector>
+                <QuantityInput
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                />
+            </QuantitySelector>
+            <PurchaseSection>
+                <Button>장바구니에 추가</Button>
+                <Button>지금 구매하기</Button>
+            </PurchaseSection>
 
             {/* 탭 버튼들 */}
             <Tabs>
@@ -161,7 +200,7 @@ const ProductDetailPage: React.FC = () => {
 
             {/* 탭 컨텐츠 */}
             <ContentArea>{renderContent()}</ContentArea>
-        </>
+        </PageContainer>
     );
 };
 
