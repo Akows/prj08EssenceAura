@@ -35,6 +35,6 @@ module.exports = {
       },
       // 들여쓰기 규칙 설정.
       // 기본 들여쓰기 레벨은 4, 다만 SwitchCase의 경우 추가로 4 * 1만큼의 추가 들여쓰기 적용.
-      'indent': ['error', 4, { 'SwitchCase': 1 }],
+      // 'indent': ['error', 4, { 'SwitchCase': 1 }],
   };
   

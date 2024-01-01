@@ -1,13 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
 import ShopPage from './pages/ShopPage';
-import SignupPage from './pages/auth/SignupPage';
 import MainPage from './pages/MainPage';
 import ShopHomePage from './pages/ShopHomePage';
 import ProductListPage from './pages/shop/ProductListPage';
 import ProductDetailPage from './pages/shop/ProductDetailPage';
 import CartPage from './pages/shop/CartPage';
 import CheckoutPage from './pages/shop/CheckoutPage';
+import RegistrationPage from './pages/auth/RegistrationPage';
+import LoginPage from './pages/auth/LoginPage';
 
 function App() {
     return (
@@ -22,7 +23,8 @@ function App() {
                     <Route path="checkout" element={<CheckoutPage />} />
 
                     <Route path="home" element={<ShopPage />} />
-                    <Route path="signup" element={<SignupPage />} />
+                    <Route path="signup" element={<RegistrationPage />} />
+                    <Route path="login" element={<LoginPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
