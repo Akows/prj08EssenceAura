@@ -125,15 +125,23 @@ const ProductDetailPage: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-        case 'details':
-            return <Section>상품 상세정보</Section>;
-        case 'reviews':
-            return <Section>구매후기</Section>;
-        case 'info':
-            return <Section>안내사항</Section>;
-        default:
-            return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
+            case 'details':
+                return <Section>상품 상세정보</Section>;
+            case 'reviews':
+                return <Section>구매후기</Section>;
+            case 'info':
+                return <Section>안내사항</Section>;
+            default:
+                return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
         }
+    };
+
+    const handlePlaceCart = () => {
+        window.location.href = '/shopcart';
+    };
+
+    const handleCheckOrder = () => {
+        window.location.href = '/checkout';
     };
 
     return (
@@ -172,8 +180,8 @@ const ProductDetailPage: React.FC = () => {
                 />
             </QuantitySelector>
             <PurchaseSection>
-                <Button>장바구니에 추가</Button>
-                <Button>지금 구매하기</Button>
+                <Button onClick={handlePlaceCart}>장바구니에 추가</Button>
+                <Button onClick={handleCheckOrder}>지금 구매하기</Button>
             </PurchaseSection>
 
             {/* 탭 버튼들 */}
