@@ -21,9 +21,10 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-    width: 100%;
+    width: calc(100% - 20px); // 오른쪽 끝과 여백을 만들기 위해 너비를 조정
     padding: 8px;
     margin-top: 5px;
+    margin-right: 10px; // 오른쪽 여백 추가
 `;
 
 const Button = styled.button`
@@ -43,32 +44,42 @@ const Button = styled.button`
 const LoginContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: start;
+    align-items: stretch; // 자식 요소들의 높이를 부모에 맞춤
     margin-top: 20px;
 `;
 
-const LoginForm = styled.div`
+const LoginForm = styled(Form)`
     width: 48%;
-    box-sizing: border-box; // 패딩과 보더가 너비에 포함되도록 설정
+    box-sizing: border-box;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 `;
 
 const InfoContainer = styled.div`
-    width: 48%;
+    width: calc(50% - 10px); // 화면 크기의 50%에서 양쪽 마진만큼 빼줍니다.
+    box-sizing: border-box;
     padding: 20px;
-    margin-left: 4%; // LoginForm과 InfoContainer 사이의 여백 추가
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-sizing: border-box; // 패딩과 보더가 너비에 포함되도록 설정
 `;
 
 const InfoText = styled.p`
     margin-bottom: 20px;
+    font-size: 14px; // 필요에 따라 폰트 크기 조정
 `;
 
 const SmallButton = styled(Button)`
-    padding: 10px 15px;
-    width: auto;
-    display: inline-block;
+    padding: 10px 20px; // 버튼의 패딩을 조정하여 크기를 조정
+    margin-top: 10px; // 버튼 상단의 여백 추가
+    width: auto; // 버튼 너비를 자동으로 설정하여 내용에 맞춤
+    background-color: #f2f2f2; // 버튼의 배경색을 변경
+    color: #333; // 버튼의 텍스트 색상을 변경
+    border: 1px solid #ddd; // 버튼의 테두리 추가
+
+    &:hover {
+        background-color: #eaeaea; // 호버 상태의 배경색 변경
+    }
 `;
 
 const LoginPage = () => {
