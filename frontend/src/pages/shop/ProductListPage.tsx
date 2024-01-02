@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ProductCard from '../../components/shop/ProductCard';
 
@@ -10,10 +10,14 @@ interface Product {
     price: string;
 }
 
+// 정렬 옵션 타입
+type SortOption = 'newest' | 'price_low_high' | 'price_high_low';
+
 const ProductListContainer = styled.div`
     display: flex; // 수평 레이아웃을 위한 flex 설정
     padding: 40px;
     background: #f8f8f8;
+    justify-content: space-between; // 컨테이너 내의 아이템 간격을 균등하게 분배
     @media (max-width: 1024px) {
         flex-direction: column; // 모바일 뷰에서는 컬럼 방향으로 변경
     }
@@ -22,26 +26,27 @@ const ProductListContainer = styled.div`
 const ProductListTitle = styled.h2`
     font-size: 24px;
     margin-bottom: 20px;
-    text-align: center; // 제목을 가운데 정렬
+    text-align: center;
 `;
 
 const ProductGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    @media (max-width: 768px) {
+    margin-left: 40px; // Sidebar와의 간격 추가
+    @media (max-width: 1024px) {
         grid-template-columns: repeat(2, 1fr);
+        margin-left: 0; // 모바일 뷰에서는 간격을 제거
     }
 `;
 
 const Sidebar = styled.aside`
     border: 1px solid #ddd;
     padding: 20px;
-    width: 200px; // 사이드바의 너비 고정
+    width: 200px;
     @media (max-width: 1024px) {
-        width: auto; // 모바일 뷰에서는 너비를 자동으로 조정
-        margin-right: 0; // 모바일 뷰에서는 오른쪽 마진 제거
-        margin-bottom: 20px; // 아래쪽 마진 추가
+        width: auto;
+        margin-bottom: 20px;
     }
 `;
 
@@ -55,20 +60,32 @@ const CategoryItem = styled.li`
     margin-bottom: 10px;
     cursor: pointer;
     &:hover {
-        text-decoration: underline; // 호버 시 밑줄 효과 추가
+        text-decoration: underline;
     }
 `;
 
 const SortingBar = styled.div`
     display: flex;
-    justify-content: center; // 가운데 정렬
+    justify-content: flex-end; // 정렬 옵션을 오른쪽에 붙임
     margin-bottom: 20px;
-    width: 100%; // 전체 너비를 차지하도록 설정
+    width: 100%;
 `;
 
-const SortingOption = styled.select`
-    padding: 5px;
+const SortButton = styled.button`
+    padding: 5px 10px;
     margin-left: 10px;
+    border: 1px solid #ddd;
+    background: transparent;
+    cursor: pointer;
+
+    &:hover {
+        background: #f0f0f0;
+    }
+
+    &.active {
+        border-color: #000;
+        font-weight: bold;
+    }
 `;
 
 // 예시 상품 데이터
@@ -124,7 +141,14 @@ const products: Product[] = [
 ];
 
 const ProductListPage: React.FC = () => {
-    // 페이지 유형에 따른 상품 목록을 렌더링할 수 있는 상태와 로직을 추가할 수 있습니다.
+    // 정렬 상태를 위한 useState 훅
+    const [currentSort, setCurrentSort] = useState<SortOption>('newest');
+
+    // 정렬 방식 변경 핸들러
+    const handleSortChange = (sortOption: SortOption) => {
+        setCurrentSort(sortOption);
+        // 상품 목록 정렬 로직을 여기에 추가...
+    };
 
     return (
         <ProductListContainer>
@@ -139,13 +163,28 @@ const ProductListPage: React.FC = () => {
             <main>
                 {/* 정렬 옵션 바 */}
                 <SortingBar>
-                    <label htmlFor="sort">정렬:</label>
-                    <SortingOption id="sort">
-                        <option value="newest">신상품순</option>
-                        <option value="price_low_high">가격 낮은순</option>
-                        <option value="price_high_low">가격 높은순</option>
-                        {/* 다른 정렬 옵션을 추가할 수 있습니다. */}
-                    </SortingOption>
+                    <SortButton
+                        className={currentSort === 'newest' ? 'active' : ''}
+                        onClick={() => handleSortChange('newest')}
+                    >
+                        신상품
+                    </SortButton>
+                    <SortButton
+                        className={
+                            currentSort === 'price_low_high' ? 'active' : ''
+                        }
+                        onClick={() => handleSortChange('price_low_high')}
+                    >
+                        낮은 가격
+                    </SortButton>
+                    <SortButton
+                        className={
+                            currentSort === 'price_high_low' ? 'active' : ''
+                        }
+                        onClick={() => handleSortChange('price_high_low')}
+                    >
+                        높은 가격
+                    </SortButton>
                 </SortingBar>
 
                 {/* 상품 리스트 제목 */}
