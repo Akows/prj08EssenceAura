@@ -9,20 +9,39 @@ interface TabButtonProps {
 const PageContainer = styled.div`
     margin: auto;
     max-width: 800px;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        padding: 10px;
+    }
 `;
 
 const ProductSection = styled.section`
     display: flex;
     margin-top: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+    }
 `;
 
 const ProductImage = styled.img`
     max-width: 300px;
     margin-right: 20px;
+
+    @media (max-width: 768px) {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
 `;
 
 const ProductDetails = styled.div`
     flex: 1;
+
+    @media (max-width: 768px) {
+        text-align: center;
+    }
 `;
 
 const Title = styled.h2`
@@ -64,6 +83,10 @@ const QuantityInput = styled.input`
 
 const PurchaseSection = styled.div`
     margin-top: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 `;
 
 const Button = styled.button`
@@ -74,8 +97,19 @@ const Button = styled.button`
     font-size: 16px;
     cursor: pointer;
     margin-right: 10px;
+
     &:hover {
         background-color: #f55f3b;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 `;
 
@@ -83,6 +117,11 @@ const Tabs = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+    }
 `;
 
 const TabButton = styled.button<TabButtonProps>`
@@ -102,6 +141,13 @@ const TabButton = styled.button<TabButtonProps>`
 
     &:hover {
         background-color: white;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        &:not(:last-child) {
+            border-bottom: 1px solid #ddd;
+        }
     }
 `;
 
@@ -125,14 +171,14 @@ const ProductDetailPage: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-            case 'details':
-                return <Section>상품 상세정보</Section>;
-            case 'reviews':
-                return <Section>구매후기</Section>;
-            case 'info':
-                return <Section>안내사항</Section>;
-            default:
-                return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
+        case 'details':
+            return <Section>상품 상세정보</Section>;
+        case 'reviews':
+            return <Section>구매후기</Section>;
+        case 'info':
+            return <Section>안내사항</Section>;
+        default:
+            return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
         }
     };
 
