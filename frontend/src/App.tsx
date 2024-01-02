@@ -10,6 +10,7 @@ import CheckoutPage from './pages/shop/CheckoutPage';
 import RegistrationPage from './pages/auth/RegistrationPage';
 import LoginPage from './pages/auth/LoginPage';
 import UserProfilePage from './pages/auth/UserProfilePage';
+import FindAccountPage from './pages/auth/FindAccountPage';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
 
                     <Route path="signup" element={<RegistrationPage />} />
                     <Route path="login" element={<LoginPage />} />
+                    <Route path="find" element={<FindAccountPage />} />
                     <Route path="user" element={<UserProfilePage />} />
                 </Route>
             </Routes>
