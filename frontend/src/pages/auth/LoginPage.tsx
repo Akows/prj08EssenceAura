@@ -4,16 +4,15 @@ import styled from 'styled-components';
 
 const LoginPageContainer = styled.div`
     display: flex;
-    flex-direction: column; // 요소들을 수직으로 쌓음
-    justify-content: center; // 수직 축에서 중앙 정렬
-    align-items: center; // 수평 축에서 중앙 정렬
-    width: 100%; // 전체 너비 사용
-    height: 50vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
 `;
 
 const Title = styled.h1`
     text-align: center;
-    margin-top: 20px;
+    margin-bottom: 40px;
 `;
 
 const Form = styled.form`
@@ -47,25 +46,37 @@ const Button = styled.button`
 `;
 
 const LoginContainer = styled.div`
-    width: 1000px;
-    height: 60%;
+    width: 800px; // 데스크톱 뷰에서의 너비
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #ddd; // 테두리 추가
-    border-radius: 5px; // 테두리 둥글게
+    border: 1px solid #ddd;
+    border-radius: 5px;
+
+    @media (max-width: 768px) {
+        width: 100%; // 모바일 뷰에서의 너비
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+    }
 `;
 
 const LoginForm = styled(Form)`
-    flex: 1; // 남은 공간을 모두 차지
-    border-right: 1px solid #ddd; // 우측에 구분선 추가
-    padding-right: 20px; // 우측 패딩 추가
-    padding-left: 20px; // 좌측 패딩 추가
+    width: 50%; // 데스크톱 뷰에서는 폼이 전체 너비의 50%를 차지합니다.
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%; // 모바일 뷰에서는 폼이 전체 너비를 차지합니다.
+        padding: 20px 0;
+    }
 `;
 
 const InfoContainer = styled.div`
-    flex: 1; // 남은 공간을 모두 차지
-    padding-left: 20px; // 좌측 패딩 추가
+    width: 50%; // 데스크톱 뷰에서는 정보 컨테이너가 전체 너비의 50%를 차지합니다.
+    padding: 20px;
+
+    @media (max-width: 768px) {
+        width: 90%; // 모바일 뷰에서는 정보 컨테이너가 전체 너비를 차지합니다.
+        padding: 20px 0;
+    }
 `;
 
 const InfoText = styled.p`

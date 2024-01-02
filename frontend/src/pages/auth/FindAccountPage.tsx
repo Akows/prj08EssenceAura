@@ -9,36 +9,44 @@ const FindAccountWrapper = styled.div`
 `;
 
 const FindAccountPageContainer = styled.div`
-    width: 80%; // 전체 너비 사용
-    height: 100%;
+    width: 80%; // 너비를 %로 설정하여 반응형으로 만듭니다.
+    max-width: 1000px; // 최대 너비를 지정하여 너무 커지지 않도록 합니다.
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; // 모바일 뷰에서는 기본적으로 세로 배치
     border: 1px solid #ddd;
     border-radius: 5px;
+    margin-bottom: 120px;
 
-    @media (max-width: 768px) {
-        flex-direction: column;
+    @media (min-width: 768px) {
+        // 화면 너비가 768px 이상일 때 가로 배치를 적용
+        flex-direction: row;
+        align-items: stretch; // 이 속성이 두 섹션을 같은 높이로 만듭니다.
     }
 `;
 
 const Section = styled.section`
-    width: 48%;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; // 내용을 위아래로 분산시켜 모든 공간을 채우게 합니다.
 
     &:first-child {
-        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd; // 모바일 뷰에서는 섹션 사이에 구분선
     }
 
-    @media (max-width: 768px) {
-        width: 100%;
-        border-right: none;
+    @media (min-width: 768px) {
+        width: 48%; // 섹션 너비를 48%로 설정
+
         &:first-child {
-            border-bottom: 1px solid #ddd;
+            border-bottom: none;
+            border-right: 1px solid #ddd; // 가로 배치에서는 오른쪽에 구분선
         }
     }
 `;
 
 const Form = styled.form`
+    width: 100%; // 부모 요소의 너비를 차지하도록 설정
+    box-sizing: border-box; // padding과 border를 너비 계산에 포함
     margin-top: 20px;
 `;
 
@@ -48,10 +56,10 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-    width: calc(100% - 20px); // 오른쪽 끝과 여백을 만들기 위해 너비를 조정
+    width: 100%; // padding과 border를 포함한 전체 너비
     padding: 8px;
+    box-sizing: border-box; // padding과 border를 너비 계산에 포함
     margin-top: 5px;
-    margin-right: 10px; // 오른쪽 여백 추가
 `;
 
 const RadioGroup = styled.div`
