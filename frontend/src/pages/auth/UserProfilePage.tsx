@@ -110,17 +110,22 @@ const UserProfilePage = () => {
         alert('정보가 업데이트 되었습니다.');
     };
 
-    // URL에서 쿼리 파라미터를 읽기 위해 useLocation 사용
+    // 구매 확인 페이지에서 회원 정보 페이지로 넘어왔을 때, 구매내역 컴포넌트가 렌더링되도록 하는 기능.
+    // 페이지를 이동할 때 쿼리 파라미터를 사용. navigate('/user?tab=orders');
+    // URL에서 쿼리 파라미터를 읽기 위해 useLocation 사용.
     const location = useLocation();
 
     // URL 쿼리 파라미터에 따라 activeTab 초기값 설정
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
+        // 쿼리스트링에서 tab의 값을 가져온다.
         const tab = searchParams.get('tab');
+
+        // 쿼리스트링 값의 존재 여부를 따져 렌더링 될 탭의 종류를 지정한다.
         if (tab) {
             setActiveTab(tab);
         } else {
-            setActiveTab('userInfo'); // 기본값을 회원정보 탭으로 설정
+            setActiveTab('userInfo');
         }
     }, [location]);
 
