@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface TabProps {
@@ -108,6 +109,20 @@ const UserProfilePage = () => {
         event.preventDefault();
         alert('정보가 업데이트 되었습니다.');
     };
+
+    // URL에서 쿼리 파라미터를 읽기 위해 useLocation 사용
+    const location = useLocation();
+
+    // URL 쿼리 파라미터에 따라 activeTab 초기값 설정
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const tab = searchParams.get('tab');
+        if (tab) {
+            setActiveTab(tab);
+        } else {
+            setActiveTab('userInfo'); // 기본값을 회원정보 탭으로 설정
+        }
+    }, [location]);
 
     return (
         <Container>

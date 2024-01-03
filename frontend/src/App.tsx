@@ -11,6 +11,7 @@ import RegistrationPage from './pages/auth/RegistrationPage';
 import LoginPage from './pages/auth/LoginPage';
 import UserProfilePage from './pages/auth/UserProfilePage';
 import FindAccountPage from './pages/auth/FindAccountPage';
+import PaymentConfirmationPage from './pages/shop/PaymentConfirmationPage';
 
 function App() {
     return (
@@ -23,6 +24,10 @@ function App() {
                     <Route path="shopdetail" element={<ProductDetailPage />} />
                     <Route path="shopcart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage />} />
+                    <Route
+                        path="confirm"
+                        element={<PaymentConfirmationPage />}
+                    />
 
                     <Route path="home" element={<ShopPage />} />
 

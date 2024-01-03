@@ -143,14 +143,14 @@ const CheckoutPage: React.FC = () => {
         // 주문 로직 처리
         // 예시로 alert을 띄우고 페이지 이동
         alert('주문이 완료되었습니다.');
-        window.location.href = '/order-complete';
+        window.location.href = '/confirm';
     };
 
     // 주문 취소 버튼 클릭 핸들러
     const handleCancelOrder = () => {
         // 주문 취소 로직 처리
         // 예시로 홈페이지로 이동
-        window.location.href = '/';
+        window.location.href = '/shop';
     };
 
     return (
