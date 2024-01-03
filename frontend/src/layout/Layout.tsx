@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from '../components/common/Footer';
 import ShopNavigation from '../components/common/ShopNavigation';
-import MainNavigation from '../components/common/MainNavigation';
 
 const MainContent = styled.main`
     display: flex;
@@ -19,17 +18,16 @@ const Layout: React.FC = () => {
     // 현재 경로를 확인하기 위해 useLocation 훅 사용
     const location = useLocation();
 
-    // 프로젝트 메인 페이지인지 쇼핑몰 페이지인지에 따라 다른 네비게이션 바를 렌더링
-    const navigationComponent =
-        location.pathname === '/' ? <MainNavigation /> : <ShopNavigation />;
+    // MainPage가 아닌 다른 페이지에서 ShopNavigation을 렌더링합니다.
+    const showShopNavigation = location.pathname !== '/';
 
     return (
         <>
-            {navigationComponent}
+            {showShopNavigation && <ShopNavigation />}
             <MainContent>
                 <Outlet />
             </MainContent>
-            <Footer />
+            {showShopNavigation && <Footer />}
         </>
     );
 };
