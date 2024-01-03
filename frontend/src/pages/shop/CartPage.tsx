@@ -6,6 +6,12 @@ const CartContainer = styled.div`
     padding: 20px;
 `;
 
+const Breadcrumb = styled.div`
+    font-size: 12px;
+    color: #666;
+    margin-top: 20px;
+`;
+
 const CartTitle = styled.h1`
     font-size: 24px;
     border-bottom: 1px solid #ccc;
@@ -24,17 +30,6 @@ const CartHeader = styled.th`
     background: #f7f7f7;
     border-bottom: 1px solid #ccc;
 `;
-
-// const CartItem = styled.tr`
-//     &:nth-child(even) {
-//         background: #f7f7f7;
-//     }
-// `;
-
-// const CartCell = styled.td`
-//     padding: 8px;
-//     border-bottom: 1px solid #ccc;
-// `;
 
 const TotalPrice = styled.div`
     text-align: right;
@@ -98,6 +93,8 @@ const CartPage: React.FC = () => {
 
     return (
         <CartContainer>
+            <Breadcrumb>쇼핑몰 {'>'} 장바구니</Breadcrumb>
+
             <CartTitle>장바구니</CartTitle>
             <CartTable>
                 <thead>

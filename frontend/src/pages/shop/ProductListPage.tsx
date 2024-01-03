@@ -23,6 +23,13 @@ const ProductListContainer = styled.div`
     }
 `;
 
+const Breadcrumb = styled.div`
+    font-size: 12px;
+    color: #666;
+    margin-top: 20px;
+    margin-left: 45px;
+`;
+
 const ProductListTitle = styled.h2`
     font-size: 24px;
     margin-bottom: 20px;
@@ -161,6 +168,8 @@ const ProductListPage: React.FC = () => {
             </Sidebar>
 
             <main>
+                <Breadcrumb>쇼핑몰 {'>'} 제품목록</Breadcrumb>
+
                 {/* 정렬 옵션 바 */}
                 <SortingBar>
                     <SortButton

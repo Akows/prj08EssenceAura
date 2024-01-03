@@ -7,13 +7,19 @@ interface TabButtonProps {
 }
 
 const PageContainer = styled.div`
-    margin: auto;
+    margin: 30px;
     max-width: 800px;
     padding: 20px;
 
     @media (max-width: 768px) {
         padding: 10px;
     }
+`;
+
+const Breadcrumb = styled.div`
+    font-size: 12px;
+    color: #666;
+    margin-top: 20px;
 `;
 
 const ProductSection = styled.section`
@@ -171,14 +177,14 @@ const ProductDetailPage: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-        case 'details':
-            return <Section>상품 상세정보</Section>;
-        case 'reviews':
-            return <Section>구매후기</Section>;
-        case 'info':
-            return <Section>안내사항</Section>;
-        default:
-            return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
+            case 'details':
+                return <Section>상품 상세정보</Section>;
+            case 'reviews':
+                return <Section>구매후기</Section>;
+            case 'info':
+                return <Section>안내사항</Section>;
+            default:
+                return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
         }
     };
 
@@ -192,6 +198,8 @@ const ProductDetailPage: React.FC = () => {
 
     return (
         <PageContainer>
+            <Breadcrumb>쇼핑몰 {'>'} 상세제품</Breadcrumb>
+
             <ProductSection>
                 <ProductImage
                     src="https://via.placeholder.com/300"
