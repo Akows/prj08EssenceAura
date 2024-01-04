@@ -8,12 +8,12 @@ interface TabProps {
 }
 
 const Container = styled.div`
-    margin: auto;
-    max-width: 800px;
+    width: 100%;
+    max-width: 1200px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    margin-top: 20px;
+    margin-top: 60px;
 `;
 
 const Title = styled.h1`

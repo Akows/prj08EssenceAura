@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-// Styled Components
 const RegistrationContainer = styled.div`
-    margin: auto;
-    max-width: 800px;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 60px;
 `;
 
 const Title = styled.h1`

@@ -2,8 +2,9 @@ import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
 
 const CheckoutContainer = styled.div`
-    margin: auto;
-    max-width: 800px;
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 60px;
 `;
 
 const Breadcrumb = styled.div`
