@@ -1,29 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-}
-
-interface ProductsState {
-    products: Product[];
-}
-
-const initialState: ProductsState = {
+const initialState = {
     products: [],
+    selectedProduct: null,
+    loading: false,
+    error: null,
 };
 
-export const productsSlice = createSlice({
-    name: 'products',
+const productSlice = createSlice({
+    name: 'product',
     initialState,
     reducers: {
         setProducts: (state, action) => {
             state.products = action.payload;
         },
+        selectProduct: (state, action) => {
+            state.selectedProduct = action.payload;
+        },
+        // 다른 필요한 리듀서 추가
     },
 });
 
-export const { setProducts } = productsSlice.actions;
-export default productsSlice.reducer;
+export const { setProducts, selectProduct } = productSlice.actions;
+export default productSlice.reducer;

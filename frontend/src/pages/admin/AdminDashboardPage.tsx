@@ -44,16 +44,10 @@ const TabLink = styled.button`
 `;
 
 const DashboardMain = styled.main`
-    width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     padding: 20px 0;
-
-    & > * {
-        width: 100%;
-        border: 2px solid black;
-    }
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -78,14 +72,14 @@ const AdminDashboardPage: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-        case 'orders':
-            return <OrderManagement />;
-        case 'stock':
-            return <Card>재고 관리 내용</Card>;
-        case 'feedback':
-            return <Card>사용자 피드백 내용</Card>;
-        default:
-            return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
+            case 'orders':
+                return <OrderManagement />;
+            case 'stock':
+                return <Card>재고 관리 내용</Card>;
+            case 'feedback':
+                return <Card>사용자 피드백 내용</Card>;
+            default:
+                return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
         }
     };
 

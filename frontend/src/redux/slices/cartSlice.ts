@@ -1,40 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface CartItem {
-    productId: number;
-    quantity: number;
-}
-
-interface CartState {
-    items: CartItem[];
-}
-
-const initialState: CartState = {
+const initialState = {
     items: [],
+    totalAmount: 0,
 };
 
-export const cartSlice = createSlice({
+const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
         addToCart: (state, action) => {
-            state.items.push(action.payload);
+            // 장바구니에 항목 추가 로직
         },
         removeFromCart: (state, action) => {
-            state.items = state.items.filter(
-                (item) => item.productId !== action.payload.productId
-            );
+            // 장바구니에서 항목 제거 로직
         },
-        updateQuantity: (state, action) => {
-            const item = state.items.find(
-                (item) => item.productId === action.payload.productId
-            );
-            if (item) {
-                item.quantity = action.payload.quantity;
-            }
-        },
+        // 다른 필요한 리듀서 추가
     },
 });
 
-export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;
