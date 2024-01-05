@@ -12,6 +12,7 @@ import LoginPage from './pages/auth/LoginPage';
 import UserProfilePage from './pages/auth/UserProfilePage';
 import FindAccountPage from './pages/auth/FindAccountPage';
 import PaymentConfirmationPage from './pages/shop/PaymentConfirmationPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 
 function App() {
     return (
@@ -29,12 +30,14 @@ function App() {
                         element={<PaymentConfirmationPage />}
                     />
 
-                    <Route path="home" element={<ShopPage />} />
-
                     <Route path="signup" element={<RegistrationPage />} />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="find" element={<FindAccountPage />} />
                     <Route path="user" element={<UserProfilePage />} />
+
+                    <Route path="admin" element={<AdminDashboardPage />} />
+
+                    <Route path="home" element={<ShopPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
