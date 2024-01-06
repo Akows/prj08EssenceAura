@@ -24,7 +24,7 @@ const ModalOverlay = styled.div`
 
 const ModalBody = styled.div`
     background: white;
-    padding: 20px;
+    padding: 30px;
     border-radius: 8px;
     width: 50%; // 모달의 너비
     max-width: 500px;
@@ -49,7 +49,7 @@ const Label = styled.label`
 `;
 
 const Textarea = styled.textarea`
-    width: 100%;
+    width: 95%;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
@@ -57,7 +57,7 @@ const Textarea = styled.textarea`
 `;
 
 const Input = styled.input`
-    width: 100%;
+    width: 95%;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
