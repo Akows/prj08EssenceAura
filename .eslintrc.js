@@ -1,5 +1,6 @@
 module.exports = {
     parser: '@typescript-eslint/parser', // TypeScript 파싱을 위한 파서 설정
+    plugins: ["prettier"],
     extends: [
       'plugin:@typescript-eslint/recommended', // TypeScript 규칙 사용
       'plugin:react/recommended', // React 규칙 사용
@@ -32,6 +33,8 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': ['warn', { 'vars': 'all', 'args': 'none' }], // TypeScript 환경에서 사용하지 않는 변수 금지
         '@typescript-eslint/explicit-function-return-type': 'off', // 함수 반환 타입 명시적 선언 비활성화
         '@typescript-eslint/no-explicit-any': 'warn', // 'any' 타입 사용에 대해 경고
+
+        "prettier/prettier": "error" // Prettier 규칙 위반을 에러로 처리
       },
       // 들여쓰기 규칙 설정.
       // 기본 들여쓰기 레벨은 4, 다만 SwitchCase의 경우 추가로 4 * 1만큼의 추가 들여쓰기 적용.

@@ -149,24 +149,24 @@ const UserManagement: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-        case 'user':
-            return (
-                <UserList
-                    users={users}
-                    onEdit={openEditModal}
-                    onDelete={deleteUser}
-                />
-                );
-        case 'admin':
-            return (
-                <UserAdminList
-                    admins={admins}
-                    onEdit={openEditModal}
-                    onDelete={deleteUser}
+            case 'user':
+                return (
+                    <UserList
+                        users={users}
+                        onEdit={openEditModal}
+                        onDelete={deleteUser}
                     />
                 );
-        default:
-            return <div>선택된 탭에 해당하는 정보가 없습니다.</div>;
+            case 'admin':
+                return (
+                    <UserAdminList
+                        admins={admins}
+                        onEdit={openEditModal}
+                        onDelete={deleteUser}
+                    />
+                );
+            default:
+                return <div>선택된 탭에 해당하는 정보가 없습니다.</div>;
         }
     };
 
