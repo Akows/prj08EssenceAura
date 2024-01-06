@@ -1,5 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import OrderModal from './OrderModal';
+
+export interface Order {
+    order_id: number;
+    user_id: string;
+    total_price: number;
+    discount_amount: number;
+    delivery_address: string;
+    status: string;
+    created_at: string;
+    order_details: OrderDetail[];
+}
+
+export interface OrderDetail {
+    product_id: string;
+    price: number;
+    quantity: number;
+    product_option: string;
+}
 
 const OrderTable = styled.table`
     @media (max-width: 768px) {
@@ -139,73 +158,105 @@ const orders = [
 ];
 
 const OrderManagement: React.FC = () => {
-    // 주문을 수정하는 함수
-    const handleEdit = (orderId: number) => {
-        console.log(`주문 번호 ${orderId} 수정하기`);
-        // TODO: 여기에 실제 주문 수정 로직 구현
+    // 모달의 표시 여부를 결정하는 상태
+    const [isModalOpen, setModalOpen] = useState(false);
+    // 수정할 주문의 상태
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    // 주문 수정 모달을 열기 위한 함수
+    const openEditModal = (order: Order) => {
+        setSelectedOrder(order);
+        setModalOpen(true);
+    };
+
+    // 주문 수정 모달을 닫기 위한 함수
+    const closeEditModal = () => {
+        setSelectedOrder(null);
+        setModalOpen(false);
+    };
+
+    // 주문 저장 로직
+    const saveOrder = (order: Order) => {
+        alert('저장할 주문:' + order);
+        // TODO: API 호출로 주문 정보를 업데이트하는 로직 구현
+        closeEditModal(); // 저장 후 모달 닫기
     };
 
     // 주문을 취소하는 함수
     const handleCancel = (orderId: number) => {
-        console.log(`주문 번호 ${orderId} 취소하기`);
+        alert(`주문 번호 ${orderId} 취소하기`);
         // TODO: 여기에 실제 주문 취소 로직 구현
     };
 
     return (
-        <OrderTable>
-            <thead>
-                <TableRow>
-                    <TableHeader>주문 ID</TableHeader>
-                    <TableHeader>고객 ID</TableHeader>
-                    <TableHeader>총액</TableHeader>
-                    <TableHeader>할인액</TableHeader>
-                    <TableHeader>배송지</TableHeader>
-                    <TableHeader>주문 상태</TableHeader>
-                    <TableHeader>주문 날짜</TableHeader>
-                    <TableHeader>제품 상세</TableHeader>
-                    <TableHeader>상태 관리</TableHeader>
-                </TableRow>
-            </thead>
-            <tbody>
-                {orders.map((order) => (
-                    <React.Fragment key={order.order_id}>
-                        <TableRow>
-                            <TableCell>{order.order_id}</TableCell>
-                            <TableCell>{order.user_id}</TableCell>
-                            <TableCell>₩{order.total_price}</TableCell>
-                            <TableCell>₩{order.discount_amount}</TableCell>
-                            <TableCell>{order.delivery_address}</TableCell>
-                            <TableCell>{order.status}</TableCell>
-                            <TableCell>{order.created_at}</TableCell>
-                            <TableCell>
-                                {order.order_details.map((detail, index) => (
-                                    <div key={detail.product_id}>
-                                        {index > 0 && <hr />}
-                                        제품 ID: {detail.product_id}, 가격: ₩
-                                        {detail.price}, 수량: {detail.quantity},
-                                        옵션: {detail.product_option}
-                                    </div>
-                                ))}
-                            </TableCell>
-                            <TableCellActions>
-                                <ActionButton
-                                    className="edit"
-                                    onClick={() => handleEdit(order.order_id)}
-                                >
-                                    수정
-                                </ActionButton>
-                                <ActionButton
-                                    className="cancel"
-                                    onClick={() => handleCancel(order.order_id)}
-                                >
-                                    취소
-                                </ActionButton>
-                            </TableCellActions>
-                        </TableRow>
-                    </React.Fragment>
-                ))}
-            </tbody>
-        </OrderTable>
+        <>
+            <OrderTable>
+                <thead>
+                    <TableRow>
+                        <TableHeader>주문 ID</TableHeader>
+                        <TableHeader>고객 ID</TableHeader>
+                        <TableHeader>총액</TableHeader>
+                        <TableHeader>할인액</TableHeader>
+                        <TableHeader>배송지</TableHeader>
+                        <TableHeader>주문 상태</TableHeader>
+                        <TableHeader>주문 날짜</TableHeader>
+                        <TableHeader>제품 상세</TableHeader>
+                        <TableHeader>상태 관리</TableHeader>
+                    </TableRow>
+                </thead>
+                <tbody>
+                    {orders.map((order) => (
+                        <React.Fragment key={order.order_id}>
+                            <TableRow>
+                                <TableCell>{order.order_id}</TableCell>
+                                <TableCell>{order.user_id}</TableCell>
+                                <TableCell>₩{order.total_price}</TableCell>
+                                <TableCell>₩{order.discount_amount}</TableCell>
+                                <TableCell>{order.delivery_address}</TableCell>
+                                <TableCell>{order.status}</TableCell>
+                                <TableCell>{order.created_at}</TableCell>
+                                <TableCell>
+                                    {order.order_details.map(
+                                        (detail, index) => (
+                                            <div key={detail.product_id}>
+                                                {index > 0 && <hr />}
+                                                제품 ID: {detail.product_id},
+                                                가격: ₩{detail.price}, 수량:{' '}
+                                                {detail.quantity}, 옵션:{' '}
+                                                {detail.product_option}
+                                            </div>
+                                        )
+                                    )}
+                                </TableCell>
+                                <TableCellActions>
+                                    <ActionButton
+                                        className="edit"
+                                        onClick={() => openEditModal(order)}
+                                    >
+                                        수정
+                                    </ActionButton>
+                                    <ActionButton
+                                        className="cancel"
+                                        onClick={() =>
+                                            handleCancel(order.order_id)
+                                        }
+                                    >
+                                        취소
+                                    </ActionButton>
+                                </TableCellActions>
+                            </TableRow>
+                        </React.Fragment>
+                    ))}
+                </tbody>
+            </OrderTable>
+            {isModalOpen && selectedOrder && (
+                <OrderModal
+                    order={selectedOrder}
+                    onClose={closeEditModal}
+                    onSave={saveOrder}
+                />
+            )}
+        </>
     );
 };
 

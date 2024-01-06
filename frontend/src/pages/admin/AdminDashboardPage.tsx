@@ -68,14 +68,14 @@ const AdminDashboardPage: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-        case 'orders':
-            return <OrderManagement />;
-        case 'stock':
-            return <InventoryManagement />;
-        case 'feedback':
-            return <Card>사용자 피드백 내용</Card>;
-        default:
-            return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
+            case 'orders':
+                return <OrderManagement />;
+            case 'stock':
+                return <InventoryManagement />;
+            case 'feedback':
+                return <Card>사용자 피드백 내용</Card>;
+            default:
+                return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
         }
     };
 
