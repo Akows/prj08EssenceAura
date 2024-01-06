@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import InventoryManagement from '../../components/admin/InventoryManagement';
 import OrderManagement from '../../components/admin/OrderManagement';
+import UserManagement from '../../components/admin/UserManagement';
 
 const DashboardContainer = styled.div`
     margin: 30px;
@@ -68,14 +69,16 @@ const AdminDashboardPage: React.FC = () => {
 
     const renderContent = () => {
         switch (activeTab) {
-            case 'orders':
-                return <OrderManagement />;
-            case 'stock':
-                return <InventoryManagement />;
-            case 'feedback':
-                return <Card>사용자 피드백 내용</Card>;
-            default:
-                return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
+        case 'orders':
+            return <OrderManagement />;
+        case 'stock':
+            return <InventoryManagement />;
+        case 'user':
+            return <UserManagement />;
+        case 'feedback':
+            return <Card>사용자 피드백 내용</Card>;
+        default:
+            return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
         }
     };
 
@@ -95,6 +98,12 @@ const AdminDashboardPage: React.FC = () => {
                         className={activeTab === 'stock' ? 'active' : ''}
                     >
                         재고 관리
+                    </TabLink>
+                    <TabLink
+                        onClick={() => setActiveTab('user')}
+                        className={activeTab === 'user' ? 'active' : ''}
+                    >
+                        회원 관리
                     </TabLink>
                     <TabLink
                         onClick={() => setActiveTab('feedback')}
