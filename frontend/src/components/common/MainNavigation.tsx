@@ -16,7 +16,7 @@ const NavigationContainer = styled.nav`
     right: 0;
     z-index: 20;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
@@ -31,7 +31,6 @@ const Logo = styled(Link)`
 const MainNavigation: React.FC<MainNavigationProps> = ({ style }) => {
     return (
         <NavigationContainer style={style}>
-            {/* Link 컴포넌트를 사용해 로고에 라우팅 기능을 추가합니다. */}
             <Logo to="/shop">EssenceAura</Logo>
         </NavigationContainer>
     );
