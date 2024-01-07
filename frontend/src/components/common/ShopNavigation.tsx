@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaBars, FaUserCircle } from 'react-icons/fa';
@@ -225,6 +225,9 @@ const ShopNavigation: React.FC = () => {
         (state: RootState) => state.ui.language
     );
 
+    // 사용자 메뉴를 결정하기 위한 임시 사용자 상태 (일반 회원 'user', 관리자 'admin')
+    const [userType] = useState<'user' | 'admin' | 'guest'>('admin');
+
     return (
         <NavigationContainer>
             {/* 로고 및 네비게이션 링크 */}
@@ -246,9 +249,22 @@ const ShopNavigation: React.FC = () => {
             {/* 아이콘 컨테이너 */}
             <IconsContainer>
                 <IconWrapper>
-                    <LoginButton to="/login">
-                        <FaUserCircle size={24} />
-                    </LoginButton>
+                    {/* 사용자 상태에 따른 버튼 변경 */}
+                    {userType === 'guest' ? (
+                        <LoginButton to="/login">
+                            <FaUserCircle size={24} />
+                        </LoginButton>
+                    ) : userType === 'user' ? (
+                        // 일반 사용자일 때 UserProfilePage로 이동하는 버튼
+                        <LoginButton to="/user">
+                            <FaUserCircle size={24} />
+                        </LoginButton>
+                    ) : (
+                        // 관리자일 때 AdminDashboardPage로 이동하는 버튼
+                        <LoginButton to="/admin">
+                            <FaUserCircle size={24} />
+                        </LoginButton>
+                    )}
                 </IconWrapper>
                 <IconWrapper>
                     <SettingsMenu onClick={toggleSettingsMenu}>
@@ -317,10 +333,22 @@ const ShopNavigation: React.FC = () => {
                     <IconRow>
                         {/* 아이콘들을 감싸는 행 */}
                         <IconContainer>
-                            {/* 로그인 아이콘 */}
-                            <LoginButton to="/login">
-                                <FaUserCircle size={24} />
-                            </LoginButton>
+                            {/* 사용자 상태에 따른 버튼 변경 */}
+                            {userType === 'guest' ? (
+                                <LoginButton to="/login">
+                                    <FaUserCircle size={24} />
+                                </LoginButton>
+                            ) : userType === 'user' ? (
+                                // 일반 사용자일 때 UserProfilePage로 이동하는 버튼
+                                <LoginButton to="/user">
+                                    <FaUserCircle size={24} />
+                                </LoginButton>
+                            ) : (
+                                // 관리자일 때 AdminDashboardPage로 이동하는 버튼
+                                <LoginButton to="/admin">
+                                    <FaUserCircle size={24} />
+                                </LoginButton>
+                            )}
                         </IconContainer>
                         <IconContainer>
                             {/* 설정 아이콘 */}
