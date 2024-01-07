@@ -143,7 +143,6 @@ const UserManagement: React.FC = () => {
     };
 
     const handleTabChange = (tab: string) => {
-        alert(tab);
         setActiveTab(tab);
     };
 

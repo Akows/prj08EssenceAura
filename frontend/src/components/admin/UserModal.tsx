@@ -47,14 +47,6 @@ const Label = styled.label`
     margin-bottom: 5px;
 `;
 
-const Textarea = styled.textarea`
-    width: 95%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-`;
-
 const Input = styled.input`
     width: 95%;
     padding: 8px;
@@ -82,8 +74,17 @@ const ActionButton = styled.button`
 `;
 
 const UserModal: React.FC<UserModalProps> = ({ user, onClose, onSave }) => {
-    const [formData, setFormData] = useState<Partial<User | Admin>>(user || {});
+    // User와 Admin에 따라 다른 상태 유형을 관리
+    const [formData, setFormData] = useState<Partial<User> | Partial<Admin>>(
+        user || {}
+    );
 
+    // 정보를 추가 혹은 수정하려는 대상이 누구인지를 판별하는 변수.
+    const isUserType = (
+        userData: Partial<User> | Partial<Admin>
+    ): userData is Partial<User> => {
+        return (userData as Partial<User>).user_id !== undefined;
+    };
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -100,7 +101,8 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, onSave }) => {
         <ModalOverlay>
             <ModalBody>
                 <CloseButton onClick={onClose}>&times;</CloseButton>
-                <h2>{user ? '회원 수정' : '회원 추가'}</h2>
+                <h2>{user ? '정보 수정' : '정보 추가'}</h2>
+                {/* 공통 필드 */}
                 <FormField>
                     <Label>이름</Label>
                     <Input
@@ -117,7 +119,30 @@ const UserModal: React.FC<UserModalProps> = ({ user, onClose, onSave }) => {
                         onChange={handleChange}
                     />
                 </FormField>
-                {/* ... 다른 필드들 ... */}
+
+                {/* User 유형에만 필요한 필드 */}
+                {isUserType(formData) && (
+                    <>
+                        <FormField>
+                            <Label>주소</Label>
+                            <Input
+                                name="address"
+                                value={formData.address || ''}
+                                onChange={handleChange}
+                            />
+                        </FormField>
+                        <FormField>
+                            <Label>전화번호</Label>
+                            <Input
+                                name="phone_number"
+                                value={formData.phone_number || ''}
+                                onChange={handleChange}
+                            />
+                        </FormField>
+                        {/* ...기타 User 특화 필드... */}
+                    </>
+                )}
+
                 <FormField>
                     <ActionButton className="save" onClick={handleSave}>
                         저장
