@@ -127,52 +127,66 @@ const adminsData = [
 ];
 
 const UserManagement: React.FC = () => {
-    const [activeTab, setActiveTab] = useState('user');
+    // 현재 활성화된 탭을 관리하는 상태 ('user' 또는 'admin')
+    const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user');
 
-    // 유저 및 관리자 데이터 관리를 위한 상태
-    const [users] = useState<User[]>(usersData); // 일반 회원 데이터 상태
-    const [admins] = useState<Admin[]>(adminsData); // 관리자 데이터 상태
+    // 모달 창의 열림/닫힘 상태를 관리하는 상태
     const [isModalOpen, setModalOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState<User | Admin | null>(null);
 
-    // 모달 타입을 위한 상태 추가 ('user' | 'admin')
+    // 현재 열릴 모달의 타입을 결정하는 상태 ('user' 또는 'admin')
     const [modalType, setModalType] = useState<'user' | 'admin'>('user');
 
+    // 편집 중인 사용자 또는 관리자 객체를 저장하는 상태
+    const [editingUser, setEditingUser] = useState<User | Admin | null>(null);
+
+    // 일반 사용자 데이터 목록을 저장하는 상태
+    const [users] = useState<User[]>(usersData);
+
+    // 관리자 데이터 목록을 저장하는 상태
+    const [admins] = useState<Admin[]>(adminsData);
+
+    // 사용자 데이터를 저장하는 함수
     const saveUser = (userData: Partial<User>) => {
-        alert('저장할 회원:' + userData);
-        // TODO: API 호출로 제품 정보를 업데이트하는 로직 구현
+        alert('저장할 회원:' + JSON.stringify(userData));
+        // API 호출로 사용자 정보를 업데이트하는 로직 구현 예정
         closeModal();
     };
 
+    // 관리자 데이터를 저장하는 함수
     const saveAdmin = (adminsData: Partial<Admin>) => {
-        alert('저장할 관리자:' + adminsData);
-        // TODO: API 호출로 제품 정보를 업데이트하는 로직 구현
+        alert('저장할 관리자:' + JSON.stringify(adminsData));
+        // API 호출로 관리자 정보를 업데이트하는 로직 구현 예정
         closeModal();
     };
 
+    // 모달을 열 때 사용하는 함수, 새 사용자 추가 시에는 editingUser를 비워둠
     const openAddModal = (type: 'user' | 'admin') => {
-        setEditingUser(null); // 새로운 회원 추가 시에는 editingUser를 비워둡니다.
-        setModalType(type); // 모달 타입을 설정하는 상태 추가 필요
+        setEditingUser(null);
+        setModalType(type); // 'user' 또는 'admin'을 설정하여 모달 타입을 결정함
         setModalOpen(true);
     };
 
+    // 모달을 닫을 때 사용하는 함수
     const closeModal = () => {
         setEditingUser(null);
         setModalOpen(false);
     };
 
+    // 편집 모달을 열 때 사용하는 함수, 현재 편집할 객체를 설정
     const openEditModal = (user: User | Admin) => {
-        setEditingUser(user); // 수정할 제품 설정
+        setEditingUser(user);
         setModalOpen(true);
     };
 
+    // 사용자 또는 관리자를 삭제하는 함수입니다. API 연동 시 해당 로직으로 교체되어야 합니다.
     const deleteUser = (product_id: number) => {
         // TODO: API 호출로 제품을 삭제하는 로직 구현
         alert(`제품 ID ${product_id} 삭제`);
     };
 
+    // 활성 탭을 변경하는 함수입니다 ('user' 목록과 'admin' 목록 사이 전환).
     const handleTabChange = (tab: string) => {
-        setActiveTab(tab);
+        setActiveTab(tab as 'user' | 'admin');
     };
 
     const renderContent = () => {
