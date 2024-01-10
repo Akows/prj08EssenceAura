@@ -226,7 +226,7 @@ const ShopNavigation: React.FC = () => {
     );
 
     // 사용자 메뉴를 결정하기 위한 임시 사용자 상태 (일반 회원 'user', 관리자 'admin')
-    const [userType] = useState<'user' | 'admin' | 'guest'>('admin');
+    const [userType] = useState<'user' | 'admin' | 'guest'>('guest');
 
     return (
         <NavigationContainer>
