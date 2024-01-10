@@ -1,4 +1,5 @@
 const db = require('../config/database');
+const bcrypt = require('bcrypt');
 const { validateSignupData } = require('../utils/authUtils');
 
 const signup = async (req, res) => {
@@ -11,12 +12,24 @@ const signup = async (req, res) => {
     // 유효성 검사를 통과한 경우, 데이터베이스에 사용자 추가
     try {
         const { username, email, password, address, building_name, phone_number } = req.body;
-        
-        // 비밀번호 해싱을 여기서 수행해야 함 (bcrypt 등을 사용)
-        // const hashedPassword = await bcrypt.hash(password, 10);
 
-        const query = 'INSERT INTO users (username, email, password, address, building_name, phone_number) VALUES (?, ?, ?, ?, ?, ?)';
-        db.query(query, [username, email, password, address, building_name, phone_number], (err, results) => {
+        console.log('회원가입 절차 진행중..');
+        
+        // password 필드에 직접 평문 비밀번호를 저장하는 것은 보안상 좋지 않다
+        // 따라서 비밀번호는 해싱하여 저장
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const query = `
+        INSERT INTO users (
+            username, email, password, address, building_name, phone_number, 
+            created_at, updated_at, is_active, is_member
+        ) VALUES (
+            ?, ?, ?, ?, ?, ?, 
+            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?
+        )
+    `;
+
+        db.query(query, [username, email, hashedPassword, address, building_name, phone_number, 1, 1], (err, results) => {
             if (err) {
                 // 데이터베이스 에러 처리
                 console.error('회원가입 중 데이터베이스 에러:', err);
