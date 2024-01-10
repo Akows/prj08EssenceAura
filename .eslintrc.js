@@ -17,7 +17,7 @@ module.exports = {
         // JavaScript 규칙
         'eqeqeq': 'error', // '==' 대신 '===' 사용 강제
         'no-unused-vars': ['warn', { 'vars': 'all', 'args': 'after-used' }], // 사용하지 않는 변수에 대해 경고
-        'no-console': 'error', // 콘솔 사용 금지
+        // 'no-console': 'error', // 콘솔 사용 금지
         'curly': 'error', // 모든 제어문에 중괄호 사용
 
          // 들여쓰기 규칙
