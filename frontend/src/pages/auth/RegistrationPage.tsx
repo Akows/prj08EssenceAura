@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import RegistrationForm from '../../components/auth/RegistrationForm';
 
@@ -24,21 +24,32 @@ const Checkbox = styled.input`
 `;
 
 const RegistrationPage: React.FC = () => {
-    const handleSignup = (formData) => {
-        // 회원가입 처리 로직
+    const [isAgreed, setIsAgreed] = useState(false);
+
+    const handleAgreementChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setIsAgreed(event.target.checked);
     };
 
+    const handleSignup = (formData) => {
+        if (!isAgreed) {
+            alert('이용 약관에 동의해야 회원가입이 가능합니다.');
+            return;
+        }
+        // 회원가입 처리 로직
+    };
     return (
         <RegistrationContainer>
             <Title>회원가입</Title>
 
             {/* 이용 약관 및 개인정보 처리 동의 */}
             <CheckboxLabel>
-                <Checkbox type="checkbox" />
+                <Checkbox type="checkbox" onChange={handleAgreementChange} />
                 <div>이용약관에 동의합니다. (전문보기)</div>
             </CheckboxLabel>
             <CheckboxLabel>
-                <Checkbox type="checkbox" />
+                <Checkbox type="checkbox" onChange={handleAgreementChange} />
                 <div>개인정보 수집 및 이용에 동의합니다.</div>
             </CheckboxLabel>
 
