@@ -6,9 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 사용자 라우트 추가
 app.use('/api', userRoutes);
-
-// 기타 미들웨어 및 라우트
-// ...
 
 module.exports = app;

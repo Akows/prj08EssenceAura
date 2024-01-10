@@ -33,16 +33,41 @@ const RegistrationPage: React.FC<RegistrationFormProps> = () => {
         setIsAgreed(event.target.checked);
     };
 
-    const handleSignup = (formData: FormData) => {
+    const handleSignup = async (formData: FormData) => {
         if (!isAgreed) {
             alert('이용 약관에 동의해야 회원가입이 가능합니다.');
             return;
         }
 
-        alert(formData);
+        // 백엔드 서버의 주소와 포트 번호를 포함한 URL
+        const backendUrl = 'http://localhost:3001/api/signup';
 
-        // 회원가입 처리 로직
+        try {
+            const response = await fetch(backendUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                // 회원가입 성공 후 처리
+                console.log(result);
+                alert('회원가입이 완료되었습니다.');
+            } else {
+                // 서버 에러 응답 처리
+                const errorResult = await response.json();
+                alert(errorResult.message);
+            }
+        } catch (error) {
+            // 네트워크 에러 또는 요청 취소 등의 에러 처리
+            console.error('회원가입 요청 중 오류 발생:', error);
+            alert('회원가입 중 오류가 발생했습니다.');
+        }
     };
+
     return (
         <RegistrationContainer>
             <Title>회원가입</Title>
