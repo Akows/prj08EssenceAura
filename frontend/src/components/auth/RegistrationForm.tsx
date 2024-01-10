@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { FormData, RegistrationFormProps } from '../../type/types';
+import { validateSignupForm } from '../../utils/auth';
+
+// 유효성 검사를 위한 에러 메시지 인터페이스
+export interface FormErrors {
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    // 기타 필드에 대한 에러 메시지 정의
+}
 
 const Form = styled.form`
     margin-top: 20px;
@@ -35,22 +45,19 @@ const ValidationMessage = styled.div`
     margin-top: 5px;
 `;
 
-const RegistrationForm: React.FC = ({ onSignup }) => {
-    const [formData, setFormData] = useState({
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSignup }) => {
+    const [formData, setFormData] = useState<FormData>({
         username: '',
         email: '',
         password: '',
         confirmPassword: '', // 유효성 검사용, 데이터베이스에는 저장되지 않음
         address: '',
         building_name: '',
-        unit_number: '',
         phone_number: '',
     });
 
-    const [validation, setValidation] = useState({
-        userId: '',
-        email: '',
-    });
+    // 유효성 검사 결과를 받아와서 저장하는 useState
+    const [validation, setValidation] = useState<FormErrors>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -59,11 +66,15 @@ const RegistrationForm: React.FC = ({ onSignup }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // 폼 유효성 검사 로직
-        // 유효성 검사를 통과하면 onSignup 함수를 호출
-        onSignup(formData);
+        const errors = validateSignupForm(formData);
+
+        if (Object.keys(errors).length === 0) {
+            onSignup(formData);
+        } else {
+            setValidation(errors);
+        }
     };
 
     return (
@@ -84,7 +95,7 @@ const RegistrationForm: React.FC = ({ onSignup }) => {
                 onChange={handleChange}
             />
             <Button type="button">중복 확인</Button>
-            <ValidationMessage>{validation.userId}</ValidationMessage>
+            <ValidationMessage>{validation.email}</ValidationMessage>
 
             <Label htmlFor="password">비밀번호</Label>
             <Input
@@ -101,14 +112,7 @@ const RegistrationForm: React.FC = ({ onSignup }) => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
             />
-
-            <Label htmlFor="birthday">생년월일</Label>
-            <Input
-                id="birthday"
-                type="text"
-                value={formData.birthday}
-                onChange={handleChange}
-            />
+            <ValidationMessage>{validation.password}</ValidationMessage>
 
             <Label htmlFor="address">주소</Label>
             <Input
@@ -122,7 +126,7 @@ const RegistrationForm: React.FC = ({ onSignup }) => {
             <Input
                 id="detailAddress"
                 type="text"
-                value={formData.detailAddress}
+                value={formData.building_name}
                 onChange={handleChange}
             />
 
@@ -130,17 +134,10 @@ const RegistrationForm: React.FC = ({ onSignup }) => {
             <Input
                 id="phone"
                 type="tel"
-                value={formData.phone}
+                value={formData.phone_number}
                 onChange={handleChange}
             />
 
-            <Label htmlFor="email">이메일</Label>
-            <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-            />
             <Button type="button">중복 확인</Button>
             <ValidationMessage>{validation.email}</ValidationMessage>
 

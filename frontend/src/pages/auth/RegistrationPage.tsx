@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import RegistrationForm from '../../components/auth/RegistrationForm';
+import { FormData, RegistrationFormProps } from '../../type/types';
 
 const RegistrationContainer = styled.div`
     width: 100%;
@@ -23,7 +24,7 @@ const Checkbox = styled.input`
     margin-right: 10px;
 `;
 
-const RegistrationPage: React.FC = () => {
+const RegistrationPage: React.FC<RegistrationFormProps> = () => {
     const [isAgreed, setIsAgreed] = useState(false);
 
     const handleAgreementChange = (
@@ -32,11 +33,14 @@ const RegistrationPage: React.FC = () => {
         setIsAgreed(event.target.checked);
     };
 
-    const handleSignup = (formData) => {
+    const handleSignup = (formData: FormData) => {
         if (!isAgreed) {
             alert('이용 약관에 동의해야 회원가입이 가능합니다.');
             return;
         }
+
+        alert(formData);
+
         // 회원가입 처리 로직
     };
     return (
