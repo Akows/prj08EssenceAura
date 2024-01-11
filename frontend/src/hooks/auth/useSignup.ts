@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { SignUpFormData, SignUpFormErrors } from '../../type/authtypes';
+import {
+    SignUpFormData,
+    SignUpFormErrors,
+    UseSignUpReturn,
+} from '../../type/authtypes';
 import { validateSignupForm } from '../../utils/auth';
 
-const useSignup = () => {
-    const [formData, setFormData] = useState<SignUpFormData>({
+const useSignup = (): UseSignUpReturn => {
+    const [signUpformData, setSignUpformData] = useState<SignUpFormData>({
         username: '',
         email: '',
         password: '',
@@ -12,29 +16,31 @@ const useSignup = () => {
         building_name: '',
         phone_number: '',
     });
-    const [validation, setValidation] = useState<SignUpFormErrors>({});
-    const [isAgreed, setIsAgreed] = useState(false);
+    const [signUpvalidation, setSignUpvalidation] = useState<SignUpFormErrors>(
+        {}
+    );
+    const [signUpIsAgree, setSignUpIsAgree] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
+        setSignUpformData({
+            ...signUpformData,
+            [e.target.id]: e.target.value,
         });
     };
 
     const handleAgreementChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsAgreed(e.target.checked);
+        setSignUpIsAgree(e.target.checked);
     };
 
-    const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-        if (!isAgreed) {
+        if (!signUpIsAgree) {
             alert('이용 약관에 동의해야 회원가입이 가능합니다.');
             return;
         }
 
-        const errors = validateSignupForm(formData);
+        const errors = validateSignupForm(signUpformData);
         if (Object.keys(errors).length === 0) {
             try {
                 const response = await fetch(
@@ -44,7 +50,7 @@ const useSignup = () => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(formData),
+                        body: JSON.stringify(signUpformData),
                     }
                 );
 
@@ -61,14 +67,14 @@ const useSignup = () => {
                 alert('회원가입 중 오류가 발생했습니다.');
             }
         } else {
-            setValidation(errors);
+            setSignUpvalidation(errors);
         }
     };
 
     return {
-        formData,
-        validation,
-        isAgreed,
+        signUpformData,
+        signUpvalidation,
+        signUpIsAgree,
         handleChange,
         handleAgreementChange,
         handleSignup,

@@ -20,6 +20,16 @@ export interface SignUpFormErrors {
     phone_number?: string;
 }
 
+// 회원가입 커스텀 훅의 타입
+export interface UseSignUpReturn {
+    signUpformData: SignUpFormData;
+    signUpvalidation: SignUpFormErrors;
+    signUpIsAgree: boolean;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleAgreementChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSignup: (e: React.FormEvent<HTMLFormElement>) => void;
+}
+
 // 로그인 데이터
 export interface LoginFormData {
     email: string;

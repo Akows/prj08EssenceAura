@@ -25,7 +25,14 @@ const Checkbox = styled.input`
 `;
 
 const RegistrationPage: React.FC = () => {
-    const { handleAgreementChange } = useSignup();
+    const {
+        signUpformData,
+        signUpvalidation,
+        signUpIsAgree,
+        handleChange,
+        handleAgreementChange,
+        handleSignup,
+    } = useSignup();
 
     return (
         <RegistrationContainer>
@@ -42,7 +49,14 @@ const RegistrationPage: React.FC = () => {
             </CheckboxLabel>
 
             {/* 회원정보 입력 폼 */}
-            <RegistrationForm />
+            <RegistrationForm
+                signUpformData={signUpformData}
+                signUpvalidation={signUpvalidation}
+                signUpIsAgree={signUpIsAgree}
+                handleChange={handleChange}
+                handleAgreementChange={handleAgreementChange}
+                handleSignup={handleSignup}
+            />
         </RegistrationContainer>
     );
 };

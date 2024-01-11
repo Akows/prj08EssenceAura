@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import useSignup from '../../hooks/auth/useSignup';
+import { UseSignUpReturn } from '../../type/authtypes';
 
 const Form = styled.form`
     margin-top: 20px;
@@ -36,74 +36,83 @@ const ValidationMessage = styled.div`
     margin-top: 5px;
 `;
 
-const RegistrationForm: React.FC = () => {
-    const { formData, validation, handleChange, handleSignup } = useSignup();
-
+const RegistrationForm: React.FC<UseSignUpReturn> = ({
+    signUpformData,
+    signUpvalidation,
+    handleChange,
+    handleSignup,
+}) => {
     return (
         <Form onSubmit={handleSignup}>
             <Label htmlFor="username">이름</Label>
             <Input
                 id="username"
                 type="text"
-                value={formData.username}
+                value={signUpformData.username}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.username}</ValidationMessage>
+            <ValidationMessage>{signUpvalidation.username}</ValidationMessage>
 
             <Label htmlFor="email">이메일</Label>
             <Input
                 id="email"
                 type="text"
-                value={formData.email}
+                value={signUpformData.email}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.email}</ValidationMessage>
+            <ValidationMessage>{signUpvalidation.email}</ValidationMessage>
             <Button type="button">이메일 중복 확인</Button>
 
             <Label htmlFor="password">비밀번호</Label>
             <Input
                 id="password"
                 type="password"
-                value={formData.password}
+                value={signUpformData.password}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.password}</ValidationMessage>
+            <ValidationMessage>{signUpvalidation.password}</ValidationMessage>
 
             <Label htmlFor="confirmPassword">비밀번호 확인</Label>
             <Input
                 id="confirmPassword"
                 type="password"
-                value={formData.confirmPassword}
+                value={signUpformData.confirmPassword}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.confirmPassword}</ValidationMessage>
+            <ValidationMessage>
+                {signUpvalidation.confirmPassword}
+            </ValidationMessage>
 
             <Label htmlFor="address">주소</Label>
             <Input
                 id="address"
                 type="text"
-                value={formData.address}
+                value={signUpformData.address}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.address}</ValidationMessage>
+            <ValidationMessage>{signUpvalidation.address}</ValidationMessage>
 
             <Label htmlFor="building_name">상세주소</Label>
             <Input
                 id="building_name"
                 type="text"
-                value={formData.building_name}
+                value={signUpformData.building_name}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.building_name}</ValidationMessage>
+            <ValidationMessage>
+                {signUpvalidation.building_name}
+            </ValidationMessage>
 
             <Label htmlFor="phone_number">연락처</Label>
             <Input
                 id="phone_number"
                 type="tel"
-                value={formData.phone_number}
+                value={signUpformData.phone_number}
                 onChange={handleChange}
             />
-            <ValidationMessage>{validation.phone_number}</ValidationMessage>
+            <ValidationMessage>
+                {signUpvalidation.phone_number}
+            </ValidationMessage>
 
             <Button type="submit">회원가입</Button>
         </Form>
