@@ -74,8 +74,14 @@ const SmallButton = styled(Button)`
 `;
 
 const LoginPage: React.FC = () => {
-    const { formData, validation, handleChange, handleLogin, isSubmitting } =
-        useLogin();
+    const {
+        formData,
+        validation,
+        handleChange,
+        handleLogin,
+        handleLogout,
+        isSubmitting,
+    } = useLogin();
 
     return (
         <LoginPageContainer>
@@ -87,6 +93,7 @@ const LoginPage: React.FC = () => {
                     formData={formData}
                     handleChange={handleChange}
                     validation={validation}
+                    handleLogout={handleLogout}
                     isSubmitting={isSubmitting}
                 />
 

@@ -57,10 +57,19 @@ const login = async (req, res) => {
     const query = 'SELECT * FROM users WHERE email = ?';
     
     try {
-        const [user] = await db.query(query, [email]);
-        if (user) {
+        // db.query는 배열을 반환: [rows, fields]
+        const [rows] = await db.query(query, [email]);
+
+        // rows는 조회된 사용자 정보를 담은 배열. rows[0]은 첫 번째 사용자
+        // 이메일은 유니크한 값으로 회원가입 단계에서 중복을 허가하지 않음. 따라서 index 0이 원하는 목표 데이터
+        const user = rows[0];
+
+        // 사용자가 데이터베이스에서 발견되고, 해시된 비밀번호도 존재하는지 확인
+        if (user && user.password) {
             // 비밀번호 비교
             const isMatch = await bcrypt.compare(password, user.password);
+            
+            // 비밀번호가 일치하면..
             if (isMatch) {
                 // 액세스 토큰 생성
                 const accessToken = jwt.sign(
@@ -69,31 +78,37 @@ const login = async (req, res) => {
                     { expiresIn: '15m' } // 짧은 유효 기간
                 );
 
-                // 리프레시 토큰 생성
+                // 리프레시 토큰 생성..
                 const refreshToken = jwt.sign(
                     { id: user.id },
                     process.env.REFRESH_TOKEN_SECRET,
                     { expiresIn: '7d' } // 긴 유효 기간
                 );
 
-                // 리프레시 토큰을 데이터베이스에 저장하거나 다른 처리를 할 수 있음
+                // 리프레시 토큰을 데이터베이스에 저장하거나 다른 처리를 추가할 예정임..
+                // 예: await saveRefreshToken(user.id, refreshToken);
 
+                // 클라이언트에 토큰들을 반환
                 return res.json({
                     message: '로그인 성공',
                     accessToken,
                     refreshToken
                 });
             } else {
+                // 비밀번호가 일치하지 않으면..
                 return res.status(401).json({ message: '비밀번호가 틀립니다.' });
             }
         } else {
+            // 사용자를 찾을 수 없거나 비밀번호 필드가 없으면..
             return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
         }
     } catch (error) {
+        // 로그인 처리 중 예외 발생!
         console.error('로그인 처리 중 에러:', error);
         return res.status(500).json({ message: '서버 오류' });
     }
 };
+
 
 module.exports = {
     signup, login
