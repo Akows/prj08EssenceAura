@@ -26,12 +26,23 @@ const validateSignupData = (formData) => {
 };
 
 // 기타 유틸리티 함수
-const otherUtilityFunction = () => {
-    // 함수 내용...
+const validateLoginData  = () => {
+    const errors = {};
+
+    // 빈 값 체크
+    if (!formData.email.trim()) errors.email = '이메일을 입력하세요.';
+    if (!formData.password) errors.password = '비밀번호를 입력하세요.';
+
+    // 이메일 유효성 검사
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = '유효한 이메일 주소를 입력하세요.';
+    }
+
+    return errors;
 };
 
 // 모듈 내보내기
 module.exports = {
     validateSignupData,
-    otherUtilityFunction,
+    validateLoginData,
 };

@@ -1,8 +1,10 @@
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
-const { validateSignupData } = require('../utils/authUtils');
+const jwt = require('jsonwebtoken');
+const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 
 const signup = async (req, res) => {
+
     // 입력된 데이터의 유효성 검사
     const errors = validateSignupData(req.body);
     if (Object.keys(errors).length > 0) {
@@ -43,6 +45,42 @@ const signup = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+    // 로그인 데이터 유효성 검사
+    const errors = validateLoginData(req.body);
+    if (Object.keys(errors).length > 0) {
+        return res.status(400).json(errors);
+    }
+
+    // 입력된 이메일로 사용자 조회
+    const { email, password } = req.body;
+    const query = 'SELECT * FROM users WHERE email = ?';
+    
+    try {
+        const [user] = await db.query(query, [email]);
+        if (user) {
+            // 비밀번호 비교
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (isMatch) {
+                // JWT 생성
+                const token = jwt.sign(
+                    { id: user.id },
+                    process.env.JWT_SECRET, // .env 파일에 저장된 비밀키
+                    { expiresIn: '2h' }
+                );
+                return res.json({ message: '로그인 성공', token });
+            } else {
+                return res.status(401).json({ message: '비밀번호가 틀립니다.' });
+            }
+        } else {
+            return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('로그인 처리 중 에러:', error);
+        return res.status(500).json({ message: '서버 오류' });
+    }
+};
+
 module.exports = {
-    signup
+    signup, login
 };
