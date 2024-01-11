@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import LoginForm from '../../components/auth/LoginForm';
+import useLogin from '../../hooks/auth/useLogin';
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -72,24 +73,9 @@ const SmallButton = styled(Button)`
     }
 `;
 
-const LoginPage = () => {
-    const [loginDetails, setLoginDetails] = useState({
-        userId: '',
-        password: '',
-    });
-
-    // 입력 핸들러
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setLoginDetails({ ...loginDetails, [name]: value });
-    };
-
-    // 로그인 버튼 클릭 핸들러
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        // 로그인 로직 구현 (예: 서버에 로그인 요청)
-        alert('로그인 처리 로직을 여기에 구현합니다.');
-    };
+const LoginPage: React.FC = () => {
+    const { formData, validation, handleChange, handleLogin, isSubmitting } =
+        useLogin();
 
     return (
         <LoginPageContainer>
@@ -97,11 +83,14 @@ const LoginPage = () => {
             <LoginContainer>
                 {/* 로그인 입력 폼 */}
                 <LoginForm
-                    onLogin={handleLogin}
-                    loginDetails={loginDetails}
-                    onDetailsChange={handleChange}
+                    handleLogin={handleLogin}
+                    formData={formData}
+                    handleChange={handleChange}
+                    validation={validation}
+                    isSubmitting={isSubmitting}
                 />
 
+                {/* 회원가입, 아이디 비밀번호 찾기 버튼 */}
                 <InfoContainer>
                     <InfoText>
                         아직 회원이 아니신가요?

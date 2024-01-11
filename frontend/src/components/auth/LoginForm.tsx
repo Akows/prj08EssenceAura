@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { UseLoginReturn } from '../../type/authtypes';
 
 const Form = styled.form`
     margin-top: 20px;
@@ -41,31 +42,38 @@ const Button = styled.button`
     }
 `;
 
-const LoginForm: React.FC<{
-    onLogin: (details: { userId: string; password: string }) => void;
-    loginDetails: { userId: string; password: string };
-    onDetailsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ onLogin, loginDetails, onDetailsChange }) => {
+const LoginForm: React.FC<UseLoginReturn> = ({
+    handleLogin,
+    formData,
+    handleChange,
+    validation,
+    isSubmitting,
+}) => {
     return (
-        <LoginForms onSubmit={onLogin}>
-            <Label htmlFor="userId">아이디</Label>
+        <LoginForms onSubmit={handleLogin}>
+            <Label htmlFor="email">이메일</Label>
             <Input
-                id="userId"
-                name="userId"
-                type="text"
-                value={loginDetails.userId}
-                onChange={onDetailsChange}
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
             />
+            {validation.email && <p>{validation.email}</p>}
 
             <Label htmlFor="password">비밀번호</Label>
             <Input
                 id="password"
                 name="password"
                 type="password"
-                value={loginDetails.password}
-                onChange={onDetailsChange}
+                value={formData.password}
+                onChange={handleChange}
             />
-            <Button type="submit">로그인</Button>
+            {validation.password && <p>{validation.password}</p>}
+
+            <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? '로그인 중...' : '로그인'}
+            </Button>
         </LoginForms>
     );
 };

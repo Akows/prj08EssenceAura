@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { LoginFormData, LoginFormErrors } from '../../type/authtypes';
+import {
+    LoginFormData,
+    LoginFormErrors,
+    UseLoginReturn,
+} from '../../type/authtypes';
 import { validateLoginForm } from '../../utils/auth';
 
-const useLogin = () => {
+const useLogin = (): UseLoginReturn => {
     const [formData, setFormData] = useState<LoginFormData>({
         email: '',
         password: '',

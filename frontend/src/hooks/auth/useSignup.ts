@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { FormData, FormErrors } from '../../type/types';
+import { SignUpFormData, SignUpFormErrors } from '../../type/authtypes';
 import { validateSignupForm } from '../../utils/auth';
 
 const useSignup = () => {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<SignUpFormData>({
         username: '',
         email: '',
         password: '',
@@ -12,7 +12,7 @@ const useSignup = () => {
         building_name: '',
         phone_number: '',
     });
-    const [validation, setValidation] = useState<FormErrors>({});
+    const [validation, setValidation] = useState<SignUpFormErrors>({});
     const [isAgreed, setIsAgreed] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
