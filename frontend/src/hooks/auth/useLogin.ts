@@ -39,6 +39,7 @@ const useLogin = (): UseLoginReturn => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
+                        credentials: 'include', // 쿠키를 포함시키기 위한 설정
                         body: JSON.stringify({
                             email: formData.email,
                             password: formData.password,
@@ -48,10 +49,6 @@ const useLogin = (): UseLoginReturn => {
 
                 const data = await response.json();
                 if (response.ok) {
-                    // 액세스 토큰과 리프레시 토큰을 로컬 스토리지에 저장
-                    localStorage.setItem('accessToken', data.accessToken);
-                    localStorage.setItem('refreshToken', data.refreshToken);
-
                     // Redux 스토어에 로그인 성공 상태 업데이트
                     dispatch(loginSuccess(data.userInfo));
 
@@ -72,12 +69,21 @@ const useLogin = (): UseLoginReturn => {
         setIsSubmitting(false);
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-
-        // Redux 스토어에 로그아웃 상태 업데이트
-        dispatch(logout());
+    const handleLogout = async () => {
+        try {
+            // 서버로 로그아웃 요청 보냄
+            const response = await fetch('http://localhost:3001/api/logout', {
+                method: 'POST',
+                credentials: 'include', // 쿠키를 포함시키기 위한 설정
+            });
+            if (response.ok) {
+                // Redux 스토어의 로그아웃 상태 업데이트
+                dispatch(logout());
+                alert('로그아웃 되었습니다.');
+            }
+        } catch (error) {
+            console.error('로그아웃 중 오류 발생:', error);
+        }
     };
 
     return {
