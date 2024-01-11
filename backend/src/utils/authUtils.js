@@ -25,8 +25,8 @@ const validateSignupData = (formData) => {
     return errors;
 };
 
-// 기타 유틸리티 함수
-const validateLoginData  = () => {
+// 사용자 로그인 유효성 검사
+const validateLoginData = (formData) => {
     const errors = {};
 
     // 빈 값 체크
