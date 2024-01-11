@@ -82,11 +82,19 @@ const login = async (req, res) => {
                 // 리프레시 토큰을 데이터베이스에 저장
                 await saveRefreshToken(user.user_id, refreshToken);
 
+                // 리프레시 토큰을 httpOnly 쿠키로 클라이언트에 전달
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production', // 실제 운영 환경에서만 secure 쿠키 설정
+                    sameSite: 'strict', // CSRF 공격 방지
+                    path: '/', // 이 경로로 설정된 요청에 대해서만 쿠키를 포함해서 보냄
+                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 쿠키 만료 기간 설정
+                });
+
                 // 클라이언트에 토큰들을 반환
                 return res.json({
                     message: '로그인 성공',
                     accessToken,
-                    refreshToken
                 });
             } else {
                 // 비밀번호가 일치하지 않으면..
@@ -134,7 +142,10 @@ const refreshTokenHandler = async (req, res) => {
 };
 
 const logoutHandler = async (req, res) => {
-    const userId = req.user.id;
+
+    console.log(req.user);
+
+    const userId = req.user.user_id;
   
     try {
       await invalidateRefreshToken(userId);
