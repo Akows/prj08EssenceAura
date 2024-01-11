@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import RegistrationForm from '../../components/auth/RegistrationForm';
-import { FormData, RegistrationFormProps } from '../../type/types';
+import useSignup from '../../hooks/auth/useSignup';
 
 const RegistrationContainer = styled.div`
     width: 100%;
@@ -24,49 +24,8 @@ const Checkbox = styled.input`
     margin-right: 10px;
 `;
 
-const RegistrationPage: React.FC<RegistrationFormProps> = () => {
-    const [isAgreed, setIsAgreed] = useState(false);
-
-    const handleAgreementChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        setIsAgreed(event.target.checked);
-    };
-
-    const handleSignup = async (formData: FormData) => {
-        if (!isAgreed) {
-            alert('이용 약관에 동의해야 회원가입이 가능합니다.');
-            return;
-        }
-
-        // 백엔드 서버의 주소와 포트 번호를 포함한 URL
-        const backendUrl = 'http://localhost:3001/api/signup';
-
-        try {
-            const response = await fetch(backendUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                // 회원가입 성공 후 처리
-                console.log(result);
-                alert('회원가입이 완료되었습니다.');
-            } else {
-                // 서버 에러 응답 처리
-                const errorResult = await response.json();
-                alert(errorResult.message);
-            }
-        } catch (error) {
-            // 네트워크 에러 또는 요청 취소 등의 에러 처리
-            console.error('회원가입 요청 중 오류 발생:', error);
-            alert('회원가입 중 오류가 발생했습니다.');
-        }
-    };
+const RegistrationPage: React.FC = () => {
+    const { handleAgreementChange } = useSignup();
 
     return (
         <RegistrationContainer>
@@ -83,7 +42,7 @@ const RegistrationPage: React.FC<RegistrationFormProps> = () => {
             </CheckboxLabel>
 
             {/* 회원정보 입력 폼 */}
-            <RegistrationForm onSignup={handleSignup} />
+            <RegistrationForm />
         </RegistrationContainer>
     );
 };

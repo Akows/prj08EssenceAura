@@ -9,11 +9,6 @@ export interface FormData {
     phone_number: string;
 }
 
-// 회원가입 함수
-export interface RegistrationFormProps {
-    onSignup: (formData: FormData) => void;
-}
-
 // 회원가입 유효성 검사
 export interface FormErrors {
     email?: string;

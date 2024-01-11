@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { FormData, FormErrors, RegistrationFormProps } from '../../type/types';
-import { validateSignupForm } from '../../utils/auth';
+import useSignup from '../../hooks/auth/useSignup';
 
 const Form = styled.form`
     margin-top: 20px;
@@ -37,40 +36,11 @@ const ValidationMessage = styled.div`
     margin-top: 5px;
 `;
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSignup }) => {
-    const [formData, setFormData] = useState<FormData>({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '', // 유효성 검사용, 데이터베이스에는 저장되지 않음
-        address: '',
-        building_name: '',
-        phone_number: '',
-    });
-
-    // 유효성 검사 결과를 받아와서 저장하는 useState
-    const [validation, setValidation] = useState<FormErrors>({});
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.id]: e.target.value,
-        });
-    };
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const errors = validateSignupForm(formData);
-
-        if (Object.keys(errors).length === 0) {
-            onSignup(formData);
-        } else {
-            setValidation(errors);
-        }
-    };
+const RegistrationForm: React.FC = () => {
+    const { formData, validation, handleChange, handleSignup } = useSignup();
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSignup}>
             <Label htmlFor="username">이름</Label>
             <Input
                 id="username"
