@@ -2,6 +2,8 @@ const db = require('../config/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
+const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
+const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
 
 const signup = async (req, res) => {
 
@@ -46,6 +48,7 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
+
     // 로그인 데이터 유효성 검사
     const errors = validateLoginData(req.body);
     if (Object.keys(errors).length > 0) {
@@ -71,22 +74,13 @@ const login = async (req, res) => {
             
             // 비밀번호가 일치하면..
             if (isMatch) {
-                // 액세스 토큰 생성
-                const accessToken = jwt.sign(
-                    { id: user.id },
-                    process.env.JWT_SECRET,
-                    { expiresIn: '15m' } // 짧은 유효 기간
-                );
 
-                // 리프레시 토큰 생성..
-                const refreshToken = jwt.sign(
-                    { id: user.id },
-                    process.env.REFRESH_TOKEN_SECRET,
-                    { expiresIn: '7d' } // 긴 유효 기간
-                );
+                // 액세스 토큰과 리프래시 토큰 생성
+                const accessToken = generateAccessToken(user);
+                const refreshToken = generateRefreshToken(user);
 
-                // 리프레시 토큰을 데이터베이스에 저장하거나 다른 처리를 추가할 예정임..
-                // 예: await saveRefreshToken(user.id, refreshToken);
+                // 리프레시 토큰을 데이터베이스에 저장
+                await saveRefreshToken(user.user_id, refreshToken);
 
                 // 클라이언트에 토큰들을 반환
                 return res.json({
@@ -109,7 +103,48 @@ const login = async (req, res) => {
     }
 };
 
+// 리프레시 토큰을 기반으로 액세스 토큰을 재발급하는 기능
+const refreshTokenHandler = async (req, res) => {
+    const refreshToken = req.body.token;
+  
+    if (!refreshToken) {
+      return res.status(401).json({ message: '리프레시 토큰이 필요합니다.' });
+    }
+  
+    try {
+      const isValid = await verifyRefreshTokenInDatabase(refreshToken);
+      if (!isValid) {
+        return res.status(403).json({ message: '유효하지 않은 리프레시 토큰입니다.' });
+      }
+  
+      // 리프레시 토큰에 저장된 사용자 정보를 추출합니다 (예: 사용자 ID)
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) {
+          return res.status(403).json({ message: '리프레시 토큰이 만료되었거나 유효하지 않습니다.' });
+        }
+  
+        // 새로운 액세스 토큰 생성
+        const newAccessToken = generateAccessToken({ id: user.id });
+        res.json({ accessToken: newAccessToken });
+      });
+    } catch (error) {
+      console.error('리프레시 토큰 처리 중 오류 발생:', error);
+      res.status(500).json({ message: '서버 오류' });
+    }
+};
+
+const logoutHandler = async (req, res) => {
+    const userId = req.user.id;
+  
+    try {
+      await invalidateRefreshToken(userId);
+      res.json({ message: '로그아웃 되었습니다.' });
+    } catch (error) {
+      console.error('로그아웃 처리 중 오류:', error);
+      res.status(500).json({ message: '서버 오류' });
+    }
+};
 
 module.exports = {
-    signup, login
+    signup, login, refreshTokenHandler, logoutHandler
 };

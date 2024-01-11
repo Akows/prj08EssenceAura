@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const jwt = require('jsonwebtoken');
 
 // 데이터베이스에서 제공된 리프래시 토큰의 유효성을 확인
 async function verifyRefreshTokenInDatabase(token) {
