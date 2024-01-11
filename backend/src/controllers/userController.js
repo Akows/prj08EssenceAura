@@ -13,8 +13,6 @@ const signup = async (req, res) => {
     try {
         const { username, email, password, address, building_name, phone_number } = req.body;
 
-        console.log('회원가입 절차 진행중..');
-        
         // password 필드에 직접 평문 비밀번호를 저장하는 것은 보안상 좋지 않다
         // 따라서 비밀번호는 해싱하여 저장
         const hashedPassword = await bcrypt.hash(password, 10);

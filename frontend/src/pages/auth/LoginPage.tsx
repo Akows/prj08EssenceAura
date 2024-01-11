@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import LoginForm from '../../components/auth/LoginForm';
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -13,22 +14,6 @@ const LoginPageContainer = styled.div`
 const Title = styled.h1`
     text-align: center;
     margin-bottom: 40px;
-`;
-
-const Form = styled.form`
-    margin-top: 20px;
-`;
-
-const Label = styled.label`
-    display: block;
-    margin-top: 15px;
-`;
-
-const Input = styled.input`
-    width: calc(100% - 20px); // 오른쪽 끝과 여백을 만들기 위해 너비를 조정
-    padding: 8px;
-    margin-top: 5px;
-    margin-right: 10px; // 오른쪽 여백 추가
 `;
 
 const Button = styled.button`
@@ -56,16 +41,6 @@ const LoginContainer = styled.div`
         flex-direction: column;
         justify-items: center;
         align-items: center;
-    }
-`;
-
-const LoginForm = styled(Form)`
-    width: 50%; // 데스크톱 뷰에서는 폼이 전체 너비의 50%를 차지합니다.
-    padding: 20px;
-
-    @media (max-width: 768px) {
-        width: 90%; // 모바일 뷰에서는 폼이 전체 너비를 차지합니다.
-        padding: 20px 0;
     }
 `;
 
@@ -120,26 +95,12 @@ const LoginPage = () => {
         <LoginPageContainer>
             <Title>로그인</Title>
             <LoginContainer>
-                <LoginForm onSubmit={handleLogin}>
-                    <Label htmlFor="userId">아이디</Label>
-                    <Input
-                        id="userId"
-                        name="userId"
-                        type="text"
-                        value={loginDetails.userId}
-                        onChange={handleChange}
-                    />
-
-                    <Label htmlFor="password">비밀번호</Label>
-                    <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={loginDetails.password}
-                        onChange={handleChange}
-                    />
-                    <Button type="submit">로그인</Button>
-                </LoginForm>
+                {/* 로그인 입력 폼 */}
+                <LoginForm
+                    onLogin={handleLogin}
+                    loginDetails={loginDetails}
+                    onDetailsChange={handleChange}
+                />
 
                 <InfoContainer>
                     <InfoText>
