@@ -38,5 +38,6 @@ export interface UseLoginReturn {
     validation: LoginFormErrors;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleLogin: (event: React.FormEvent<HTMLFormElement>) => void;
+    handleLogout: () => void;
     isSubmitting: boolean;
 }

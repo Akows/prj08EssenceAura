@@ -62,13 +62,27 @@ const login = async (req, res) => {
             // 비밀번호 비교
             const isMatch = await bcrypt.compare(password, user.password);
             if (isMatch) {
-                // JWT 생성
-                const token = jwt.sign(
+                // 액세스 토큰 생성
+                const accessToken = jwt.sign(
                     { id: user.id },
-                    process.env.JWT_SECRET, // .env 파일에 저장된 비밀키
-                    { expiresIn: '2h' }
+                    process.env.JWT_SECRET,
+                    { expiresIn: '15m' } // 짧은 유효 기간
                 );
-                return res.json({ message: '로그인 성공', token });
+
+                // 리프레시 토큰 생성
+                const refreshToken = jwt.sign(
+                    { id: user.id },
+                    process.env.REFRESH_TOKEN_SECRET,
+                    { expiresIn: '7d' } // 긴 유효 기간
+                );
+
+                // 리프레시 토큰을 데이터베이스에 저장하거나 다른 처리를 할 수 있음
+
+                return res.json({
+                    message: '로그인 성공',
+                    accessToken,
+                    refreshToken
+                });
             } else {
                 return res.status(401).json({ message: '비밀번호가 틀립니다.' });
             }

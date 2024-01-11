@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { loginSuccess, logout } from '../../redux/slices/userSlice';
 import {
     LoginFormData,
     LoginFormErrors,
@@ -7,6 +9,8 @@ import {
 import { validateLoginForm } from '../../utils/auth';
 
 const useLogin = (): UseLoginReturn => {
+    const dispatch = useDispatch();
+
     const [formData, setFormData] = useState<LoginFormData>({
         email: '',
         password: '',
@@ -44,11 +48,17 @@ const useLogin = (): UseLoginReturn => {
 
                 const data = await response.json();
                 if (response.ok) {
-                    console.log(data);
-                    // 로그인 성공 후 로직 구현 해야함, JWT 저장 등
+                    // 액세스 토큰과 리프레시 토큰을 로컬 스토리지에 저장
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+
+                    // Redux 스토어에 로그인 성공 상태 업데이트
+                    dispatch(loginSuccess(data.userInfo));
+
+                    // 로그인 성공 후 로직 구현 해야함..
                     alert('로그인에 성공했습니다.');
                 } else {
-                    // 에러 발생시 동작할 로직 구현 해야함.
+                    // 에러 발생시 동작할 로직 구현 해야함..
                     alert(data.message);
                 }
             } catch (error) {
@@ -62,11 +72,20 @@ const useLogin = (): UseLoginReturn => {
         setIsSubmitting(false);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        // Redux 스토어에 로그아웃 상태 업데이트
+        dispatch(logout());
+    };
+
     return {
         formData,
         validation,
         handleChange,
         handleLogin,
+        handleLogout,
         isSubmitting,
     };
 };
