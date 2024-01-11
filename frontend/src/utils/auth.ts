@@ -1,4 +1,9 @@
-import { FormData, FormErrors } from '../type/types';
+import {
+    LoginFormData,
+    LoginFormErrors,
+    SignUpFormData,
+    SignUpFormErrors,
+} from '../type/authtypes';
 
 // 토큰 유효성 검증, 제거 등의 함수 구현
 // export const saveToken = (token) => {
@@ -10,8 +15,10 @@ import { FormData, FormErrors } from '../type/types';
 // };
 
 // 회원가입 유효성 검사
-export const validateSignupForm = (formData: FormData): FormErrors => {
-    const errors: FormErrors = {};
+export const validateSignupForm = (
+    formData: SignUpFormData
+): SignUpFormErrors => {
+    const errors: SignUpFormErrors = {};
 
     // 빈 값 체크
     if (!formData.username) {
@@ -49,6 +56,26 @@ export const validateSignupForm = (formData: FormData): FormErrors => {
     // 비밀번호 일치 검사
     if (formData.password !== formData.confirmPassword) {
         errors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+    }
+
+    return errors;
+};
+
+// 로그인 유효성 검사
+export const validateLoginForm = (formData: LoginFormData): LoginFormErrors => {
+    const errors: LoginFormErrors = {};
+
+    // 빈 값 체크
+    if (!formData.email) {
+        errors.email = '이메일을 입력하세요.';
+    }
+    if (!formData.password) {
+        errors.password = '비밀번호를 입력하세요.';
+    }
+
+    // 이메일 유효성 검사
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = '유효한 이메일 주소를 입력하세요.';
     }
 
     return errors;
