@@ -57,8 +57,8 @@ async function createUser(userData) {
     }
 }
 
-async function validateUserPassword(email, password) {
-    const user = await getUserByEmail(email);
+async function validateUserPassword(email, password, isAdmin) {
+    const user = await getUserByEmail(email, isAdmin);
     if (!user) {
         return false;
     }

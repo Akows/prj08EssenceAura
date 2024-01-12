@@ -29,14 +29,16 @@ const loginHandler = async (req, res) => {
 
     try {
         const { email, password, isAdmin } = req.body;
-        const user = await validateUserPassword(email, password);
+        const user = await validateUserPassword(email, password, isAdmin);
 
         if (!user) {
             return res.status(401).json({ message: '비밀번호가 틀립니다.' });
         }
 
-        const accessToken = generateAccessToken({ id: user.id, isAdmin });
-        const refreshToken = generateRefreshToken({ id: user.id, isAdmin });
+        // 관리자인지 여부에 따라 올바른 ID 필드 사용
+        const userId = isAdmin ? user.admin_id : user.user_id;
+        const accessToken = generateAccessToken({ id: userId, isAdmin });
+        const refreshToken = generateRefreshToken({ id: userId, isAdmin });
 
         await saveRefreshToken(user.id, refreshToken, isAdmin);
 

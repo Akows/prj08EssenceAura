@@ -32,6 +32,8 @@ function generateAccessToken({id, isAdmin}) {
 
     const claims = { id, isAdmin };
 
+    console.log(claims);
+
     // 토큰 생성
     const token = jwt.sign(claims, process.env.JWT_SECRET, { expiresIn: '15m' });
     
@@ -48,6 +50,8 @@ function generateRefreshToken({id, isAdmin}) {
     }
 
     const claims = { id, isAdmin };
+
+    console.log(claims);
 
     const token = jwt.sign(claims, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     
