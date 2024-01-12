@@ -12,9 +12,6 @@ const saveRefreshToken = async (userId, refreshToken, isAdmin) => {
 
 // 리프레시 토큰 무효화 함수
 const invalidateRefreshToken = async (userId, isAdmin) => {
-
-  console.log(userId, isAdmin);
-
   // isAdmin에 따라 user_id 또는 admin_id 컬럼을 사용하여 토큰을 삭제
   const column = isAdmin ? 'admin_id' : 'user_id';
   await db.query(`DELETE FROM refresh_tokens WHERE ${column} = ?`, [userId]);
