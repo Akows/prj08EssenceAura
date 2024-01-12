@@ -10,6 +10,7 @@ const saveRefreshToken = async (userId, refreshToken, isAdmin) => {
                  [userId, refreshToken, expiresAt]);
 };
 
+// 리프레시 토큰 무효화 함수
 const invalidateRefreshToken = async (userId, isAdmin) => {
   // isAdmin에 따라 user_id 또는 admin_id 컬럼을 사용하여 토큰을 삭제
   const column = isAdmin ? 'admin_id' : 'user_id';

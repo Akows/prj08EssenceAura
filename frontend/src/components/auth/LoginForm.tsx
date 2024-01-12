@@ -52,7 +52,6 @@ const LoginForm: React.FC<UseLoginReturn> = ({
     formData,
     handleChange,
     validation,
-    handleLogout,
     isSubmitting,
 }) => {
     return (
@@ -93,8 +92,6 @@ const LoginForm: React.FC<UseLoginReturn> = ({
                     {isSubmitting ? '로그인 중...' : '로그인'}
                 </Button>
             </LoginForms>
-
-            <Button onClick={handleLogout}>임시로그아웃</Button>
         </>
     );
 };

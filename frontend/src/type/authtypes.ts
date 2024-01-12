@@ -49,6 +49,9 @@ export interface UseLoginReturn {
     validation: LoginFormErrors;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleLogin: (event: React.FormEvent<HTMLFormElement>) => void;
-    handleLogout: () => void;
     isSubmitting: boolean;
+}
+// 로그아웃 커스텀 훅의 타입
+export interface UseLogoutReturn {
+    handleLogout: () => void;
 }

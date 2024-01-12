@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FaBars, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import { useChangeTheme } from '../../hooks/useChangeTheme';
 import { useChangeLanguage } from '../../hooks/useChangeLanguage';
@@ -9,6 +9,7 @@ import { useStoredSettings } from '../../hooks/useStoredSettings';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useMenuState } from '../../hooks/useMenuState';
+import useLogout from '../../hooks/auth/useLogout';
 
 const NavigationContainer = styled.nav`
     background-color: #333;
@@ -231,6 +232,8 @@ const ShopNavigation: React.FC = () => {
     //     (state: RootState) => state.user.userInfo?.userType
     // );
 
+    const handleLogout = useLogout(); // 로그아웃 훅 사용
+
     return (
         <NavigationContainer>
             {/* 로고 및 네비게이션 링크 */}
@@ -267,12 +270,17 @@ const ShopNavigation: React.FC = () => {
                         </LoginButton>
                     )} */}
 
-                    {!isLoggedIn ? (
-                        <LoginButton to="/login">
-                            <FaUserCircle size={24} />
-                        </LoginButton>
+                    {isLoggedIn ? (
+                        <>
+                            <LoginButton to="/user">
+                                <FaUserCircle size={24} />
+                            </LoginButton>
+                            <div onClick={handleLogout}>
+                                <FaSignOutAlt size={24} />
+                            </div>
+                        </>
                     ) : (
-                        <LoginButton to="/user">
+                        <LoginButton to="/login">
                             <FaUserCircle size={24} />
                         </LoginButton>
                     )}
@@ -359,12 +367,17 @@ const ShopNavigation: React.FC = () => {
                                 </LoginButton>
                             )} */}
 
-                            {!isLoggedIn ? (
-                                <LoginButton to="/login">
-                                    <FaUserCircle size={24} />
-                                </LoginButton>
+                            {isLoggedIn ? (
+                                <>
+                                    <LoginButton to="/user">
+                                        <FaUserCircle size={24} />
+                                    </LoginButton>
+                                    <div onClick={handleLogout}>
+                                        <FaSignOutAlt size={24} />
+                                    </div>
+                                </>
                             ) : (
-                                <LoginButton to="/user">
+                                <LoginButton to="/login">
                                     <FaUserCircle size={24} />
                                 </LoginButton>
                             )}

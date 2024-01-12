@@ -157,12 +157,16 @@ const refreshTokenHandler = async (req, res) => {
     }
 };
 
+// 로그아웃 핸들러
 const logoutHandler = async (req, res) => {
-    const userId = req.user.user_id;
-
     try {
+        const refreshToken = req.cookies['refreshToken'];
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const userId = decoded.user_id;
+        const isAdmin = decoded.isAdmin;
+
         res.cookie('refreshToken', '', { expires: new Date(0) });
-        await invalidateRefreshToken(userId);
+        await invalidateRefreshToken(userId, isAdmin);
         res.json({ message: '로그아웃 되었습니다.' });
     } catch (error) {
         console.error('로그아웃 처리 중 오류:', error);
