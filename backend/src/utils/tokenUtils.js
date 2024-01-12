@@ -17,12 +17,12 @@ async function verifyRefreshTokenInDatabase(token) {
 
 // 액세스 토큰 생성 함수
 function generateAccessToken(user) {
-    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    return jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 }
 
 // 리프래시 토큰 생성 함수
 function generateRefreshToken(user) {
-    return jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    return jwt.sign({ user_id: user.user_id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 }
 
 // 모듈 내보내기

@@ -49,6 +49,8 @@ const useLogin = (): UseLoginReturn => {
 
                 const data = await response.json();
                 if (response.ok) {
+                    console.log(data);
+
                     // Redux 스토어에 로그인 성공 상태 업데이트
                     dispatch(loginSuccess(data.userInfo));
 

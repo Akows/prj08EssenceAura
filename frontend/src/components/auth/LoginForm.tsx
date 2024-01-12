@@ -51,33 +51,35 @@ const LoginForm: React.FC<UseLoginReturn> = ({
     isSubmitting,
 }) => {
     return (
-        <LoginForms onSubmit={handleLogin}>
-            <Label htmlFor="email">이메일</Label>
-            <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-            />
-            {validation.email && <p>{validation.email}</p>}
+        <>
+            <LoginForms onSubmit={handleLogin}>
+                <Label htmlFor="email">이메일</Label>
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                {validation.email && <p>{validation.email}</p>}
 
-            <Label htmlFor="password">비밀번호</Label>
-            <Input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-            />
-            {validation.password && <p>{validation.password}</p>}
+                <Label htmlFor="password">비밀번호</Label>
+                <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+                {validation.password && <p>{validation.password}</p>}
 
-            <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? '로그인 중...' : '로그인'}
-            </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? '로그인 중...' : '로그인'}
+                </Button>
+            </LoginForms>
 
             <Button onClick={handleLogout}>임시로그아웃</Button>
-        </LoginForms>
+        </>
     );
 };
 

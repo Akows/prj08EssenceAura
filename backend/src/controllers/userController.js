@@ -142,17 +142,15 @@ const refreshTokenHandler = async (req, res) => {
 };
 
 const logoutHandler = async (req, res) => {
-
-    console.log(req.user);
-
     const userId = req.user.user_id;
-  
+
     try {
-      await invalidateRefreshToken(userId);
-      res.json({ message: '로그아웃 되었습니다.' });
+        res.cookie('refreshToken', '', { expires: new Date(0) });
+        await invalidateRefreshToken(userId);
+        res.json({ message: '로그아웃 되었습니다.' });
     } catch (error) {
-      console.error('로그아웃 처리 중 오류:', error);
-      res.status(500).json({ message: '서버 오류' });
+        console.error('로그아웃 처리 중 오류:', error);
+        res.status(500).json({ message: '서버 오류' });
     }
 };
 
