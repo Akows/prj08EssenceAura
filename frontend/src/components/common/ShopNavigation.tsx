@@ -28,11 +28,18 @@ const NavigationContainer = styled.nav`
 
 const IconWrapper = styled.div`
     display: flex;
-    align-items: center; // 아이콘들을 세로 중앙 정렬
-    margin-right: 20px; // 아이콘들 사이에 오른쪽 여백 추가
+    align-items: center;
+    flex-direction: row; // 아이콘들을 가로로 정렬
+    justify-content: flex-start; // 아이콘들을 왼쪽 정렬 또는 공간 분배 조정
+    margin-right: 10px;
 
     &:last-child {
         margin-right: 0; // 마지막 아이콘은 오른쪽 여백 없음
+    }
+
+    & > div {
+        margin-left: 10px;
+        margin-top: 5px;
     }
 `;
 
@@ -228,9 +235,9 @@ const ShopNavigation: React.FC = () => {
 
     // Redux 스토어에서 로그인 상태 가져오기
     const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-    // const userType = useSelector(
-    //     (state: RootState) => state.user.userInfo?.userType
-    // );
+    const isAdmin = useSelector(
+        (state: RootState) => state.auth.userInfo?.isAdmin
+    );
 
     const handleLogout = useLogout(); // 로그아웃 훅 사용
 
@@ -256,23 +263,9 @@ const ShopNavigation: React.FC = () => {
             <IconsContainer>
                 <IconWrapper>
                     {/* 로그인 상태에 따라 다른 경로로 이동 */}
-                    {/* {!isLoggedIn ? (
-                        <LoginButton to="/login">
-                            <FaUserCircle size={24} />
-                        </LoginButton>
-                    ) : userType === 'admin' ? (
-                        <LoginButton to="/admin">
-                            <FaUserCircle size={24} />
-                        </LoginButton>
-                    ) : (
-                        <LoginButton to="/user">
-                            <FaUserCircle size={24} />
-                        </LoginButton>
-                    )} */}
-
                     {isLoggedIn ? (
                         <>
-                            <LoginButton to="/user">
+                            <LoginButton to={isAdmin ? '/admin' : '/user'}>
                                 <FaUserCircle size={24} />
                             </LoginButton>
                             <div onClick={handleLogout}>
@@ -353,23 +346,11 @@ const ShopNavigation: React.FC = () => {
                         {/* 아이콘들을 감싸는 행 */}
                         <IconContainer>
                             {/* 로그인 상태에 따라 다른 경로로 이동 */}
-                            {/* {!isLoggedIn ? (
-                                <LoginButton to="/login">
-                                    <FaUserCircle size={24} />
-                                </LoginButton>
-                            ) : userType === 'admin' ? (
-                                <LoginButton to="/admin">
-                                    <FaUserCircle size={24} />
-                                </LoginButton>
-                            ) : (
-                                <LoginButton to="/user">
-                                    <FaUserCircle size={24} />
-                                </LoginButton>
-                            )} */}
-
                             {isLoggedIn ? (
                                 <>
-                                    <LoginButton to="/user">
+                                    <LoginButton
+                                        to={isAdmin ? '/admin' : '/user'}
+                                    >
                                         <FaUserCircle size={24} />
                                     </LoginButton>
                                     <div onClick={handleLogout}>
