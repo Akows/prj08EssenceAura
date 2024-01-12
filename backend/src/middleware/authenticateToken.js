@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // 액세스 토큰 검증 미들웨어
-const authenticateToken = (req, res, next) => {
+const authenticateAccessToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // "Bearer TOKEN" 형식에서 토큰 추출
 
@@ -22,7 +22,26 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// 로그아웃을 위한 인증 미들웨어
+const authenticateRefreshToken = (req, res, next) => {
+  const refreshToken = req.cookies['refreshToken']; // 쿠키에서 리프레시 토큰 추출
+
+  if (!refreshToken) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+
+    req.user = user;
+    next();
+  });
+};
+
 // 내보내기
 module.exports = {
-    authenticateToken
+  authenticateAccessToken,
+  authenticateRefreshToken
 };

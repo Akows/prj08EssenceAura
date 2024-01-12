@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const userRoutes = require('./routes/userRoutes');
+const cookieParser = require('cookie-parser');
 const app = express();
+const userRoutes = require('./routes/userRoutes');
 
 // CORS 미들웨어 설정
 const corsOptions = {
@@ -13,6 +14,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 
 // 사용자 라우트 추가
 app.use('/api', userRoutes);
