@@ -55,9 +55,15 @@ const login = async (req, res) => {
         return res.status(400).json(errors);
     }
 
-    // 입력된 이메일로 사용자 조회
-    const { email, password } = req.body;
-    const query = 'SELECT * FROM users WHERE email = ?';
+    // 클라이언트로부터 받은 데이터
+    const { email, password, isAdmin } = req.body;
+
+    // 관리자 로그인인지 여부에 따라 테이블과 컬럼을 선택
+    const userTable = isAdmin ? 'admins' : 'users';
+    const userIdField = isAdmin ? 'admin_id' : 'user_id';
+
+    // 올바른 테이블을 사용하기 위해 쿼리 업데이트
+    const query = `SELECT * FROM ${userTable} WHERE email = ?`;
     
     try {
         // db.query는 배열을 반환: [rows, fields]
@@ -76,11 +82,11 @@ const login = async (req, res) => {
             if (isMatch) {
 
                 // 액세스 토큰과 리프래시 토큰 생성
-                const accessToken = generateAccessToken(user);
-                const refreshToken = generateRefreshToken(user);
+                const accessToken = generateAccessToken({ id: user[userIdField], isAdmin });
+                const refreshToken = generateRefreshToken({ id: user[userIdField], isAdmin });
 
                 // 리프레시 토큰을 데이터베이스에 저장
-                await saveRefreshToken(user.user_id, refreshToken);
+                await saveRefreshToken(user[userIdField], refreshToken);
 
                 // 리프레시 토큰을 httpOnly 쿠키로 클라이언트에 전달
                 res.cookie('refreshToken', refreshToken, {
@@ -96,9 +102,10 @@ const login = async (req, res) => {
                     message: '로그인 성공',
                     accessToken,
                     userInfo: {
-                        id: user.id,
+                        id: user[userIdField],
                         email: user.email,
-                        username: user.username
+                        username: user.username,
+                        isAdmin // 관리자 여부도 함께 전달
                         // 추가적인 필요한 사용자 정보 필드 (비밀번호나 민감한 정보 제외)
                     },
                 });
@@ -120,30 +127,33 @@ const login = async (req, res) => {
 // 리프레시 토큰을 기반으로 액세스 토큰을 재발급하는 기능
 const refreshTokenHandler = async (req, res) => {
     const refreshToken = req.body.token;
-  
+
     if (!refreshToken) {
-      return res.status(401).json({ message: '리프레시 토큰이 필요합니다.' });
+        return res.status(401).json({ message: '리프레시 토큰이 필요합니다.' });
     }
-  
+
     try {
-      const isValid = await verifyRefreshTokenInDatabase(refreshToken);
-      if (!isValid) {
-        return res.status(403).json({ message: '유효하지 않은 리프레시 토큰입니다.' });
-      }
-  
-      // 리프레시 토큰에 저장된 사용자 정보를 추출합니다 (예: 사용자 ID)
-      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) {
-          return res.status(403).json({ message: '리프레시 토큰이 만료되었거나 유효하지 않습니다.' });
+        const isValid = await verifyRefreshTokenInDatabase(refreshToken);
+        if (!isValid) {
+            return res.status(403).json({ message: '유효하지 않은 리프레시 토큰입니다.' });
         }
-  
-        // 새로운 액세스 토큰 생성
-        const newAccessToken = generateAccessToken({ id: user.id });
-        res.json({ accessToken: newAccessToken });
-      });
+
+        // 리프레시 토큰에 저장된 사용자 정보를 추출합니다 (예: 사용자 ID와 관리자 여부)
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+            if (err) {
+                return res.status(403).json({ message: '리프레시 토큰이 만료되었거나 유효하지 않습니다.' });
+            }
+
+            // 새로운 액세스 토큰 생성
+            const newAccessToken = generateAccessToken({
+                id: user.id,
+                isAdmin: user.isAdmin
+            });
+            res.json({ accessToken: newAccessToken });
+        });
     } catch (error) {
-      console.error('리프레시 토큰 처리 중 오류 발생:', error);
-      res.status(500).json({ message: '서버 오류' });
+        console.error('리프레시 토큰 처리 중 오류 발생:', error);
+        res.status(500).json({ message: '서버 오류' });
     }
 };
 

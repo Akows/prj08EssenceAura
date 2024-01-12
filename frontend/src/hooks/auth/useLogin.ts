@@ -14,15 +14,25 @@ const useLogin = (): UseLoginReturn => {
     const [formData, setFormData] = useState<LoginFormData>({
         email: '',
         password: '',
+        isAdmin: false,
     });
     const [validation, setValidation] = useState<LoginFormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value, type, checked } = e.target;
+
+        if (type === 'checkbox') {
+            setFormData({
+                ...formData,
+                [name]: checked, // 체크박스의 경우 checked 값을 사용
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value, // 기타 입력 필드의 경우 value 값을 사용
+            });
+        }
     };
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,6 +53,7 @@ const useLogin = (): UseLoginReturn => {
                         body: JSON.stringify({
                             email: formData.email,
                             password: formData.password,
+                            isAdmin: formData.isAdmin,
                         }),
                     }
                 );

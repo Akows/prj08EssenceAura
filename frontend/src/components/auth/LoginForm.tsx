@@ -42,6 +42,11 @@ const Button = styled.button`
     }
 `;
 
+const CheckboxLabel = styled.label`
+    display: block;
+    margin-top: 15px;
+`;
+
 const LoginForm: React.FC<UseLoginReturn> = ({
     handleLogin,
     formData,
@@ -72,6 +77,17 @@ const LoginForm: React.FC<UseLoginReturn> = ({
                     onChange={handleChange}
                 />
                 {validation.password && <p>{validation.password}</p>}
+
+                <CheckboxLabel>
+                    <input
+                        id="isAdmin"
+                        name="isAdmin"
+                        type="checkbox"
+                        checked={formData.isAdmin}
+                        onChange={handleChange}
+                    />
+                    관리자 로그인
+                </CheckboxLabel>
 
                 <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? '로그인 중...' : '로그인'}

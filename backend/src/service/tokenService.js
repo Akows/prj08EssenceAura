@@ -1,21 +1,25 @@
 const db = require('../config/database');
 
-const saveRefreshToken = async (userId, refreshToken) => {
+const saveRefreshToken = async (userId, refreshToken, isAdmin) => {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // 7일 후 만료
-  await db.query("INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES (?, ?, ?)", 
+
+  // isAdmin에 따라 user_id 또는 admin_id 컬럼에 값을 저장
+  const column = isAdmin ? 'admin_id' : 'user_id';
+  await db.query(`INSERT INTO refresh_tokens (${column}, token, expires_at) VALUES (?, ?, ?)`, 
                  [userId, refreshToken, expiresAt]);
 };
 
-// 토큰 제거, 로그아웃 시 동작
-const invalidateRefreshToken = async (userId) => {
-  await db.query("DELETE FROM refresh_tokens WHERE user_id = ?", [userId]);
+const invalidateRefreshToken = async (userId, isAdmin) => {
+  // isAdmin에 따라 user_id 또는 admin_id 컬럼을 사용하여 토큰을 삭제
+  const column = isAdmin ? 'admin_id' : 'user_id';
+  await db.query(`DELETE FROM refresh_tokens WHERE ${column} = ?`, [userId]);
 };
 
-// 만료된 토큰을 자동으로 제거하는 함수 (아직 구현만 하고 호출한 곳은 없음)
+// 만료된 토큰을 자동으로 제거하는 함수
 const cleanUpExpiredTokens = async () => {
-    await db.query("DELETE FROM refresh_tokens WHERE expires_at < NOW()");
-  };
+  await db.query("DELETE FROM refresh_tokens WHERE expires_at < NOW()");
+};
 
 module.exports = {
   saveRefreshToken,

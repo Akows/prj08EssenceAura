@@ -34,6 +34,7 @@ export interface UseSignUpReturn {
 export interface LoginFormData {
     email: string;
     password: string;
+    isAdmin: boolean;
 }
 
 // 로그인 유효성 검사
