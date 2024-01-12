@@ -86,7 +86,7 @@ const login = async (req, res) => {
                 const refreshToken = generateRefreshToken({ id: user[userIdField], isAdmin });
 
                 // 리프레시 토큰을 데이터베이스에 저장
-                await saveRefreshToken(user[userIdField], refreshToken);
+                await saveRefreshToken(user[userIdField], refreshToken, isAdmin);
 
                 // 리프레시 토큰을 httpOnly 쿠키로 클라이언트에 전달
                 res.cookie('refreshToken', refreshToken, {
@@ -161,9 +161,17 @@ const refreshTokenHandler = async (req, res) => {
 const logoutHandler = async (req, res) => {
     try {
         const refreshToken = req.cookies['refreshToken'];
+
+        if (!refreshToken) {
+            return res.status(401).json({ message: '로그아웃을 위한 토큰이 없습니다.' });
+        }
+
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const userId = decoded.user_id;
+        const userId = decoded.id;
         const isAdmin = decoded.isAdmin;
+
+        console.log(decoded);
+        console.log(userId, isAdmin);
 
         res.cookie('refreshToken', '', { expires: new Date(0) });
         await invalidateRefreshToken(userId, isAdmin);

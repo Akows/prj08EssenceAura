@@ -20,16 +20,38 @@ async function verifyRefreshTokenInDatabase(token) {
 
 // 액세스 토큰 생성 함수
 function generateAccessToken(user, isAdmin = false) {
-    const idField = isAdmin ? 'admin_id' : 'user_id';
-    const claims = { [idField]: user[idField], isAdmin };
-    return jwt.sign(claims, process.env.JWT_SECRET, { expiresIn: '15m' });
+
+    // isAdmin의 값에 따라 user 객체 내의 적절한 id 필드 이름을 결정
+    const idFieldName = isAdmin ? 'admin_id' : 'user_id';
+    const userId = user['id'];
+    
+    // id가 제대로 설정되었는지 확인
+    if (userId === undefined) {
+        throw new Error(`User object is missing the '${idFieldName}' field.`);
+    }
+
+    const claims = { id: userId, isAdmin };
+
+    // 토큰 생성
+    const token = jwt.sign(claims, process.env.JWT_SECRET, { expiresIn: '15m' });
+    
+    return token;
 }
 
 // 리프래시 토큰 생성 함수
 function generateRefreshToken(user, isAdmin = false) {
-    const idField = isAdmin ? 'admin_id' : 'user_id';
-    const claims = { [idField]: user[idField], isAdmin };
-    return jwt.sign(claims, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    const idFieldName = isAdmin ? 'admin_id' : 'user_id';
+    const userId = user['id'];
+    
+    if (userId === undefined) {
+        throw new Error(`User object is missing the '${idFieldName}' field.`);
+    }
+
+    const claims = { id: userId, isAdmin };
+
+    const token = jwt.sign(claims, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    
+    return token;
 }
 
 // 모듈 내보내기
