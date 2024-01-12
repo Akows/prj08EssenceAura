@@ -40,7 +40,7 @@ const loginHandler = async (req, res) => {
         const accessToken = generateAccessToken({ id: userId, isAdmin });
         const refreshToken = generateRefreshToken({ id: userId, isAdmin });
 
-        await saveRefreshToken(user.id, refreshToken, isAdmin);
+        await saveRefreshToken(userId, refreshToken, isAdmin);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
