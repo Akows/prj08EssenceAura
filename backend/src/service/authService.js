@@ -25,6 +25,52 @@ async function getUserAndTokenInfo(userId, isAdmin) {
     }
 }
 
+async function getUserByEmail(email, isAdmin) {
+    const userTable = isAdmin ? 'admins' : 'users';
+    const query = `SELECT * FROM ${userTable} WHERE email = ?`;
+
+    try {
+        const [rows] = await db.query(query, [email]);
+        return rows.length > 0 ? rows[0] : null;
+    } catch (error) {
+        console.error("데이터베이스 조회 중 오류 발생:", error);
+        throw error;
+    }
+}
+
+async function createUser(userData) {
+    const { username, email, password, address, building_name, phone_number } = userData;
+   
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = `
+        INSERT INTO users (username, email, password, address, building_name, phone_number, created_at, updated_at, is_active, is_member)
+        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1)
+    `;
+
+    try {
+        const [result] = await db.execute(query, [username, email, hashedPassword, address, building_name, phone_number]);
+        return result.insertId;
+    } catch (error) {
+        console.error("데이터베이스 삽입 중 오류 발생:", error);
+        throw error;
+    }
+}
+
+async function validateUserPassword(email, password) {
+    const user = await getUserByEmail(email);
+    if (!user) {
+        return false;
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    return isValid ? user : null;
+}
+
+
 module.exports = {
-    getUserAndTokenInfo
+    getUserAndTokenInfo,
+    getUserByEmail,
+    createUser,
+    validateUserPassword,
 };

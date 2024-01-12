@@ -3,8 +3,8 @@ const userController = require('../controllers/userController');
 const { authenticateRefreshToken } = require('../middleware/authenticateToken');
 const router = express.Router();
 
-router.post('/signup', userController.signup);
-router.post('/login', userController.login);
+router.post('/signup', userController.signUpHandler);
+router.post('/login', userController.loginHandler);
 router.post('/logout', authenticateRefreshToken, userController.logoutHandler);
 router.get('/check-auth', authenticateRefreshToken, userController.checkAuthHandler);
 
