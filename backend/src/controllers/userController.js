@@ -47,6 +47,7 @@ const signup = async (req, res) => {
             // 회원가입 성공 응답
             res.status(201).json({ message: '회원가입 성공'});
         });
+
     } catch (error) {
         // 기타 에러 처리
         console.error('회원가입 처리 중 에러:', error);

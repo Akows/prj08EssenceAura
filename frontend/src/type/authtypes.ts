@@ -28,6 +28,7 @@ export interface UseSignUpReturn {
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleAgreementChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSignup: (e: React.FormEvent<HTMLFormElement>) => void;
+    signUpIsSubmitting: boolean;
 }
 
 // 로그인 데이터

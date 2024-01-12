@@ -41,6 +41,7 @@ const RegistrationForm: React.FC<UseSignUpReturn> = ({
     signUpvalidation,
     handleChange,
     handleSignup,
+    signUpIsSubmitting,
 }) => {
     return (
         <Form onSubmit={handleSignup}>
@@ -114,7 +115,9 @@ const RegistrationForm: React.FC<UseSignUpReturn> = ({
                 {signUpvalidation.phone_number}
             </ValidationMessage>
 
-            <Button type="submit">회원가입</Button>
+            <Button type="submit" disabled={signUpIsSubmitting}>
+                {signUpIsSubmitting ? '회원가입 중...' : '회원가입'}
+            </Button>
         </Form>
     );
 };

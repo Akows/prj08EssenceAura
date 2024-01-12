@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     SignUpFormData,
     SignUpFormErrors,
@@ -7,6 +8,8 @@ import {
 import { validateSignupForm } from '../../utils/auth';
 
 const useSignup = (): UseSignUpReturn => {
+    const navigate = useNavigate();
+
     const [signUpformData, setSignUpformData] = useState<SignUpFormData>({
         username: '',
         email: '',
@@ -20,6 +23,7 @@ const useSignup = (): UseSignUpReturn => {
         {}
     );
     const [signUpIsAgree, setSignUpIsAgree] = useState(false);
+    const [signUpIsSubmitting, setsignUpIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSignUpformData({
@@ -34,6 +38,7 @@ const useSignup = (): UseSignUpReturn => {
 
     const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setsignUpIsSubmitting(true);
 
         if (!signUpIsAgree) {
             alert('이용 약관에 동의해야 회원가입이 가능합니다.');
@@ -57,6 +62,8 @@ const useSignup = (): UseSignUpReturn => {
                 if (response.ok) {
                     const result = await response.json();
                     console.log(result);
+
+                    navigate('/shop');
                     alert('회원가입이 완료되었습니다.');
                 } else {
                     const errorResult = await response.json();
@@ -64,11 +71,13 @@ const useSignup = (): UseSignUpReturn => {
                 }
             } catch (error) {
                 console.error('회원가입 요청 중 오류 발생:', error);
-                alert('회원가입 중 오류가 발생했습니다.');
+                alert('회원가입 중 오류가 발생했습니다.', error);
             }
         } else {
             setSignUpvalidation(errors);
         }
+
+        setsignUpIsSubmitting(false);
     };
 
     return {
@@ -78,6 +87,7 @@ const useSignup = (): UseSignUpReturn => {
         handleChange,
         handleAgreementChange,
         handleSignup,
+        signUpIsSubmitting,
     };
 };
 
