@@ -1,35 +1,27 @@
 const db = require("../config/database");
 
-async function getUserAndTokenInfo(userId) {
+async function getUserAndTokenInfo(userId, isAdmin) {
     try {
-        // 사용자가 관리자인지에 따라 다른 테이블에서 조회
+        // isAdmin을 사용하여 적절한 테이블에서 사용자 정보 조회
         const userTable = isAdmin ? 'admins' : 'users';
         const userIdField = isAdmin ? 'admin_id' : 'user_id';
         const userQuery = `SELECT * FROM ${userTable} WHERE ${userIdField} = ?`;
 
         const [userRows] = await db.query(userQuery, [userId]);
 
-        // 사용자가 존재하지 않는 경우
         if (userRows.length === 0) {
             return null;
         }
 
         const user = userRows[0];
 
-        // 해당 사용자의 유효한 리프레시 토큰 조회
-        const tokenQuery = `SELECT * FROM refresh_tokens WHERE ${userIdField} = ? AND expires_at > NOW()`;
-        const [tokenRows] = await db.query(tokenQuery, [userId]);
-
-        // 토큰 정보가 존재하는 경우
-        const tokenInfo = tokenRows.length > 0 ? tokenRows[0] : null;
-
-        return {
-            user,
-            token: tokenInfo
-        };
+        // 리프래시 토큰 조회 로직은 여기서 생략(필요에 따라 추가)
+        
+        return { user };
     } catch (error) {
         console.error("데이터베이스 조회 중 오류 발생:", error);
-        throw error;
+        // 여기서 에러를 던지지 않고, 적절히 처리(예: null 반환)
+        return null;
     }
 }
 

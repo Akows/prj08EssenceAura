@@ -6,6 +6,7 @@ async function verifyRefreshTokenInDatabase(token) {
     try {
         // 데이터베이스에서 토큰을 조회하여 is_admin 값을 함께 가져옵니다.
         const [rows] = await db.query("SELECT * FROM refresh_tokens WHERE token = ? AND expires_at > NOW()", [token]);
+        
         if (rows.length > 0) {
             const { is_admin } = rows[0];
             // is_admin 값에 따라 user_id 또는 admin_id를 반환합니다.
@@ -26,7 +27,7 @@ function generateAccessToken({id, isAdmin}) {
 
     // id가 제대로 설정되었는지 확인
     if (id === undefined) {
-        throw new Error(`User object is missing the '${idFieldName}' field.`);
+        throw new Error(`ID 값이 '${idFieldName}' 필드에 존재하지 않습니다.`);
     }
 
     const claims = { id, isAdmin };
@@ -43,14 +44,13 @@ function generateRefreshToken({id, isAdmin}) {
     const idFieldName = isAdmin ? 'admin_id' : 'user_id';
 
     if (id === undefined) {
-        throw new Error(`User object is missing the '${idFieldName}' field.`);
+        throw new Error(`ID 값이 '${idFieldName}' 필드에 존재하지 않습니다.`);
     }
 
     const claims = { id, isAdmin };
 
     const token = jwt.sign(claims, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     
-
     return token;
 }
 

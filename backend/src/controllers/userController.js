@@ -4,11 +4,13 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
+const { getUserAndTokenInfo } = require('../service/authService');
 
 const signup = async (req, res) => {
 
     // 입력된 데이터의 유효성 검사
     const errors = validateSignupData(req.body);
+    
     if (Object.keys(errors).length > 0) {
         return res.status(400).json(errors);
     }
@@ -170,9 +172,6 @@ const logoutHandler = async (req, res) => {
         const userId = decoded.id;
         const isAdmin = decoded.isAdmin;
 
-        console.log(decoded);
-        console.log(userId, isAdmin);
-
         res.cookie('refreshToken', '', { expires: new Date(0) });
         await invalidateRefreshToken(userId, isAdmin);
         res.json({ message: '로그아웃 되었습니다.' });
@@ -190,10 +189,13 @@ const checkAuthHandler = async (req, res) => {
     }
 
     try {
+        // 리프래시 토큰을 디코딩하여 사용자 ID와 isAdmin 값을 추출
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
         const userId = decoded.id;
+        const isAdmin = decoded.isAdmin;
 
-        const { user } = await getUserAndTokenInfo(userId);
+        // getUserAndTokenInfo 함수 호출 시 isAdmin을 인자로 전달
+        const { user } = await getUserAndTokenInfo(userId, isAdmin);
 
         if (!user) {
             return res.status(404).json({ message: '사용자를 찾을 수 없음' });
