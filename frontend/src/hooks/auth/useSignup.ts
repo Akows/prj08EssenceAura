@@ -71,7 +71,7 @@ const useSignup = (): UseSignUpReturn => {
                 }
             } catch (error) {
                 console.error('회원가입 요청 중 오류 발생:', error);
-                alert('회원가입 중 오류가 발생했습니다.', error);
+                alert('회원가입 중 오류가 발생했습니다.');
             }
         } else {
             setSignUpvalidation(errors);

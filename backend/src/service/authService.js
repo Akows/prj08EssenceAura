@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const bcrypt = require('bcrypt');
 
 async function getUserAndTokenInfo(userId, isAdmin) {
     try {
@@ -49,8 +50,7 @@ async function createUser(userData) {
     `;
 
     try {
-        const [result] = await db.execute(query, [username, email, hashedPassword, address, building_name, phone_number]);
-        return result.insertId;
+        await db.execute(query, [username, email, hashedPassword, address, building_name, phone_number]);
     } catch (error) {
         console.error("데이터베이스 삽입 중 오류 발생:", error);
         throw error;

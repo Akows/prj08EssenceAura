@@ -1,5 +1,3 @@
-const db = require('../config/database');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
@@ -15,7 +13,7 @@ const signUpHandler = async (req, res) => {
 
     try {
         const userId = await createUser(req.body);
-        return res.status(201).json({ message: '회원가입 성공', userId });
+        return res.status(201).json({ message: '회원가입 성공' });
     } catch (error) {
         console.error('회원가입 처리 중 에러:', error);
         return res.status(500).json({ message: '회원가입 처리 중 에러 발생' });

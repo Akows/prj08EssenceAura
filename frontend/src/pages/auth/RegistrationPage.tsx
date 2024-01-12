@@ -32,6 +32,7 @@ const RegistrationPage: React.FC = () => {
         handleChange,
         handleAgreementChange,
         handleSignup,
+        signUpIsSubmitting,
     } = useSignup();
 
     return (
@@ -56,6 +57,7 @@ const RegistrationPage: React.FC = () => {
                 handleChange={handleChange}
                 handleAgreementChange={handleAgreementChange}
                 handleSignup={handleSignup}
+                signUpIsSubmitting={signUpIsSubmitting}
             />
         </RegistrationContainer>
     );
