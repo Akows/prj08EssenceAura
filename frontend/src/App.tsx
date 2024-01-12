@@ -26,7 +26,7 @@ import { RootState } from './redux/store';
 // 로그인하지 않은 사용자만 접근 가능한 라우트
 const PublicRoute: React.FC<RouteProps> = ({ children }) => {
     const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-    return isLoggedIn ? <Navigate to="/" /> : <>{children}</>;
+    return isLoggedIn ? <Navigate to="/shop" /> : <>{children}</>;
 };
 
 // 관리자만 접근 가능한 라우트
@@ -35,7 +35,7 @@ const AdminRoute: React.FC<RouteProps> = ({ children }) => {
     const isAdmin = useSelector(
         (state: RootState) => state.auth.userInfo?.isAdmin
     );
-    return isLoggedIn && isAdmin ? <>{children}</> : <Navigate to="/" />;
+    return isLoggedIn && isAdmin ? <>{children}</> : <Navigate to="/shop" />;
 };
 
 // 일반 사용자만 접근 가능한 라우트

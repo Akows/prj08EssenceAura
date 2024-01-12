@@ -5,15 +5,6 @@ import {
     SignUpFormErrors,
 } from '../type/authtypes';
 
-// 토큰 유효성 검증, 제거 등의 함수 구현
-// export const saveToken = (token) => {
-//     localStorage.setItem('authToken', token);
-// };
-
-// export const getToken = () => {
-//     return localStorage.getItem('authToken');
-// };
-
 // 회원가입 유효성 검사
 export const validateSignupForm = (
     formData: SignUpFormData
