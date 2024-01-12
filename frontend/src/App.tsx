@@ -13,8 +13,11 @@ import UserProfilePage from './pages/auth/UserProfilePage';
 import FindAccountPage from './pages/auth/FindAccountPage';
 import PaymentConfirmationPage from './pages/shop/PaymentConfirmationPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import useCheckAuth from './hooks/auth/useCheckAuth';
 
 function App() {
+    useCheckAuth();
+
     return (
         <BrowserRouter>
             <Routes>

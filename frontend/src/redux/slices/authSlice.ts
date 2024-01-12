@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const userSlice = createSlice({
+const authSlice = createSlice({
     name: 'user',
     initialState: {
         userInfo: null,
@@ -13,6 +13,11 @@ const userSlice = createSlice({
             state.userInfo = action.payload;
             state.isLoggedIn = true;
         },
+        loginFailure: (state, action) => {
+            state.userInfo = null;
+            state.isLoggedIn = false;
+            state.error = action.payload; // 오류 메시지를 payload에서 받아 저장
+        },
         logout: (state) => {
             state.userInfo = null;
             state.isLoggedIn = false;
@@ -21,5 +26,5 @@ const userSlice = createSlice({
     },
     // ... 기타 로직
 });
-export const { loginSuccess, logout } = userSlice.actions;
-export default userSlice.reducer;
+export const { loginSuccess, loginFailure, logout } = authSlice.actions;
+export default authSlice.reducer;

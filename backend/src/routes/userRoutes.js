@@ -6,8 +6,6 @@ const router = express.Router();
 router.post('/signup', userController.signup);
 router.post('/login', userController.login);
 router.post('/logout', authenticateRefreshToken, userController.logoutHandler);
-
-// JWT 인증 시스템을 사용하는 라우트 (아직 미구현)
-// router.post('/wait..', authenticateToken, '/wait..');
+router.post('/check-auth', authenticateRefreshToken, userController.checkAuthHandler);
 
 module.exports = router;

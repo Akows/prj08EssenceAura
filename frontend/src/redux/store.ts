@@ -2,7 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import uiReducer from './slices/uiSlice';
-import authReducer from './slices/userSlice';
+import authReducer from './slices/authSlice';
 import cartReducer from './slices/cartSlice';
 import productsReducer from './slices/productsSlice';
 import orderReducer from './slices/orderSlice'; // 주문 관련 상태 관리를 위한 리듀서.

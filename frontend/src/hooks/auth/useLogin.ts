@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginSuccess, logout } from '../../redux/slices/userSlice';
+import { loginSuccess, logout } from '../../redux/slices/authSlice';
 import {
     LoginFormData,
     LoginFormErrors,

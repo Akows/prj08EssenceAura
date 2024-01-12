@@ -88,13 +88,19 @@ const login = async (req, res) => {
                     secure: process.env.NODE_ENV === 'production', // 실제 운영 환경에서만 secure 쿠키 설정
                     sameSite: 'strict', // CSRF 공격 방지
                     path: '/', // 이 경로로 설정된 요청에 대해서만 쿠키를 포함해서 보냄
-                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 쿠키 만료 기간 설정
+                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 쿠키 만료 기간 설정 (7일)
                 });
 
                 // 클라이언트에 토큰들을 반환
                 return res.json({
                     message: '로그인 성공',
                     accessToken,
+                    userInfo: {
+                        id: user.id,
+                        email: user.email,
+                        username: user.username
+                        // 추가적인 필요한 사용자 정보 필드 (비밀번호나 민감한 정보 제외)
+                    },
                 });
             } else {
                 // 비밀번호가 일치하지 않으면..
@@ -154,6 +160,29 @@ const logoutHandler = async (req, res) => {
     }
 };
 
+const checkAuthHandler = async (req, res) => {
+    const refreshToken = req.cookies['refreshToken'];
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: '인증되지 않음' });
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const userId = decoded.id;
+
+        const { user } = await getUserAndTokenInfo(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: '사용자를 찾을 수 없음' });
+        }
+
+        return res.json({ user });
+    } catch (err) {
+        return res.status(401).json({ message: '인증되지 않음' });
+    }
+};
+
 module.exports = {
-    signup, login, refreshTokenHandler, logoutHandler
+    signup, login, refreshTokenHandler, logoutHandler, checkAuthHandler
 };

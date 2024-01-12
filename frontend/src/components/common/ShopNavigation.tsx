@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaBars, FaUserCircle } from 'react-icons/fa';
@@ -225,8 +225,11 @@ const ShopNavigation: React.FC = () => {
         (state: RootState) => state.ui.language
     );
 
-    // 사용자 메뉴를 결정하기 위한 임시 사용자 상태 (일반 회원 'user', 관리자 'admin')
-    const [userType] = useState<'user' | 'admin' | 'guest'>('guest');
+    // Redux 스토어에서 로그인 상태 가져오기
+    const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+    // const userType = useSelector(
+    //     (state: RootState) => state.user.userInfo?.userType
+    // );
 
     return (
         <NavigationContainer>
@@ -249,19 +252,27 @@ const ShopNavigation: React.FC = () => {
             {/* 아이콘 컨테이너 */}
             <IconsContainer>
                 <IconWrapper>
-                    {/* 사용자 상태에 따른 버튼 변경 */}
-                    {userType === 'guest' ? (
+                    {/* 로그인 상태에 따라 다른 경로로 이동 */}
+                    {/* {!isLoggedIn ? (
                         <LoginButton to="/login">
                             <FaUserCircle size={24} />
                         </LoginButton>
-                    ) : userType === 'user' ? (
-                        // 일반 사용자일 때 UserProfilePage로 이동하는 버튼
-                        <LoginButton to="/user">
+                    ) : userType === 'admin' ? (
+                        <LoginButton to="/admin">
                             <FaUserCircle size={24} />
                         </LoginButton>
                     ) : (
-                        // 관리자일 때 AdminDashboardPage로 이동하는 버튼
-                        <LoginButton to="/admin">
+                        <LoginButton to="/user">
+                            <FaUserCircle size={24} />
+                        </LoginButton>
+                    )} */}
+
+                    {!isLoggedIn ? (
+                        <LoginButton to="/login">
+                            <FaUserCircle size={24} />
+                        </LoginButton>
+                    ) : (
+                        <LoginButton to="/user">
                             <FaUserCircle size={24} />
                         </LoginButton>
                     )}
@@ -333,19 +344,27 @@ const ShopNavigation: React.FC = () => {
                     <IconRow>
                         {/* 아이콘들을 감싸는 행 */}
                         <IconContainer>
-                            {/* 사용자 상태에 따른 버튼 변경 */}
-                            {userType === 'guest' ? (
+                            {/* 로그인 상태에 따라 다른 경로로 이동 */}
+                            {/* {!isLoggedIn ? (
                                 <LoginButton to="/login">
                                     <FaUserCircle size={24} />
                                 </LoginButton>
-                            ) : userType === 'user' ? (
-                                // 일반 사용자일 때 UserProfilePage로 이동하는 버튼
-                                <LoginButton to="/user">
+                            ) : userType === 'admin' ? (
+                                <LoginButton to="/admin">
                                     <FaUserCircle size={24} />
                                 </LoginButton>
                             ) : (
-                                // 관리자일 때 AdminDashboardPage로 이동하는 버튼
-                                <LoginButton to="/admin">
+                                <LoginButton to="/user">
+                                    <FaUserCircle size={24} />
+                                </LoginButton>
+                            )} */}
+
+                            {!isLoggedIn ? (
+                                <LoginButton to="/login">
+                                    <FaUserCircle size={24} />
+                                </LoginButton>
+                            ) : (
+                                <LoginButton to="/user">
                                     <FaUserCircle size={24} />
                                 </LoginButton>
                             )}
