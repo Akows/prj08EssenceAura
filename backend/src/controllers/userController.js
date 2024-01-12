@@ -6,23 +6,27 @@ const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken 
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
 const { getUserAndTokenInfo } = require('../service/authService');
 
+// 회원가입 처리 함수
 const signup = async (req, res) => {
 
     // 입력된 데이터의 유효성 검사
     const errors = validateSignupData(req.body);
     
     if (Object.keys(errors).length > 0) {
+        // 유효성 검사 실패 시, 에러 메시지와 함께 클라이언트에 응답
         return res.status(400).json(errors);
     }
 
     // 유효성 검사를 통과한 경우, 데이터베이스에 사용자 추가
     try {
+        // 요청 본문에서 데이터 추출
         const { username, email, password, address, building_name, phone_number } = req.body;
 
         // password 필드에 직접 평문 비밀번호를 저장하는 것은 보안상 좋지 않다
         // 따라서 비밀번호는 해싱하여 저장
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // 데이터베이스에 새 사용자 정보를 삽입하는 SQL 쿼리
         const query = `
         INSERT INTO users (
             username, email, password, address, building_name, phone_number, 
@@ -33,14 +37,15 @@ const signup = async (req, res) => {
         )
     `;
 
-        db.query(query, [username, email, hashedPassword, address, building_name, phone_number, 1, 1], (err, results) => {
+        // 데이터베이스 쿼리 실행
+        db.execute(query, [username, email, hashedPassword, address, building_name, phone_number, 1, 1], (err, results) => {
             if (err) {
                 // 데이터베이스 에러 처리
                 console.error('회원가입 중 데이터베이스 에러:', err);
                 return res.status(500).json({ message: '데이터베이스 에러' });
             }
             // 회원가입 성공 응답
-            res.status(201).json({ message: '회원가입 성공', userId: results.insertId });
+            res.status(201).json({ message: '회원가입 성공'});
         });
     } catch (error) {
         // 기타 에러 처리
