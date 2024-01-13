@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { UseSignUpReturn } from '../../type/authtypes';
+import { UseRegistrationReturn } from '../../type/authtypes';
 
 const Form = styled.form`
     margin-top: 20px;
@@ -36,16 +36,16 @@ const ValidationMessage = styled.div`
     margin-top: 5px;
 `;
 
-const RegistrationForm: React.FC<UseSignUpReturn> = ({
+const RegistrationForm: React.FC<UseRegistrationReturn> = ({
     signUpformData,
     signUpvalidation,
     handleChange,
     handleCheckEmail,
-    handleSignup,
+    handleRegistration,
     signUpIsSubmitting,
 }) => {
     return (
-        <Form onSubmit={handleSignup}>
+        <Form onSubmit={handleRegistration}>
             <Label htmlFor="username">이름</Label>
             <Input
                 id="username"

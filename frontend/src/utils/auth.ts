@@ -1,15 +1,15 @@
 import {
     LoginFormData,
     LoginFormErrors,
-    SignUpFormData,
-    SignUpFormErrors,
+    RegistrationFormData,
+    RegistrationFormErrors,
 } from '../type/authtypes';
 
 // 회원가입 유효성 검사
-export const validateSignupForm = (
-    formData: SignUpFormData
-): SignUpFormErrors => {
-    const errors: SignUpFormErrors = {};
+export const validateRegistrationForm = (
+    formData: RegistrationFormData
+): RegistrationFormErrors => {
+    const errors: RegistrationFormErrors = {};
 
     // 빈 값 체크
     if (!formData.username) {

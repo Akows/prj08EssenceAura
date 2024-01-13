@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import RegistrationForm from '../../components/auth/RegistrationForm';
-import useSignup from '../../hooks/auth/useSignup';
+import useRegistration from '../../hooks/auth/useRegistration';
 
 const RegistrationContainer = styled.div`
     width: 100%;
@@ -28,13 +28,12 @@ const RegistrationPage: React.FC = () => {
     const {
         signUpformData,
         signUpvalidation,
-        signUpIsAgree,
         handleChange,
         handleCheckEmail,
         handleAgreementChange,
-        handleSignup,
+        handleRegistration,
         signUpIsSubmitting,
-    } = useSignup();
+    } = useRegistration();
 
     return (
         <RegistrationContainer>
@@ -54,11 +53,9 @@ const RegistrationPage: React.FC = () => {
             <RegistrationForm
                 signUpformData={signUpformData}
                 signUpvalidation={signUpvalidation}
-                signUpIsAgree={signUpIsAgree}
                 handleChange={handleChange}
                 handleCheckEmail={handleCheckEmail}
-                handleAgreementChange={handleAgreementChange}
-                handleSignup={handleSignup}
+                handleRegistration={handleRegistration}
                 signUpIsSubmitting={signUpIsSubmitting}
             />
         </RegistrationContainer>

@@ -1,5 +1,5 @@
 // 회원가입 데이터
-export interface SignUpFormData {
+export interface RegistrationFormData {
     username: string;
     email: string;
     password: string;
@@ -10,7 +10,7 @@ export interface SignUpFormData {
 }
 
 // 회원가입 유효성 검사
-export interface SignUpFormErrors {
+export interface RegistrationFormErrors {
     email?: string;
     password?: string;
     username?: string;
@@ -21,14 +21,14 @@ export interface SignUpFormErrors {
 }
 
 // 회원가입 커스텀 훅의 타입
-export interface UseSignUpReturn {
-    signUpformData: SignUpFormData;
-    signUpvalidation: SignUpFormErrors;
-    signUpIsAgree: boolean;
+export interface UseRegistrationReturn {
+    signUpformData: RegistrationFormData;
+    signUpvalidation: RegistrationFormErrors;
+    signUpIsAgree?: boolean;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleAgreementChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleAgreementChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleCheckEmail: () => void;
-    handleSignup: (e: React.FormEvent<HTMLFormElement>) => void;
+    handleRegistration: (e: React.FormEvent<HTMLFormElement>) => void;
     signUpIsSubmitting: boolean;
 }
 
