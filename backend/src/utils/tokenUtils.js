@@ -9,6 +9,7 @@ async function verifyRefreshTokenInDatabase(token) {
         
         if (rows.length > 0) {
             const { is_admin } = rows[0];
+            
             // is_admin 값에 따라 user_id 또는 admin_id를 반환합니다.
             return { isValid: true, is_admin };
         }

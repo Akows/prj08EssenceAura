@@ -39,6 +39,17 @@ async function getUserByEmail(email, isAdmin) {
     }
 }
 
+async function validateUserPassword(email, password, isAdmin) {
+    const user = await getUserByEmail(email, isAdmin);
+    if (!user) {
+        return false;
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    return isValid ? user : null;
+}
+
+
 async function createUser(userData) {
     const { username, email, password, address, building_name, phone_number } = userData;
    
@@ -57,20 +68,9 @@ async function createUser(userData) {
     }
 }
 
-async function validateUserPassword(email, password, isAdmin) {
-    const user = await getUserByEmail(email, isAdmin);
-    if (!user) {
-        return false;
-    }
-
-    const isValid = await bcrypt.compare(password, user.password);
-    return isValid ? user : null;
-}
-
-
 module.exports = {
     getUserAndTokenInfo,
     getUserByEmail,
-    createUser,
     validateUserPassword,
+    createUser,
 };

@@ -22,7 +22,7 @@ const authenticateAccessToken = (req, res, next) => {
   });
 };
 
-// 로그아웃을 위한 인증 미들웨어
+// 리프래시 토큰 검증 미들웨어
 const authenticateRefreshToken = (req, res, next) => {
   const refreshToken = req.cookies['refreshToken']; // 쿠키에서 리프레시 토큰 추출
 
