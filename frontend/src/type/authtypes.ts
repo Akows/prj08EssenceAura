@@ -57,3 +57,10 @@ export interface UseLoginReturn {
 export interface UseLogoutReturn {
     handleLogout: () => void;
 }
+
+// 로그인 커스텀 훅의 타입
+export interface UseModalReturn {
+    isVisible: boolean;
+    openModal: () => void;
+    closeModal: () => void;
+}

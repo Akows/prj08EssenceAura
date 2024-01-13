@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useModal } from '../../hooks/auth/useModal';
 import { useResetPassword } from '../../hooks/auth/useResetPassword';
+import EmailVerificationModal from './EmailVerificationModal';
 
 const Form = styled.form`
     width: 100%; // 부모 요소의 너비를 차지하도록 설정
@@ -36,25 +38,31 @@ const Button = styled.button`
 
 const ResetPasswordForm: React.FC = () => {
     const { email, setEmail, handleSubmit } = useResetPassword();
+    const { isVisible, openModal, closeModal } = useModal();
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <h2>비밀번호 초기화</h2>
-            <p>
-                가입하신 이메일 주소를 입력하시면, 이메일로 임시 비밀번호를
-                보내드립니다.
-            </p>
-            <Label>E-MAIL</Label>
-            <Input
-                type="email"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                }
-                placeholder="이메일"
-            />
-            <Button type="submit">비밀번호 초기화</Button>
-        </Form>
+        <>
+            <Form onSubmit={handleSubmit}>
+                <h2>비밀번호 초기화</h2>
+                <p>
+                    가입하신 이메일 주소를 입력하시면, 이메일로 임시 비밀번호를
+                    보내드립니다.
+                </p>
+                <Label>E-MAIL</Label>
+                <Input
+                    type="email"
+                    value={email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEmail(e.target.value)
+                    }
+                    placeholder="이메일"
+                />
+                <Button type="button" onClick={openModal}>
+                    인증 메일 보내기
+                </Button>
+            </Form>
+            {isVisible && <EmailVerificationModal closeModal={closeModal} />}
+        </>
     );
 };
 

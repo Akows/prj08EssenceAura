@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+// closeModal 함수의 타입을 정의하는 Props 인터페이스
+interface EmailVerificationModalProps {
+    closeModal: () => void;
+}
+
 const ModalBackdrop = styled.div`
     position: fixed;
     top: 0;
@@ -51,11 +56,14 @@ const Button = styled.button`
     }
 `;
 
-const EmailVerificationModal: React.FC = () => {
+const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
+    closeModal,
+}) => {
     const [verificationCode, setVerificationCode] = useState<string>('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        closeModal();
         // 인증 코드 검증 로직
     };
 
@@ -74,6 +82,7 @@ const EmailVerificationModal: React.FC = () => {
                         }
                     />
                     <Button type="submit">인증 확인</Button>
+                    <Button onClick={closeModal}>닫기</Button>
                 </Form>
             </ModalContainer>
         </ModalBackdrop>
