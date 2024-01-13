@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability } = require('../service/authService');
+const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone } = require('../service/authService');
 
 // 회원가입 처리 함수
 const signUpHandler = async (req, res) => {
@@ -165,6 +165,29 @@ const checkAuthHandler = async (req, res) => {
     }
 };
 
+// 이메일 찾기 기능 함수
+const findEmail = async (req, res) => {
+    try {
+        const { name, phone } = req.body;
+        const email = await findEmailByNameAndPhone(name, phone);
+
+        if (email) {
+            res.json({ email });
+        } else {
+            res.status(404).json({ message: '일치하는 사용자가 없습니다.' });
+        }
+    } catch (error) {
+        console.error('Error in findEmail:', error);
+        res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }   
+};
+
 module.exports = {
-    signUpHandler, checkEmailHandler, loginHandler, refreshTokenHandler, logoutHandler, checkAuthHandler
+    signUpHandler, 
+    checkEmailHandler, 
+    loginHandler, 
+    refreshTokenHandler, 
+    logoutHandler, 
+    checkAuthHandler, 
+    findEmail
 };

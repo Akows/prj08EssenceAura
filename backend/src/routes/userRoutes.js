@@ -9,4 +9,6 @@ router.post('/login', authController.loginHandler);
 router.post('/logout', authenticateRefreshToken, authController.logoutHandler);
 router.get('/check-auth', authenticateRefreshToken, authController.checkAuthHandler);
 
+router.post('/find-email', authController.findEmail);
+
 module.exports = router;

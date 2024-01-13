@@ -8,14 +8,23 @@ export const useFindEmail = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!name || !phone) {
+            alert('모든 정보를 입력해주세요.');
+            return;
+        }
+
         try {
-            const response = await fetch('/api/find-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, phone }),
-            });
+            const response = await fetch(
+                'http://localhost:3001/api/find-email',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, phone }),
+                }
+            );
             const data = await response.json();
 
             if (response.ok) {

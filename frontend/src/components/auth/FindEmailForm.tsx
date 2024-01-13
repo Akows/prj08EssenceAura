@@ -64,7 +64,7 @@ const FindEmailForm: React.FC = () => {
                 placeholder="전화번호를 입력하세요"
             />
             <Button type="submit">이메일 찾기</Button>
-            {email && <p>회원님의 이메일은.. : {email}</p>}
+            {email && <p>회원님의 이메일 : {email}</p>}
             {error && <p>{error}</p>}
         </Form>
     );

@@ -80,10 +80,27 @@ async function createUser(userData) {
     }
 }
 
+const findEmailByNameAndPhone = async (name, phone) => {
+    try {
+        const query = 'SELECT email FROM users WHERE username = ? AND phone_number = ?';
+        const [users] = await db.query(query, [name, phone]);
+
+        if (users.length > 0) {
+            return users[0].email;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('이메일 찾기 중 오류 발생', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getUserAndTokenInfo,
     checkEmailAvailability,
     getUserByEmail,
     validateUserPassword,
     createUser,
+    findEmailByNameAndPhone,
 };
