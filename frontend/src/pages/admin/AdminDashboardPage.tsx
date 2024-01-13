@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import InventoryManagement from '../../components/admin/InventoryManagement';
-import OrderManagement from '../../components/admin/OrderManagement';
+import InventoryManagement from '../../components/user/InventoryManagement';
+import OrderManagement from '../../components/user/OrderManagement';
 import UserManagement from '../../components/admin/UserManagement';
 
 const DashboardContainer = styled.div`
