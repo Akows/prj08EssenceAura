@@ -35,13 +35,15 @@ const Button = styled.button`
 `;
 
 const FindEmailForm: React.FC = () => {
-    const { name, setName, handleSubmit } = useFindEmail();
+    const { name, setName, phone, setPhone, email, error, handleSubmit } =
+        useFindEmail();
 
     return (
         <Form onSubmit={handleSubmit}>
             <h2>이메일 찾기</h2>
             <p>
-                회원가입 시, 입력하신 이름으로 가입된 이메일을 찾을 수 있습니다.
+                회원가입 시, 입력하신 이름과 전화번호로 가입된 이메일을 찾을 수
+                있습니다.
             </p>
             <Label>이름</Label>
             <Input
@@ -50,9 +52,20 @@ const FindEmailForm: React.FC = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setName(e.target.value)
                 }
-                placeholder="이름"
+                placeholder="이름을 입력하세요"
+            />
+            <Label>전화번호</Label>
+            <Input
+                type="text"
+                value={phone}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPhone(e.target.value)
+                }
+                placeholder="전화번호를 입력하세요"
             />
             <Button type="submit">이메일 찾기</Button>
+            {email && <p>회원님의 이메일은.. : {email}</p>}
+            {error && <p>{error}</p>}
         </Form>
     );
 };
