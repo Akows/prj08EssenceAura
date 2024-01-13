@@ -40,6 +40,7 @@ const RegistrationForm: React.FC<UseSignUpReturn> = ({
     signUpformData,
     signUpvalidation,
     handleChange,
+    handleCheckEmail,
     handleSignup,
     signUpIsSubmitting,
 }) => {
@@ -62,7 +63,9 @@ const RegistrationForm: React.FC<UseSignUpReturn> = ({
                 onChange={handleChange}
             />
             <ValidationMessage>{signUpvalidation.email}</ValidationMessage>
-            <Button type="button">이메일 중복 확인</Button>
+            <Button type="button" onClick={handleCheckEmail}>
+                이메일 중복 확인
+            </Button>
 
             <Label htmlFor="password">비밀번호</Label>
             <Input

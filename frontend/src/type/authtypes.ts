@@ -27,6 +27,7 @@ export interface UseSignUpReturn {
     signUpIsAgree: boolean;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleAgreementChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleCheckEmail: () => void;
     handleSignup: (e: React.FormEvent<HTMLFormElement>) => void;
     signUpIsSubmitting: boolean;
 }
