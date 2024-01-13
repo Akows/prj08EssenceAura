@@ -7,6 +7,7 @@ const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailab
 // 회원가입 처리 함수
 const signUpHandler = async (req, res) => {
     const errors = validateSignupData(req.body);
+
     if (Object.keys(errors).length > 0) {
         return res.status(400).json(errors);
     }
@@ -25,6 +26,11 @@ const checkEmailHandler = async (req, res) => {
     try {
         const { email } = req.body;
         const isAvailable = await checkEmailAvailability(email);
+
+        if (!isAvailable) {
+            return res.status(400).json({ message: '이미 사용 중인 이메일입니다.' });
+        };
+
         res.json({ isAvailable });
     } catch (error) {
         console.error('이메일 중복 검사 중 오류:', error);

@@ -30,6 +30,7 @@ const RegistrationPage: React.FC = () => {
         signUpvalidation,
         signUpIsAgree,
         handleChange,
+        handleCheckEmail,
         handleAgreementChange,
         handleSignup,
         signUpIsSubmitting,
@@ -55,6 +56,7 @@ const RegistrationPage: React.FC = () => {
                 signUpvalidation={signUpvalidation}
                 signUpIsAgree={signUpIsAgree}
                 handleChange={handleChange}
+                handleCheckEmail={handleCheckEmail}
                 handleAgreementChange={handleAgreementChange}
                 handleSignup={handleSignup}
                 signUpIsSubmitting={signUpIsSubmitting}

@@ -39,6 +39,11 @@ const useSignup = (): UseSignUpReturn => {
     };
 
     const handleCheckEmail = async () => {
+        if (!signUpformData.email) {
+            alert('이메일을 입력해주세요.');
+            return;
+        }
+
         try {
             const response = await fetch(
                 'http://localhost:3001/api/check-email',
@@ -73,21 +78,21 @@ const useSignup = (): UseSignUpReturn => {
 
     const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setsignUpIsSubmitting(true);
 
         if (!signUpIsAgree) {
             alert('이용 약관에 동의해야 회원가입이 가능합니다.');
             return;
         }
 
-        // 중복 검사를 완료하지 않았으면 회원가입 진행을 중단
-        if (!emailChecked) {
-            alert('이메일 중복 검사를 완료해주세요.');
-            return;
-        }
-
         const errors = validateSignupForm(signUpformData);
         if (Object.keys(errors).length === 0) {
+            // 중복 검사를 완료하지 않았으면 회원가입 진행을 중단
+            if (!emailChecked) {
+                alert('이메일 중복 검사를 완료해주세요.');
+                return;
+            }
+            setsignUpIsSubmitting(true);
+
             try {
                 const response = await fetch(
                     'http://localhost:3001/api/signup',
