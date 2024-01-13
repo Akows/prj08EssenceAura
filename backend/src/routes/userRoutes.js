@@ -1,11 +1,12 @@
 const express = require('express');
-const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 const { authenticateRefreshToken } = require('../middleware/authenticateToken');
 const router = express.Router();
 
-router.post('/signup', userController.signUpHandler);
-router.post('/login', userController.loginHandler);
-router.post('/logout', authenticateRefreshToken, userController.logoutHandler);
-router.get('/check-auth', authenticateRefreshToken, userController.checkAuthHandler);
+router.post('/signup', authController.signUpHandler);
+router.post('/check-email', authController.checkEmailHandler);
+router.post('/login', authController.loginHandler);
+router.post('/logout', authenticateRefreshToken, authController.logoutHandler);
+router.get('/check-auth', authenticateRefreshToken, authController.checkAuthHandler);
 
 module.exports = router;

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, createUser, validateUserPassword } = require('../service/authService');
+const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability } = require('../service/authService');
 
 // 회원가입 처리 함수
 const signUpHandler = async (req, res) => {
@@ -17,6 +17,18 @@ const signUpHandler = async (req, res) => {
     } catch (error) {
         console.error('회원가입 처리 중 에러:', error);
         return res.status(500).json({ message: '회원가입 처리 중 에러 발생' });
+    }
+};
+
+// 아이디 중복 검사 함수
+const checkEmailHandler = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const isAvailable = await checkEmailAvailability(email);
+        res.json({ isAvailable });
+    } catch (error) {
+        console.error('이메일 중복 검사 중 오류:', error);
+        res.status(500).send('서버 오류 발생');
     }
 };
 
@@ -148,5 +160,5 @@ const checkAuthHandler = async (req, res) => {
 };
 
 module.exports = {
-    signUpHandler, loginHandler, refreshTokenHandler, logoutHandler, checkAuthHandler
+    signUpHandler, checkEmailHandler, loginHandler, refreshTokenHandler, logoutHandler, checkAuthHandler
 };

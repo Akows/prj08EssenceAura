@@ -26,6 +26,18 @@ async function getUserAndTokenInfo(userId, isAdmin) {
     }
 }
 
+// 아이디 중복 검사 함수.
+const checkEmailAvailability = async (email) => {
+    try {
+        const query = 'SELECT COUNT(*) AS count FROM users WHERE email = ?';
+        const [rows] = await db.query(query, [email]);
+        return rows[0].count === 0; // 이메일이 없으면 true, 있으면 false 반환
+    } catch (error) {
+        console.error('이메일 중복 검사 DB 오류:', error);
+        throw error;
+    }
+};
+
 async function getUserByEmail(email, isAdmin) {
     const userTable = isAdmin ? 'admins' : 'users';
     const query = `SELECT * FROM ${userTable} WHERE email = ?`;
@@ -70,6 +82,7 @@ async function createUser(userData) {
 
 module.exports = {
     getUserAndTokenInfo,
+    checkEmailAvailability,
     getUserByEmail,
     validateUserPassword,
     createUser,
