@@ -35,25 +35,15 @@ const Button = styled.button`
 `;
 
 const ResetPasswordForm: React.FC = () => {
-    const { userId, setUserId, email, setEmail, handleSubmit } =
-        useResetPassword();
+    const { email, setEmail, handleSubmit } = useResetPassword();
 
     return (
         <Form onSubmit={handleSubmit}>
-            <h2>비밀번호 찾기</h2>
+            <h2>비밀번호 초기화</h2>
             <p>
-                가입하신 아이디와 이메일 주소를 입력하시면, 인증 후 이메일로
-                임시 비밀번호를 보내드립니다.
+                가입하신 이메일 주소를 입력하시면, 이메일로 임시 비밀번호를
+                보내드립니다.
             </p>
-            <Label>아이디</Label>
-            <Input
-                type="text"
-                value={userId}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUserId(e.target.value)
-                }
-                placeholder="아이디"
-            />
             <Label>E-MAIL</Label>
             <Input
                 type="email"

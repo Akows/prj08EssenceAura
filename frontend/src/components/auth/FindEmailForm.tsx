@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useFindId } from '../../hooks/auth/useFindId';
+import { useFindEmail } from '../../hooks/auth/useFindEmail';
 
 const Form = styled.form`
     width: 100%; // 부모 요소의 너비를 차지하도록 설정
@@ -34,15 +34,14 @@ const Button = styled.button`
     }
 `;
 
-const FindIdForm: React.FC = () => {
-    const { name, setName, email, setEmail, handleSubmit } = useFindId();
+const FindEmailForm: React.FC = () => {
+    const { name, setName, handleSubmit } = useFindEmail();
 
     return (
         <Form onSubmit={handleSubmit}>
-            <h2>아이디 찾기</h2>
+            <h2>이메일 찾기</h2>
             <p>
-                회원가입 시, 입력하신 이름 + 이메일을 통해 찾을 수 있는 방법으로
-                아이디를 확인하실 수 있습니다.
+                회원가입 시, 입력하신 이름으로 가입된 이메일을 찾을 수 있습니다.
             </p>
             <Label>이름</Label>
             <Input
@@ -53,18 +52,9 @@ const FindIdForm: React.FC = () => {
                 }
                 placeholder="이름"
             />
-            <Label>E-MAIL</Label>
-            <Input
-                type="email"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                }
-                placeholder="이메일"
-            />
-            <Button type="submit">아이디 찾기</Button>
+            <Button type="submit">이메일 찾기</Button>
         </Form>
     );
 };
 
-export default FindIdForm;
+export default FindEmailForm;

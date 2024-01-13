@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import FindIdForm from '../../components/auth/FindIdForm';
+import FindEmailForm from '../../components/auth/FindEmailForm';
 import ResetPasswordForm from '../../components/auth/ResetPasswordForm';
 
 const FindAccountWrapper = styled.div`
@@ -51,7 +51,7 @@ const FindAccountPage = () => {
         <FindAccountWrapper>
             <FindAccountPageContainer>
                 <Section>
-                    <FindIdForm />
+                    <FindEmailForm />
                 </Section>
                 <Section>
                     <ResetPasswordForm />
