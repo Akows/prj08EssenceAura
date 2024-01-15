@@ -11,4 +11,7 @@ router.get('/check-auth', authenticateRefreshToken, authController.checkAuthHand
 
 router.post('/find-email', authController.findEmail);
 
+router.post('/verify-email', authController.sendVerificationEmail);
+router.post('/verify-code', authController.verifyEmailCode);
+
 module.exports = router;

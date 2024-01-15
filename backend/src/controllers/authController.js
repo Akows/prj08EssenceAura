@@ -182,6 +182,49 @@ const findEmail = async (req, res) => {
     }   
 };
 
+// 인증 이메일 발송 로직
+const sendVerificationEmail = async (req, res) => {
+    const { email } = req.body;
+
+    // 인증 코드 생성 로직 (예: UUID 생성 등)
+    const verificationCode = '';
+
+    // 이메일 내용을 보내는 함수에 필요한 옵션 설정:
+    const mailOptions = {
+        from: 'your.email@gmail.com', // 보내는 이메일 주소
+        to: email, // 수신자 이메일 주소
+        subject: '이메일 인증', // 메일 제목
+        html: `
+            <h1>이메일 인증 코드입니다.</h1>
+            <p>아래의 코드를 앱에서 입력해주세요:</p>
+            <strong>${verificationCode}</strong>
+        ` // 메일 내용
+    };
+
+    try {
+        await sendEmail(mailOptions);
+        // 데이터베이스에 verificationCode 저장 로직 추가
+        res.status(200).json({ message: '인증 이메일을 발송했습니다.' });
+    } catch (error) {
+        res.status(500).json({ message: '이메일 발송 중 오류가 발생했습니다.' });
+    }
+};
+
+// 이메일 인증 코드 검증 로직
+const verifyEmailCode = async (req, res) => {
+    const { email, verificationCode } = req.body;
+    // 데이터베이스에서 해당 이메일로 저장된 인증 코드 확인 로직
+    
+    if (userVerificationCode === verificationCode) {
+        // 이메일 인증 처리 로직
+        
+        res.status(200).json({ message: '이메일이 성공적으로 인증되었습니다.' });
+    } else {
+        res.status(400).json({ message: '잘못된 인증 코드입니다.' });
+    }
+};
+
+
 module.exports = {
     signUpHandler, 
     checkEmailHandler, 
@@ -189,5 +232,7 @@ module.exports = {
     refreshTokenHandler, 
     logoutHandler, 
     checkAuthHandler, 
-    findEmail
+    findEmail,
+    sendVerificationEmail,
+    verifyEmailCode,
 };

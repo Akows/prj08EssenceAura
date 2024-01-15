@@ -25,6 +25,18 @@ export const useFindEmail = () => {
                     body: JSON.stringify({ name, phone }),
                 }
             );
+
+            // 만약 axios를 사용했을 경우..
+            // HTTP 요청을 보낼 때 필요한 헤더와 본문의 형식을 정의하는 부분을 axios에서는 알아서 수행해준다.
+            // Axios는 JSON 객체를 자동으로 JSON 문자열로 변환해주고.
+            // Content-Type 헤더도 알아서 설정해준다.
+            // 제공된 JavaScript 객체를 자동으로 JSON으로 변환 해주기에 JSON.stringify()를 호출할 필요도 없다.
+
+            // const response = await axios.post(
+            //     'http://localhost:3001/api/find-email',
+            //     { name, phone }
+            // );
+
             const data = await response.json();
 
             if (response.ok) {
