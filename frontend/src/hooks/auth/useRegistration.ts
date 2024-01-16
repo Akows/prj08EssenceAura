@@ -28,8 +28,7 @@ const useRegistration = (): UseRegistrationReturn => {
 
     // 이메일 중복 검사 완료 상태
     const [emailChecked, setEmailChecked] = useState(false);
-    // 이메일 인증 코드 전송 상태 및 인증 상태
-    const [isVerificationSent, setIsVerificationSent] = useState(false);
+    // 이메일 인증 상태
     const [isVerified, setIsVerified] = useState(false);
     // 약관 동의 여부
     const [termsAgreed, setTermsAgreed] = useState(false);
@@ -99,15 +98,12 @@ const useRegistration = (): UseRegistrationReturn => {
 
     // 이메일 인증 코드 전송 핸들러
     const handleSendVerificationCode = async () => {
-        // 이메일 중복 검사 확인
         if (!emailChecked) {
             alert('먼저 이메일 중복 검사를 완료해주세요.');
             return;
         }
         try {
             await sendVerificationRequest(signUpformData.email);
-            setIsVerificationSent(true);
-            openModal(); // 이메일 인증 모달 열기
             alert(
                 '인증 코드가 이메일로 전송되었습니다. 받으신 코드를 입력해주세요.'
             );
@@ -194,6 +190,8 @@ const useRegistration = (): UseRegistrationReturn => {
         handleCheckEmail,
         termsAgreed,
         privacyAgreed,
+        isVerified,
+        setIsVerified,
         handleAgreementChange,
         handleSendVerificationCode,
         handleVerifyEmailCode,

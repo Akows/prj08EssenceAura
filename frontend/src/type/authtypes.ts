@@ -24,12 +24,17 @@ export interface RegistrationFormErrors {
 export interface UseRegistrationReturn {
     signUpformData: RegistrationFormData;
     signUpvalidation: RegistrationFormErrors;
-    signUpIsAgree?: boolean;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleAgreementChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleCheckEmail: () => void;
     handleRegistration: (e: React.FormEvent<HTMLFormElement>) => void;
     signUpIsSubmitting: boolean;
+    termsAgreed: boolean; // 추가됨
+    privacyAgreed: boolean; // 추가됨
+    isVerified: boolean; // 추가됨
+    setIsVerified: (isVerified: boolean) => void; // 추가됨
+    handleAgreementChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // 추가됨
+    handleSendVerificationCode: () => void; // 추가됨
+    handleVerifyEmailCode: (code: string) => Promise<void>; // 추가됨
 }
 
 // 로그인 데이터
@@ -56,6 +61,14 @@ export interface UseLoginReturn {
 // 로그아웃 커스텀 훅의 타입
 export interface UseLogoutReturn {
     handleLogout: () => void;
+}
+
+// 모달 컴포넌트의 타입
+export interface EmailVerificationModalProps {
+    closeModal: () => void;
+    verifyCode: (email: string, code: string) => Promise<void>;
+    email: string;
+    setIsVerified: (isVerified: boolean) => void; // 상태 업데이트 함수
 }
 
 // 모달 커스텀 훅의 타입

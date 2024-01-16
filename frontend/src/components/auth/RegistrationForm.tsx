@@ -44,6 +44,9 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
     handleChange,
     handleCheckEmail,
     handleSendVerificationCode,
+    handleVerifyEmailCode,
+    isVerified,
+    setIsVerified,
     handleRegistration,
     signUpIsSubmitting,
 }) => {
@@ -74,7 +77,14 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
                     이메일 중복 확인
                 </Button>
 
-                <Button type="button" onClick={openModal}>
+                {/* 이메일 인증 버튼 */}
+                <Button
+                    type="button"
+                    onClick={() => {
+                        handleSendVerificationCode();
+                        openModal();
+                    }}
+                >
                     이메일 인증
                 </Button>
 
@@ -140,7 +150,9 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
             {isVisible && (
                 <EmailVerificationModal
                     closeModal={closeModal}
-                    // 필요한 경우, 이메일 인증 코드 요청 및 검증 함수 전달
+                    verifyCode={handleVerifyEmailCode}
+                    email={signUpformData.email}
+                    setIsVerified={setIsVerified}
                 />
             )}
         </>

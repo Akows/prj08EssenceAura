@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
-// closeModal 함수의 타입을 정의하는 Props 인터페이스
-interface EmailVerificationModalProps {
-    closeModal: () => void;
-}
+import { EmailVerificationModalProps } from '../../type/authtypes';
 
 const ModalBackdrop = styled.div`
     position: fixed;
@@ -58,21 +54,21 @@ const Button = styled.button`
 
 const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     closeModal,
-    requestVerificationCode, // 이메일 인증 코드 요청 함수
-    verifyCode, // 인증 코드 검증 함수
-    email, // 사용자 이메일
+    verifyCode,
+    email,
+    setIsVerified,
 }) => {
     const [verificationCode, setVerificationCode] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // 인증 코드 검증 로직을 여기에 추가
         try {
             await verifyCode(email, verificationCode);
-            // 인증 성공 처리
-            closeModal(); // 모달 닫기
+            alert('이메일 인증이 완료되었습니다.');
+            setIsVerified(true); // 인증 상태 업데이트
+            closeModal();
         } catch (error) {
-            // 인증 실패 처리
+            alert('인증 코드가 잘못되었습니다. 다시 시도해주세요.');
             console.error('인증 실패:', error);
         }
     };

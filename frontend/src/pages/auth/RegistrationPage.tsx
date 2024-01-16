@@ -32,9 +32,12 @@ const RegistrationPage: React.FC = () => {
         handleCheckEmail,
         termsAgreed,
         privacyAgreed,
+        isVerified,
+        setIsVerified,
         handleAgreementChange,
         handleSendVerificationCode,
         handleRegistration,
+        handleVerifyEmailCode,
         signUpIsSubmitting,
     } = useRegistration();
 
@@ -70,9 +73,15 @@ const RegistrationPage: React.FC = () => {
                 signUpvalidation={signUpvalidation}
                 handleChange={handleChange}
                 handleCheckEmail={handleCheckEmail}
+                termsAgreed={termsAgreed}
+                privacyAgreed={privacyAgreed}
+                isVerified={isVerified}
+                setIsVerified={setIsVerified}
+                handleAgreementChange={handleAgreementChange}
                 handleSendVerificationCode={handleSendVerificationCode}
                 handleRegistration={handleRegistration}
                 signUpIsSubmitting={signUpIsSubmitting}
+                handleVerifyEmailCode={handleVerifyEmailCode}
             />
         </RegistrationContainer>
     );
