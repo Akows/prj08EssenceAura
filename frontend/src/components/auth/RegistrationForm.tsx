@@ -41,6 +41,7 @@ const ValidationMessage = styled.div`
 const RegistrationForm: React.FC<UseRegistrationReturn> = ({
     signUpformData,
     signUpvalidation,
+    emailChecked,
     handleChange,
     handleCheckEmail,
     handleSendVerificationCode,
@@ -82,6 +83,10 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
                 <Button
                     type="button"
                     onClick={() => {
+                        if (!emailChecked) {
+                            alert('먼저 이메일 중복 검사를 완료해주세요.');
+                            return;
+                        }
                         handleSendVerificationCode();
                         openModal();
                     }}

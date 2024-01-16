@@ -24,6 +24,7 @@ export interface RegistrationFormErrors {
 export interface UseRegistrationReturn {
     signUpformData: RegistrationFormData;
     signUpvalidation: RegistrationFormErrors;
+    emailChecked: boolean;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleCheckEmail: () => void;
     handleRegistration: (e: React.FormEvent<HTMLFormElement>) => void;

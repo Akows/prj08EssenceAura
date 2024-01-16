@@ -70,7 +70,9 @@ const createUserTemp = async (email) => {
     `;
 
     try {
-        await db.execute(query, [email, tempPassword]);
+        const result = await db.execute(query, [email, tempPassword]);
+        const userId = result[0].insertId; // 삽입된 사용자의 ID를 반환하도록
+        return userId;
     } catch (error) {
         console.error("임시 사용자 데이터 저장 중 오류 발생:", error);
         throw error;
@@ -152,16 +154,16 @@ const checkEmailVerified = async (email) => {
 };
 
 // 인증 코드 생성 및 저장 함수
-const createVerificationCode = async (email) => {
+const createVerificationCode = async (email, userId) => {
     // 인증 코드 생성 (예: 랜덤 문자열)
     const verificationCode = require('crypto').randomBytes(16).toString('hex');
 
     // 생성된 코드를 데이터베이스에 저장
     const insertQuery = `
-        INSERT INTO email_verification (email, code, created_at, expires_at)
-        VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))
+        INSERT INTO email_verification (user_id, email, code, created_at, expires_at)
+        VALUES (?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))
     `;
-    await db.query(insertQuery, [email, verificationCode]);
+    await db.query(insertQuery, [userId, email, verificationCode]);
 
     return verificationCode;
 };

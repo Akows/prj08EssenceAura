@@ -206,6 +206,7 @@ const useRegistration = (): UseRegistrationReturn => {
     return {
         signUpformData,
         signUpvalidation,
+        emailChecked,
         handleChange,
         handleCheckEmail,
         termsAgreed,

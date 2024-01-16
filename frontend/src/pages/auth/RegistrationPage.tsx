@@ -28,6 +28,7 @@ const RegistrationPage: React.FC = () => {
     const {
         signUpformData,
         signUpvalidation,
+        emailChecked,
         handleChange,
         handleCheckEmail,
         termsAgreed,
@@ -72,6 +73,7 @@ const RegistrationPage: React.FC = () => {
             <RegistrationForm
                 signUpformData={signUpformData}
                 signUpvalidation={signUpvalidation}
+                emailChecked={emailChecked}
                 handleChange={handleChange}
                 handleCheckEmail={handleCheckEmail}
                 termsAgreed={termsAgreed}

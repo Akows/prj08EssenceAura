@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp } = require('../service/authService');
+const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser } = require('../service/authService');
+const sendEmail = require('../utils/emailUtils');
 
 // 회원가입 처리 함수
 const signUpHandler = async (req, res) => {
@@ -213,10 +214,10 @@ const sendVerificationEmail = async (req, res) => {
     const { email } = req.body;
     try {
         // 이메일 주소로 임시 회원 데이터 생성
-        await createUserTemp(email);
+        const userId = await createUserTemp(email);
 
-        const verificationCode = await createVerificationCode(email);
-        await emailUtils.sendEmail({
+        const verificationCode = await createVerificationCode(email, userId);
+        await sendEmail({
             from: process.env.EMAIL_USERNAME,
             to: email,
             subject: '이메일 인증',
