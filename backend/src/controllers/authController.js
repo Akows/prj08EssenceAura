@@ -2,12 +2,13 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser } = require('../service/authService');
+const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser } = require('../service/authService');
 const sendEmail = require('../utils/emailUtils');
 
 // 회원가입 처리 함수
 const signUpHandler = async (req, res) => {
     const errors = validateSignupData(req.body);
+    const email_Address = req.body.email;
 
     if (Object.keys(errors).length > 0) {
         return res.status(400).json(errors);
@@ -15,19 +16,19 @@ const signUpHandler = async (req, res) => {
 
     try {
         // 이메일 인증 여부 확인
-        const isEmailVerified = await checkEmailVerified(req.body.email);
+        const isEmailVerified = await checkEmailVerified(email_Address);
         if (!isEmailVerified) {
             return res.status(400).json({ message: '이메일 인증이 완료되어야 합니다.' });
         }
 
         // 이메일 변경 감지
-        const originalUserData = await getUserByEmail(email);
-        if (originalUserData && originalUserData.is_verified && originalUserData.email !== email) {
+        const originalUserData = await getUserByEmail(email_Address);
+        if (originalUserData && originalUserData.is_verified && originalUserData.email !== email_Address) {
             return res.status(400).json({ message: '이메일 주소가 변경되었습니다. 새 이메일 주소로 인증을 받아야 합니다.' });
         }
 
         // 인증 확인 후 나머지 회원 정보 업데이트
-        await updateUser(email, req.body);
+        await updateUser(email_Address, req.body);
         return res.status(201).json({ message: '회원가입 성공' });
     } catch (error) {
         console.error('회원가입 처리 중 에러:', error);

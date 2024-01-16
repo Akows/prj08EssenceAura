@@ -153,8 +153,7 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
             {isVisible && (
                 <EmailVerificationModal
                     closeModal={closeModal}
-                    verifyCode={handleVerifyEmailCode}
-                    email={signUpformData.email}
+                    handleVerifyEmailCode={handleVerifyEmailCode}
                     setIsVerified={setIsVerified}
                     handleCancelSignUp={handleCancelSignUp}
                 />

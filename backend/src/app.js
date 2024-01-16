@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
+require('dotenv').config();
 
 // CORS 미들웨어 설정
 const corsOptions = {

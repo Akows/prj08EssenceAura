@@ -54,8 +54,7 @@ const Button = styled.button`
 
 const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     closeModal,
-    verifyCode,
-    email,
+    handleVerifyEmailCode,
     setIsVerified,
     handleCancelSignUp,
 }) => {
@@ -69,7 +68,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await verifyCode(email, verificationCode);
+            await handleVerifyEmailCode(verificationCode);
             alert('이메일 인증이 완료되었습니다.');
             setIsVerified(true); // 인증 상태 업데이트
             closeModal();

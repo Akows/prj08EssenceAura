@@ -80,15 +80,41 @@ const createUserTemp = async (email) => {
 }
 // 임시 회원정보의 삭제
 const deleteTempUser = async (email) => {
-    const query = 'DELETE FROM users WHERE email= ? AND is_verified = 0';
-
+    // 데이터베이스 연결 풀에서 연결을 가져옴
+    const connection = await db.getConnection();
     try {
-        await db.execute(query, [email]);
+        // 트랜잭션 시작
+        await connection.beginTransaction();
+
+        // 먼저 email_verification 테이블에서 해당 이메일과 관련된 레코드를 삭제
+        // 이 작업은 users 테이블의 레코드를 참조하는 외래 키 제약 조건을 해결하기 위함임
+        const deleteEmailVerification = `DELETE FROM email_verification WHERE email = ?; `;
+        await connection.query(deleteEmailVerification, [email]);
+
+        // email_verification 테이블에서 레코드를 성공적으로 삭제한 후,
+        // users 테이블에서 해당 이메일을 가진 사용자를 삭제
+        // is_verified가 0인 사용자만 삭제하여 임시 사용자를 타겟팅함
+        const deleteUser = `
+            DELETE FROM users
+            WHERE email = ? AND is_verified = 0;
+        `;
+        await connection.query(deleteUser, [email]);
+
+        // 모든 쿼리가 성공적으로 실행되면 트랜잭션을 커밋함
+        await connection.commit();
     } catch (error) {
+        // 오류가 발생하면 트랜잭션을 롤백하여 데이터베이스의 일관성 유지
+        await connection.rollback();
         console.error("임시 사용자 데이터 삭제 중 오류 발생:", error);
         throw error;
+    } finally {
+        // 작업이 완료되면 데이터베이스 연결을 풀로 반환
+        connection.release();
     }
 };
+
+
+
 // 회원 정보의 최종 저장
 const updateUser = async (email, userData) => {
     const { username, password, address, building_name, phone_number } = userData;
@@ -170,6 +196,9 @@ const createVerificationCode = async (email, userId) => {
 
 // 인증 코드 검증 함수
 const verifyVerificationCode = async (email, code) => {
+
+    console.log(email, code);
+
     // 데이터베이스에서 인증 코드 확인
     const selectQuery = `
         SELECT * FROM email_verification

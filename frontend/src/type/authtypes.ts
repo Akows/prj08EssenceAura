@@ -68,8 +68,7 @@ export interface UseLogoutReturn {
 // 모달 컴포넌트의 타입
 export interface EmailVerificationModalProps {
     closeModal: () => void;
-    verifyCode: (email: string, code: string) => Promise<void>;
-    email: string;
+    handleVerifyEmailCode: (code: string) => Promise<void>;
     setIsVerified: (isVerified: boolean) => void; // 상태 업데이트 함수
     handleCancelSignUp: () => void; // 추가됨
 }
