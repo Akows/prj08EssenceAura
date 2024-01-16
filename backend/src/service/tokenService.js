@@ -1,4 +1,5 @@
 const db = require('../config/database');
+const crypto = require('crypto');
 
 const saveRefreshToken = async (userId, refreshToken, isAdmin) => {
   const expiresAt = new Date();
@@ -22,8 +23,41 @@ const cleanUpExpiredTokens = async () => {
   await db.query("DELETE FROM refresh_tokens WHERE expires_at < NOW()");
 };
 
+
+// 비밀번호 재설정 토큰 생성 및 저장 함수
+const savePasswordResetToken = async (userId) => {
+  const resetToken = crypto.randomBytes(20).toString('hex');
+  const expiresAt = new Date();
+  expiresAt.setHours(expiresAt.getHours() + 1); // 1시간 후 만료
+
+  await db.query(`INSERT INTO password_reset_requests (user_id, token, created_at, expires_at) VALUES (?, ?, NOW(), ?)`, [userId, resetToken, expiresAt]);
+
+  return resetToken;
+};
+
+// 비밀번호 재설정 토큰 검증 함수
+const verifyPasswordResetToken = async (token) => {
+  const [rows] = await db.query(`SELECT user_id FROM password_reset_requests WHERE token = ? AND expires_at > NOW()`, [token]);
+  
+  return rows.length ? rows[0].user_id : null;
+};
+
+// 비밀번호 재설정 토큰 무효화 함수
+const invalidatePasswordResetToken = async (token) => {
+  await db.query(`DELETE FROM password_reset_requests WHERE token = ?`, [token]);
+};
+
+// 만료된 비밀번호 재설정 토큰 정리 함수
+const cleanupExpiredPasswordResetTokens = async () => {
+  await db.query("DELETE FROM password_reset_requests WHERE expires_at < NOW()");
+};
+
 module.exports = {
   saveRefreshToken,
   invalidateRefreshToken,
   cleanUpExpiredTokens,
+  savePasswordResetToken,
+  verifyPasswordResetToken,
+  invalidatePasswordResetToken,
+  cleanupExpiredPasswordResetTokens,
 };

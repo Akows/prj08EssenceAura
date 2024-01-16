@@ -1,5 +1,6 @@
 const db = require("../config/database");
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const getUserAndTokenInfo = async (userId, isAdmin) => {
     try {
@@ -182,7 +183,7 @@ const checkEmailVerified = async (email) => {
 // 인증 코드 생성 및 저장 함수
 const createVerificationCode = async (email, userId) => {
     // 인증 코드 생성 (예: 랜덤 문자열)
-    const verificationCode = require('crypto').randomBytes(16).toString('hex');
+    const verificationCode = crypto.randomBytes(16).toString('hex');
 
     // 생성된 코드를 데이터베이스에 저장
     const insertQuery = `
@@ -196,8 +197,6 @@ const createVerificationCode = async (email, userId) => {
 
 // 인증 코드 검증 함수
 const verifyVerificationCode = async (email, code) => {
-
-    console.log(email, code);
 
     // 데이터베이스에서 인증 코드 확인
     const selectQuery = `
