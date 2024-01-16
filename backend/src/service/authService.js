@@ -1,7 +1,7 @@
 const db = require("../config/database");
 const bcrypt = require('bcrypt');
 
-async function getUserAndTokenInfo(userId, isAdmin) {
+const getUserAndTokenInfo = async (userId, isAdmin) => {
     try {
         // isAdmin을 사용하여 적절한 테이블에서 사용자 정보 조회
         const userTable = isAdmin ? 'admins' : 'users';
@@ -38,7 +38,7 @@ const checkEmailAvailability = async (email) => {
     }
 };
 
-async function getUserByEmail(email, isAdmin) {
+const getUserByEmail = async (email, isAdmin) => {
     const userTable = isAdmin ? 'admins' : 'users';
     const query = `SELECT * FROM ${userTable} WHERE email = ?`;
 
@@ -51,7 +51,7 @@ async function getUserByEmail(email, isAdmin) {
     }
 }
 
-async function validateUserPassword(email, password, isAdmin) {
+const validateUserPassword = async (email, password, isAdmin) => {
     const user = await getUserByEmail(email, isAdmin);
     if (!user) {
         return false;
@@ -62,7 +62,7 @@ async function validateUserPassword(email, password, isAdmin) {
 }
 
 // 회원 정보의 임시 저장
-async function createUserTemp(email) {
+const createUserTemp = async (email) => {
     const tempPassword = 'tempPassword'; // 임의의 비밀번호
     const query = `
         INSERT INTO users (email, password, created_at, updated_at, is_active, is_verified)
@@ -77,7 +77,7 @@ async function createUserTemp(email) {
     }
 }
 // 임시 회원정보의 삭제
-async function deleteTempUser(email) {
+const deleteTempUser = async (email) => {
     const query = 'DELETE FROM users WHERE email= ? AND is_verified = 0';
 
     try {
@@ -88,7 +88,7 @@ async function deleteTempUser(email) {
     }
 };
 // 회원 정보의 최종 저장
-async function updateUser(email, userData) {
+const updateUser = async (email, userData) => {
     const { username, password, address, building_name, phone_number } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -105,6 +105,22 @@ async function updateUser(email, userData) {
         throw error;
     }
 }
+// 주기적인 임시 사용자 데이터 삭제 로직
+const cleanUpTempUsers = async () => {
+    // 예: 인증받지 못한 사용자 데이터를 48시간 후에 삭제
+    const query = `
+        DELETE FROM users
+        WHERE is_verified = 0 AND created_at < NOW() - INTERVAL 48 HOUR
+    `;
+
+    try {
+        await db.execute(query);
+        console.log('임시 사용자 데이터가 정리되었습니다.');
+    } catch (error) {
+        console.error('임시 사용자 데이터 정리 중 에러:', error);
+    }
+};
+
 
 const findEmailByNameAndPhone = async (name, phone) => {
     try {
@@ -183,6 +199,7 @@ module.exports = {
     createUserTemp,
     deleteTempUser,
     updateUser,
+    cleanUpTempUsers,
     findEmailByNameAndPhone,
     checkEmailVerified,
     createVerificationCode,

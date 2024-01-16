@@ -35,6 +35,7 @@ export interface UseRegistrationReturn {
     handleAgreementChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // 추가됨
     handleSendVerificationCode: () => void; // 추가됨
     handleVerifyEmailCode: (code: string) => Promise<void>; // 추가됨
+    handleCancelSignUp: () => void; // 추가됨
 }
 
 // 로그인 데이터
@@ -69,6 +70,7 @@ export interface EmailVerificationModalProps {
     verifyCode: (email: string, code: string) => Promise<void>;
     email: string;
     setIsVerified: (isVerified: boolean) => void; // 상태 업데이트 함수
+    handleCancelSignUp: () => void; // 추가됨
 }
 
 // 모달 커스텀 훅의 타입
@@ -95,5 +97,10 @@ export interface EmailVerificationErrors {
 // 이메일 인증 기능의 데이터 반환타입
 export interface EmailVerificationResponse {
     success: boolean;
+    message: string;
+}
+
+// 이메일 취소 기능의 데이터 반환타입
+export interface VerificationCancelResponse {
     message: string;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { EmailVerificationModalProps } from '../../type/authtypes';
 
@@ -57,7 +57,13 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     verifyCode,
     email,
     setIsVerified,
+    handleCancelSignUp,
 }) => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = '';
+    };
+
     const [verificationCode, setVerificationCode] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -72,6 +78,22 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
             console.error('인증 실패:', error);
         }
     };
+
+    const handleCancel = () => {
+        if (window.confirm('가입을 취소하시겠습니까?')) {
+            handleCancelSignUp(); // 취소 함수 호출
+            closeModal(); // 모달 닫기
+            window.removeEventListener('beforeunload', handleBeforeUnload); // 페이지 벗어남 이벤트 리스너 제거
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
     return (
         <ModalBackdrop>
@@ -88,7 +110,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
                         }
                     />
                     <Button type="submit">인증 확인</Button>
-                    <Button onClick={closeModal}>닫기</Button>
+                    <Button onClick={handleCancel}>닫기</Button>
                 </Form>
             </ModalContainer>
         </ModalBackdrop>

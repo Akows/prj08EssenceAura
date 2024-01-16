@@ -48,6 +48,7 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
     isVerified,
     setIsVerified,
     handleRegistration,
+    handleCancelSignUp,
     signUpIsSubmitting,
 }) => {
     const { isVisible, openModal, closeModal } = useModal();
@@ -150,6 +151,7 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
                     verifyCode={handleVerifyEmailCode}
                     email={signUpformData.email}
                     setIsVerified={setIsVerified}
+                    handleCancelSignUp={handleCancelSignUp}
                 />
             )}
         </>

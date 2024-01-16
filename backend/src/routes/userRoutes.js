@@ -13,5 +13,6 @@ router.post('/find-email', authController.findEmail);
 
 router.post('/verify-email', authController.sendVerificationEmail);
 router.post('/verify-code', authController.verifyEmailCode);
+router.post('/cancel-signup', authController.cancelSignUpHandler);
 
 module.exports = router;

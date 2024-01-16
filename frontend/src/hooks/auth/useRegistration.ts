@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+    cancelSignUp,
     sendVerificationRequest,
     verifyEmailCode,
 } from '../../services/authService';
@@ -183,6 +184,25 @@ const useRegistration = (): UseRegistrationReturn => {
         setsignUpIsSubmitting(false);
     };
 
+    // 회원가입 취소 처리 핸들러
+    const handleCancelSignUp = async () => {
+        if (!signUpformData.email) {
+            console.log('이메일 주소가 없어 취소 처리를 진행하지 않습니다.');
+            return;
+        }
+
+        try {
+            const response = await cancelSignUp(signUpformData.email);
+
+            if (!response) {
+                throw new Error('회원가입 취소 요청 실패');
+            }
+            alert('회원가입이 취소되었습니다.');
+        } catch (error) {
+            console.error('회원가입 취소 처리 중 에러:', error);
+        }
+    };
+
     return {
         signUpformData,
         signUpvalidation,
@@ -196,6 +216,7 @@ const useRegistration = (): UseRegistrationReturn => {
         handleSendVerificationCode,
         handleVerifyEmailCode,
         handleRegistration,
+        handleCancelSignUp,
         signUpIsSubmitting,
     };
 };

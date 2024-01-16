@@ -38,6 +38,7 @@ const RegistrationPage: React.FC = () => {
         handleSendVerificationCode,
         handleRegistration,
         handleVerifyEmailCode,
+        handleCancelSignUp,
         signUpIsSubmitting,
     } = useRegistration();
 
@@ -80,6 +81,7 @@ const RegistrationPage: React.FC = () => {
                 handleAgreementChange={handleAgreementChange}
                 handleSendVerificationCode={handleSendVerificationCode}
                 handleRegistration={handleRegistration}
+                handleCancelSignUp={handleCancelSignUp}
                 signUpIsSubmitting={signUpIsSubmitting}
                 handleVerifyEmailCode={handleVerifyEmailCode}
             />

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified } = require('../service/authService');
+const { getUserAndTokenInfo, createUser, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp } = require('../service/authService');
 
 // 회원가입 처리 함수
 const signUpHandler = async (req, res) => {
@@ -19,12 +19,31 @@ const signUpHandler = async (req, res) => {
             return res.status(400).json({ message: '이메일 인증이 완료되어야 합니다.' });
         }
 
+        // 이메일 변경 감지
+        const originalUserData = await getUserByEmail(email);
+        if (originalUserData && originalUserData.is_verified && originalUserData.email !== email) {
+            return res.status(400).json({ message: '이메일 주소가 변경되었습니다. 새 이메일 주소로 인증을 받아야 합니다.' });
+        }
+
         // 인증 확인 후 나머지 회원 정보 업데이트
         await updateUser(email, req.body);
         return res.status(201).json({ message: '회원가입 성공' });
     } catch (error) {
         console.error('회원가입 처리 중 에러:', error);
         return res.status(500).json({ message: '회원가입 처리 중 에러 발생' });
+    }
+};
+
+// 회원가입 취소 처리 함수
+const cancelSignUpHandler = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        await deleteTempUser(email);
+        res.json({ message: '회원가입 절차가 취소되었습니다.' });
+    } catch (error) {
+        console.error('회원가입 취소 처리 중 에러:', error);
+        res.status(500).json({ message: '회원가입 취소 중 오류가 발생했습니다.' });
     }
 };
 
@@ -193,6 +212,9 @@ const findEmail = async (req, res) => {
 const sendVerificationEmail = async (req, res) => {
     const { email } = req.body;
     try {
+        // 이메일 주소로 임시 회원 데이터 생성
+        await createUserTemp(email);
+
         const verificationCode = await createVerificationCode(email);
         await emailUtils.sendEmail({
             from: process.env.EMAIL_USERNAME,
@@ -227,7 +249,8 @@ const verifyEmailCode = async (req, res) => {
 };
 
 module.exports = {
-    signUpHandler, 
+    signUpHandler,
+    cancelSignUpHandler,
     checkEmailHandler, 
     loginHandler, 
     refreshTokenHandler, 

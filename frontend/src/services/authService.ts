@@ -1,4 +1,7 @@
-import { EmailVerificationResponse } from '../type/authtypes';
+import {
+    EmailVerificationResponse,
+    VerificationCancelResponse,
+} from '../type/authtypes';
 
 const API_BASE_URL = 'http://localhost:3001/api';
 
@@ -41,4 +44,24 @@ export const verifyEmailCode = async (
     }
 
     return response.json();
+};
+
+// 회원가입 취소 함수
+export const cancelSignUp = async (
+    email: string
+): Promise<VerificationCancelResponse> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/cancel-signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('회원가입 취소 요청 중 오류 발생:', error);
+        throw error;
+    }
 };
