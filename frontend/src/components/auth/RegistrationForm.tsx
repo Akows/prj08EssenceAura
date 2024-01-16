@@ -138,10 +138,7 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
                 <ValidationMessage>
                     {signUpvalidation.phone_number}
                 </ValidationMessage>
-                <Button
-                    type="submit"
-                    disabled={!isVerified || signUpIsSubmitting}
-                >
+                <Button type="submit" disabled={signUpIsSubmitting}>
                     {signUpIsSubmitting ? '회원가입 중...' : '회원가입'}
                 </Button>
             </Form>

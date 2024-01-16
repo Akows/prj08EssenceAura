@@ -6,7 +6,7 @@ const API_BASE_URL = 'http://localhost:3001/api';
 export const sendVerificationRequest = async (
     email: string
 ): Promise<EmailVerificationResponse> => {
-    const response = await fetch(`${API_BASE_URL}/request-verification`, {
+    const response = await fetch(`${API_BASE_URL}/verify-email`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

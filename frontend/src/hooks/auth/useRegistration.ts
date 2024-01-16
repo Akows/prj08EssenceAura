@@ -134,20 +134,20 @@ const useRegistration = (): UseRegistrationReturn => {
             return;
         }
 
-        // 이메일 중복 검사 및 인증 확인
-        if (!emailChecked) {
-            alert('이메일 중복 검사를 완료해주세요.');
-            return;
-        }
-
-        // 이메일 인증 확인
-        if (!isVerified) {
-            alert('이메일 인증을 완료해주세요.');
-            return;
-        }
-
         const errors = validateRegistrationForm(signUpformData);
         if (Object.keys(errors).length === 0) {
+            // 이메일 중복 검사 및 인증 확인
+            if (!emailChecked) {
+                alert('이메일 중복 검사를 완료해주세요.');
+                return;
+            }
+
+            // 이메일 인증 확인
+            if (!isVerified) {
+                alert('이메일 인증을 완료해주세요.');
+                return;
+            }
+
             setsignUpIsSubmitting(true);
 
             try {

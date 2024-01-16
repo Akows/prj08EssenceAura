@@ -19,8 +19,8 @@ const signUpHandler = async (req, res) => {
             return res.status(400).json({ message: '이메일 인증이 완료되어야 합니다.' });
         }
 
-        // 인증 확인 후 가입 절차 실행.
-        await createUser(req.body);
+        // 인증 확인 후 나머지 회원 정보 업데이트
+        await updateUser(email, req.body);
         return res.status(201).json({ message: '회원가입 성공' });
     } catch (error) {
         console.error('회원가입 처리 중 에러:', error);
@@ -190,7 +190,7 @@ const findEmail = async (req, res) => {
 };
 
 // 인증 이메일 발송 로직
-exports.sendVerificationEmail = async (req, res) => {
+const sendVerificationEmail = async (req, res) => {
     const { email } = req.body;
     try {
         const verificationCode = await createVerificationCode(email);
@@ -210,7 +210,7 @@ exports.sendVerificationEmail = async (req, res) => {
 };
 
 // 인증 코드 검증 로직
-exports.verifyEmailCode = async (req, res) => {
+const verifyEmailCode = async (req, res) => {
     const { email, code } = req.body;
     try {
         const isVerified = await verifyVerificationCode(email, code);
@@ -234,4 +234,6 @@ module.exports = {
     logoutHandler, 
     checkAuthHandler, 
     findEmail,
+    sendVerificationEmail,
+    verifyEmailCode,
 };

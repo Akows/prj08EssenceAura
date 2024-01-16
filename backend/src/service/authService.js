@@ -61,21 +61,47 @@ async function validateUserPassword(email, password, isAdmin) {
     return isValid ? user : null;
 }
 
-
-async function createUser(userData) {
-    const { username, email, password, address, building_name, phone_number } = userData;
-   
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+// 회원 정보의 임시 저장
+async function createUserTemp(email) {
+    const tempPassword = 'tempPassword'; // 임의의 비밀번호
     const query = `
-        INSERT INTO users (username, email, password, address, building_name, phone_number, created_at, updated_at, is_active, is_member)
-        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1)
+        INSERT INTO users (email, password, created_at, updated_at, is_active, is_verified)
+        VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0, 0)
     `;
 
     try {
-        await db.execute(query, [username, email, hashedPassword, address, building_name, phone_number]);
+        await db.execute(query, [email, tempPassword]);
     } catch (error) {
-        console.error("데이터베이스 삽입 중 오류 발생:", error);
+        console.error("임시 사용자 데이터 저장 중 오류 발생:", error);
+        throw error;
+    }
+}
+// 임시 회원정보의 삭제
+async function deleteTempUser(email) {
+    const query = 'DELETE FROM users WHERE email= ? AND is_verified = 0';
+
+    try {
+        await db.execute(query, [email]);
+    } catch (error) {
+        console.error("임시 사용자 데이터 삭제 중 오류 발생:", error);
+        throw error;
+    }
+};
+// 회원 정보의 최종 저장
+async function updateUser(email, userData) {
+    const { username, password, address, building_name, phone_number } = userData;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = `
+        UPDATE users
+        SET username = ?, password = ?, address = ?, building_name = ?, phone_number = ?, updated_at = CURRENT_TIMESTAMP, is_active = 1, is_verified = 1
+        WHERE email = ?
+    `;
+
+    try {
+        await db.execute(query, [username, hashedPassword, address, building_name, phone_number, email]);
+    } catch (error) {
+        console.error("사용자 데이터 업데이트 중 오류 발생:", error);
         throw error;
     }
 }
@@ -97,7 +123,7 @@ const findEmailByNameAndPhone = async (name, phone) => {
 };
 
 // 이메일 인증 여부 확인 함수
-exports.checkEmailVerified = async (email) => {
+const checkEmailVerified = async (email) => {
     const query = 'SELECT is_verified FROM users WHERE email = ?';
     const [results] = await db.query(query, [email]);
 
@@ -110,7 +136,7 @@ exports.checkEmailVerified = async (email) => {
 };
 
 // 인증 코드 생성 및 저장 함수
-exports.createVerificationCode = async (email) => {
+const createVerificationCode = async (email) => {
     // 인증 코드 생성 (예: 랜덤 문자열)
     const verificationCode = require('crypto').randomBytes(16).toString('hex');
 
@@ -125,7 +151,7 @@ exports.createVerificationCode = async (email) => {
 };
 
 // 인증 코드 검증 함수
-exports.verifyVerificationCode = async (email, code) => {
+const verifyVerificationCode = async (email, code) => {
     // 데이터베이스에서 인증 코드 확인
     const selectQuery = `
         SELECT * FROM email_verification
@@ -154,6 +180,11 @@ module.exports = {
     checkEmailAvailability,
     getUserByEmail,
     validateUserPassword,
-    createUser,
+    createUserTemp,
+    deleteTempUser,
+    updateUser,
     findEmailByNameAndPhone,
+    checkEmailVerified,
+    createVerificationCode,
+    verifyVerificationCode,
 };
