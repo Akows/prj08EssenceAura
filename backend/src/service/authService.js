@@ -221,6 +221,46 @@ const verifyVerificationCode = async (email, code) => {
     }
 };
 
+// 비밀번호 재설정 요청 처리
+const requestPasswordReset = async (email) => {
+    // 사용자 이메일을 기반으로 사용자 ID 조회
+    const [user] = await db.query("SELECT user_id FROM users WHERE email = ?", [email]);
+    if (user.length === 0) {
+    throw new Error('No account with that email address exists.');
+    }
+    
+    // 비밀번호 재설정 토큰 생성 및 저장
+    const resetToken = await tokenService.savePasswordResetToken(user[0].user_id);
+    
+    // 이메일로 비밀번호 재설정 링크 전송
+    await emailUtils.sendPasswordResetEmail(email, resetToken);
+    
+    return resetToken; // 이 토큰은 테스트 목적으로 반환하거나, 로그에 기록할 수 있습니다.
+    };
+    
+// 비밀번호 재설정 처리
+const resetPassword = async (token, newPassword) => {
+    const userId = await tokenService.verifyPasswordResetToken(token);
+    if (!userId)
+    
+    {
+    throw new Error('Password reset token is invalid or has expired.');
+    }
+    
+    // 새 비밀번호 해싱
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    
+    // 사용자의 비밀번호 업데이트
+    await db.query("UPDATE users SET password = ? WHERE user_id = ?", [hashedPassword, userId]);
+    
+    // 사용한 비밀번호 재설정 토큰 무효화
+    await tokenService.invalidatePasswordResetToken(token);
+};
+
+
+
+
 module.exports = {
     getUserAndTokenInfo,
     checkEmailAvailability,
@@ -234,4 +274,6 @@ module.exports = {
     checkEmailVerified,
     createVerificationCode,
     verifyVerificationCode,
+    requestPasswordReset,
+    resetPassword,
 };

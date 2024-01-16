@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser } = require('../service/authService');
+const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser, requestPasswordReset, resetPassword } = require('../service/authService');
 const sendEmail = require('../utils/emailUtils');
 
 // 회원가입 처리 함수
@@ -250,6 +250,28 @@ const verifyEmailCode = async (req, res) => {
     }
 };
 
+// 클라이언트로부터의 비밀번호 재설정 요청을 처리하는 핸들러
+const requestPasswordResetHandler = async (req, res) => {
+    try {
+        const { email } = req.body;
+        await requestPasswordReset(email);
+        res.status(200).send('Password reset email sent.');
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+    
+    // 클라이언트가 제출한 토큰과 새 비밀번호로 비밀번호 재설정을 처리하는 핸들러
+const resetPasswordHandler = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+        await resetPassword(token, newPassword);
+        res.status(200).send('Password has been reset successfully.');
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
 module.exports = {
     signUpHandler,
     cancelSignUpHandler,
@@ -261,4 +283,6 @@ module.exports = {
     findEmail,
     sendVerificationEmail,
     verifyEmailCode,
+    requestPasswordResetHandler,
+    resetPasswordHandler,
 };
