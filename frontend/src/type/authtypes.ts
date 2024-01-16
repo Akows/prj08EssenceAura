@@ -58,9 +58,29 @@ export interface UseLogoutReturn {
     handleLogout: () => void;
 }
 
-// 로그인 커스텀 훅의 타입
+// 모달 커스텀 훅의 타입
 export interface UseModalReturn {
     isVisible: boolean;
     openModal: () => void;
     closeModal: () => void;
+}
+
+// 이메일 인증 커스텀 훅의 타입
+export interface UseEmailVerificationReturn {
+    isVerificationSent: boolean;
+    isVerified: boolean;
+    verificationError: EmailVerificationErrors;
+    requestVerificationCode: (email: string) => Promise<void>;
+    verifyCode: (email: string, code: string) => Promise<void>;
+}
+
+// 이메일 인증 커스텀 훅의 에러 타입
+export interface EmailVerificationErrors {
+    message: string;
+}
+
+// 이메일 인증 기능의 데이터 반환타입
+export interface EmailVerificationResponse {
+    success: boolean;
+    message: string;
 }

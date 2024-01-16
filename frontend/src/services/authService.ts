@@ -1,10 +1,44 @@
-import axios from 'axios';
+import { EmailVerificationResponse } from '../type/authtypes';
 
-const API_URL = '서버 API URL';
+const API_BASE_URL = 'http://localhost:3001/api';
 
-export const registerUser = async (userData) => {
-    const response = await axios.post(`${API_URL}/register`, userData);
-    return response.data;
+// 이메일 인증 코드 요청 함수
+export const sendVerificationRequest = async (
+    email: string
+): Promise<EmailVerificationResponse> => {
+    const response = await fetch(`${API_BASE_URL}/request-verification`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '인증 코드 요청에 실패했습니다.');
+    }
+
+    return response.json();
 };
 
-// 로그인, 로그아웃 등의 함수 구현
+// 이메일 인증 코드 검증 함수
+export const verifyEmailCode = async (
+    email: string,
+    code: string
+): Promise<EmailVerificationResponse> => {
+    const response = await fetch(`${API_BASE_URL}/verify-code`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code }),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '인증 코드 검증에 실패했습니다.');
+    }
+
+    return response.json();
+};
