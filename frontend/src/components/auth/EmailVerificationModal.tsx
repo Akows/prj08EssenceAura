@@ -58,13 +58,23 @@ const Button = styled.button`
 
 const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     closeModal,
+    requestVerificationCode, // 이메일 인증 코드 요청 함수
+    verifyCode, // 인증 코드 검증 함수
+    email, // 사용자 이메일
 }) => {
     const [verificationCode, setVerificationCode] = useState<string>('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        closeModal();
-        // 인증 코드 검증 로직
+        // 인증 코드 검증 로직을 여기에 추가
+        try {
+            await verifyCode(email, verificationCode);
+            // 인증 성공 처리
+            closeModal(); // 모달 닫기
+        } catch (error) {
+            // 인증 실패 처리
+            console.error('인증 실패:', error);
+        }
     };
 
     return (

@@ -96,6 +96,59 @@ const findEmailByNameAndPhone = async (name, phone) => {
     }
 };
 
+// 이메일 인증 여부 확인 함수
+exports.checkEmailVerified = async (email) => {
+    const query = 'SELECT is_verified FROM users WHERE email = ?';
+    const [results] = await db.query(query, [email]);
+
+    // 이메일 주소가 존재하고 인증된 상태인지 확인
+    if (results.length > 0 && results[0].is_verified) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+// 인증 코드 생성 및 저장 함수
+exports.createVerificationCode = async (email) => {
+    // 인증 코드 생성 (예: 랜덤 문자열)
+    const verificationCode = require('crypto').randomBytes(16).toString('hex');
+
+    // 생성된 코드를 데이터베이스에 저장
+    const insertQuery = `
+        INSERT INTO email_verification (email, code, created_at, expires_at)
+        VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))
+    `;
+    await db.query(insertQuery, [email, verificationCode]);
+
+    return verificationCode;
+};
+
+// 인증 코드 검증 함수
+exports.verifyVerificationCode = async (email, code) => {
+    // 데이터베이스에서 인증 코드 확인
+    const selectQuery = `
+        SELECT * FROM email_verification
+        WHERE email = ? AND code = ? AND expires_at > NOW()
+    `;
+    const [results] = await db.query(selectQuery, [email, code]);
+
+    // 인증 코드가 데이터베이스에 존재하면 true 반환
+    if (results.length > 0) {
+        // 인증이 완료되면 해당 레코드 삭제
+        const deleteQuery = `DELETE FROM email_verification WHERE email = ?`;
+        await db.query(deleteQuery, [email]);
+
+        // 사용자의 is_verified 상태를 true로 업데이트
+        const updateQuery = `UPDATE users SET is_verified = 1 WHERE email = ?`;
+        await db.query(updateQuery, [email]);
+
+        return true;
+    } else {
+        return false;
+    }
+};
+
 module.exports = {
     getUserAndTokenInfo,
     checkEmailAvailability,

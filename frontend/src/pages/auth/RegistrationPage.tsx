@@ -30,7 +30,10 @@ const RegistrationPage: React.FC = () => {
         signUpvalidation,
         handleChange,
         handleCheckEmail,
+        termsAgreed,
+        privacyAgreed,
         handleAgreementChange,
+        handleSendVerificationCode,
         handleRegistration,
         signUpIsSubmitting,
     } = useRegistration();
@@ -41,11 +44,23 @@ const RegistrationPage: React.FC = () => {
 
             {/* 이용 약관 및 개인정보 처리 동의 */}
             <CheckboxLabel>
-                <Checkbox type="checkbox" onChange={handleAgreementChange} />
-                <div>이용약관에 동의합니다. (전문보기)</div>
+                <Checkbox
+                    id="termsAgreement"
+                    type="checkbox"
+                    onChange={handleAgreementChange}
+                    checked={termsAgreed}
+                />
+                <div>
+                    이용약관에 동의합니다. <a href="/terms">전문보기</a>
+                </div>
             </CheckboxLabel>
             <CheckboxLabel>
-                <Checkbox type="checkbox" onChange={handleAgreementChange} />
+                <Checkbox
+                    id="privacyAgreement"
+                    type="checkbox"
+                    onChange={handleAgreementChange}
+                    checked={privacyAgreed}
+                />
                 <div>개인정보 수집 및 이용에 동의합니다.</div>
             </CheckboxLabel>
 
@@ -55,6 +70,7 @@ const RegistrationPage: React.FC = () => {
                 signUpvalidation={signUpvalidation}
                 handleChange={handleChange}
                 handleCheckEmail={handleCheckEmail}
+                handleSendVerificationCode={handleSendVerificationCode}
                 handleRegistration={handleRegistration}
                 signUpIsSubmitting={signUpIsSubmitting}
             />
