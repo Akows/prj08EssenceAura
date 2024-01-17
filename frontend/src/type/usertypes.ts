@@ -3,9 +3,9 @@ export interface UserInfo {
     username: string;
     email: string;
     address: string;
-    buildingName: string;
+    building_name: string;
     unitNumber: string;
-    phoneNumber: string;
+    phone_number: string;
     createdAt: string;
     isVerified: boolean;
 }
@@ -13,7 +13,7 @@ export interface UserInfo {
 export interface UserUpdateInfo {
     username: string;
     address: string;
-    buildingName: string;
+    building_name: string;
     unitNumber: string;
-    phoneNumber: string;
+    phone_number: string;
 }

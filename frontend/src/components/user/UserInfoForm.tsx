@@ -97,28 +97,19 @@ const UserInfoForm: React.FC = () => {
 
                         <Label htmlFor="buildingName">건물명</Label>
                         <Input
-                            id="buildingName"
-                            name="buildingName"
+                            id="building_name"
+                            name="building_name"
                             type="text"
-                            value={userInfo.buildingName || ''}
+                            value={userInfo.building_name || ''}
                             onChange={handleChange}
                         />
 
-                        <Label htmlFor="unitNumber">호실 번호</Label>
+                        <Label htmlFor="phone_number">전화번호</Label>
                         <Input
-                            id="unitNumber"
-                            name="unitNumber"
+                            id="phone_number"
+                            name="phone_number"
                             type="text"
-                            value={userInfo.unitNumber || ''}
-                            onChange={handleChange}
-                        />
-
-                        <Label htmlFor="phoneNumber">전화번호</Label>
-                        <Input
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            type="text"
-                            value={userInfo.phoneNumber || ''}
+                            value={userInfo.phone_number || ''}
                             onChange={handleChange}
                         />
 
@@ -132,9 +123,8 @@ const UserInfoForm: React.FC = () => {
                         <div>이름: {userInfo.username}</div>
                         <div>이메일: {userInfo.email}</div>
                         <div>주소: {userInfo.address}</div>
-                        <div>건물명: {userInfo.buildingName}</div>
-                        <div>호실 번호: {userInfo.unitNumber}</div>
-                        <div>전화번호: {userInfo.phoneNumber}</div>
+                        <div>건물명: {userInfo.building_name}</div>
+                        <div>전화번호: {userInfo.phone_number}</div>
 
                         <EditButton type="button" onClick={handleEditClick}>
                             수정하기
