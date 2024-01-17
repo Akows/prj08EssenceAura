@@ -239,24 +239,27 @@ const sendPasswordResetEmailHandler = async (req, res) => {
         // 이메일 주소를 사용하여 유저 정보 조회
         const user = await getUserByEmail(email);
 
+        // 유저가 존재하지 않는 경우
+        if (!user) {
+            return res.status(404).json({ message: '존재하지 않는 사용자입니다.' });
+        }
+        
         // 유저가 존재하는 경우에만 인증 코드 생성 및 이메일 발송
-        if (user) {
-            const result  = await createVerificationCode(email, user.user_id);
+        const result  = await createVerificationCode(email, user.user_id);
 
-            // 인증 코드 생성 중 에러가 발생한 경우
-            if (result.error) {
-                return res.status(429).json({ message: result.error });
-            }
-
-            await sendEmail({
-                from: process.env.EMAIL_USERNAME,
-                to: email,
-                subject: '비밀번호 재설정 인증',
-                html: `<h1>비밀번호 재설정 인증 코드입니다: ${result}</h1>
-                       <p>이 코드를 입력하여 비밀번호 재설정을 진행해주세요.</p>`
-            });
+        // 인증 코드 생성 중 에러가 발생한 경우
+        if (result.error) {
+            return res.status(429).json({ message: result.error });
         }
 
+        await sendEmail({
+            from: process.env.EMAIL_USERNAME,
+            to: email,
+            subject: '비밀번호 재설정 인증',
+            html: `<h1>비밀번호 재설정 인증 코드입니다: ${result}</h1>
+                   <p>이 코드를 입력하여 비밀번호 재설정을 진행해주세요.</p>`
+        });
+       
         // 보안상의 이유로 사용자에게는 항상 같은 메시지를 전송
         res.status(200).json({ message: '비밀번호 재설정 이메일을 발송했습니다.' });
     } catch (error) {
@@ -285,8 +288,6 @@ const verifyEmailCodeHandler = async (req, res) => {
 // 클라이언트로부터의 비밀번호 재설정 요청을 처리하는 핸들러
 const verifyAndResetPasswordHandler = async (req, res) => {
     const { email, code, newPassword } = req.body;
-
-    console.log(req.body);
 
     try {
         // 여기서 verifyVerificationCode 함수는 제공된 코드가 유효한지 확인합니다.

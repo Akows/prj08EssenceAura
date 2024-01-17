@@ -154,7 +154,7 @@ const cleanUpTempUsers = async () => {
     }
 };
 
-
+// 이메일 찾기 함수
 const findEmailByNameAndPhone = async (name, phone) => {
     try {
         const query = 'SELECT email FROM users WHERE username = ? AND phone_number = ?';
@@ -236,7 +236,7 @@ const verifyVerificationCode = async (email, code) => {
         return false;
     }
 };
-// 인증코드 자동 정리 함수
+// 인증코드 자동 정리 함수 (미사용)
 const cleanUpExpiredVerificationCodes = async () => {
     const query = `
         DELETE FROM email_verification

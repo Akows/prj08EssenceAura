@@ -40,9 +40,12 @@ export const useFindEmail = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setEmail(data.email);
+                setName('');
+                setPhone('');
+                alert('회원님의 이메일 주소는 : ' + data.email + '입니다.');
                 setError(null);
             } else {
+                alert(data.message || '알 수 없는 에러가 발생하였습니다.');
                 throw new Error(
                     data.message || '알 수 없는 에러가 발생하였습니다.'
                 );
@@ -62,8 +65,6 @@ export const useFindEmail = () => {
         setName,
         phone,
         setPhone,
-        email,
-        error,
         handleSubmit,
     };
 };

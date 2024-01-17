@@ -87,6 +87,8 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
             handleCancelSignUp(); // 취소 함수 호출
             closeModal(); // 모달 닫기
             window.removeEventListener('beforeunload', handleBeforeUnload); // 페이지 벗어남 이벤트 리스너 제거
+        } else {
+            return;
         }
     };
 
@@ -113,7 +115,9 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
                         }
                     />
                     <Button type="submit">인증 확인</Button>
-                    <Button onClick={handleCancel}>닫기</Button>
+                    <Button type="button" onClick={handleCancel}>
+                        닫기
+                    </Button>
                 </Form>
             </ModalContainer>
         </ModalBackdrop>

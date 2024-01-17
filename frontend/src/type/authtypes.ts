@@ -105,6 +105,23 @@ export interface VerificationCancelResponse {
     message: string;
 }
 
+// 비밀번호 재설정 커스텀 훅의 타입
+export interface UseResetPasswordReturn {
+    isLoading: boolean;
+    verificationCode: string;
+    setVerificationCode: (value: string) => void;
+    newPassword: string;
+    setNewPassword: (value: string) => void;
+    resetRequestStatus: PasswordResetRequestResponse | null;
+    resetStatus: PasswordResetVerificationResponse | null;
+    handlePasswordResetRequest: (email: string) => Promise<void>;
+    handlePasswordReset: (
+        email: string,
+        code: string,
+        newPassword: string
+    ) => Promise<void>;
+}
+
 // 비밀번호 재설정 이메일 요청의 데이터 반환타입
 export interface PasswordResetRequestResponse {
     success: boolean;

@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useResetPassword } from '../../hooks/auth/useResetPassword';
+import LoadingModal from '../common/LoadingModal';
+
+interface PasswordResetModalProps {
+    closeModal: () => void;
+    email: string;
+    isLoading: boolean;
+    setEmail: (value: string) => void;
+}
 
 const ModalBackdrop = styled.div`
     position: fixed;
@@ -53,7 +61,12 @@ const Button = styled.button`
     }
 `;
 
-const PasswordResetModal: React.FC = ({ closeModal, email }) => {
+const PasswordResetModal: React.FC<PasswordResetModalProps> = ({
+    closeModal,
+    email,
+    isLoading,
+    setEmail,
+}) => {
     const navigate = useNavigate();
     const { handlePasswordReset } = useResetPassword();
     const [verificationCode, setVerificationCode] = useState('');
@@ -70,6 +83,7 @@ const PasswordResetModal: React.FC = ({ closeModal, email }) => {
             await handlePasswordReset(email, verificationCode, newPassword);
             alert('비밀번호 재설정이 완료되었습니다.');
             closeModal();
+            setEmail('');
 
             // 재설정 성공 후 '/login' 페이지로 리디렉션
             navigate('/login');
@@ -87,6 +101,8 @@ const PasswordResetModal: React.FC = ({ closeModal, email }) => {
         ) {
             closeModal(); // 모달 닫기
             window.removeEventListener('beforeunload', handleBeforeUnload); // 페이지 벗어남 이벤트 리스너 제거
+        } else {
+            return;
         }
     };
 
@@ -99,27 +115,39 @@ const PasswordResetModal: React.FC = ({ closeModal, email }) => {
     }, []);
 
     return (
-        <ModalBackdrop>
-            <ModalContainer>
-                <h2>비밀번호 재설정</h2>
-                <Form onSubmit={handleSubmit}>
-                    <Label>인증코드</Label>
-                    <Input
-                        type="text"
-                        value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value)}
-                    />
-                    <Label>새 비밀번호</Label>
-                    <Input
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                    <Button type="submit">비밀번호 변경</Button>
-                    <Button onClick={handleCancel}>닫기</Button>
-                </Form>
-            </ModalContainer>
-        </ModalBackdrop>
+        <>
+            <ModalBackdrop>
+                <ModalContainer>
+                    <h2>비밀번호 재설정</h2>
+                    <Form onSubmit={handleSubmit}>
+                        <Label>인증코드</Label>
+                        <Input
+                            type="text"
+                            value={verificationCode}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setVerificationCode(e.target.value)}
+                        />
+                        <Label>새 비밀번호</Label>
+                        <Input
+                            type="password"
+                            value={newPassword}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setNewPassword(e.target.value)}
+                        />
+                        <Button type="submit" disabled={isLoading}>
+                            비밀번호 변경
+                        </Button>
+                        <Button type="button" onClick={handleCancel}>
+                            닫기
+                        </Button>
+                    </Form>
+                </ModalContainer>
+            </ModalBackdrop>
+
+            {isLoading && <LoadingModal />}
+        </>
     );
 };
 

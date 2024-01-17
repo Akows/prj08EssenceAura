@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useModal } from '../../hooks/auth/useModal';
 import { useResetPassword } from '../../hooks/auth/useResetPassword';
+import LoadingModal from '../common/LoadingModal';
 import PasswordResetModal from './PasswordResetModal';
 
 const Form = styled.form`
@@ -37,7 +38,7 @@ const Button = styled.button`
 `;
 
 const ResetPasswordForm: React.FC = () => {
-    const { handlePasswordResetRequest } = useResetPassword();
+    const { isLoading, handlePasswordResetRequest } = useResetPassword();
     const { closeModal, openModal, isVisible } = useModal();
     const [email, setEmail] = useState('');
 
@@ -47,6 +48,7 @@ const ResetPasswordForm: React.FC = () => {
             alert('이메일을 입력해주세요.');
             return;
         }
+
         try {
             await handlePasswordResetRequest(email);
             alert(
@@ -54,7 +56,13 @@ const ResetPasswordForm: React.FC = () => {
             );
             openModal(); // 이메일 인증 요청 후 모달 열기
         } catch (error) {
-            alert(error.message);
+            setEmail('');
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                // error가 Error 타입이 아닌 경우의 처리
+                console.error('알 수 없는 에러가 발생하였습니다.', error);
+            }
         }
     };
 
@@ -70,14 +78,24 @@ const ResetPasswordForm: React.FC = () => {
                 <Input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEmail(e.target.value)
+                    }
                     placeholder="이메일 주소 입력"
                 />
-                <Button type="submit">비밀번호 재설정 이메일 보내기</Button>
+                <Button type="submit" disabled={isLoading}>
+                    비밀번호 재설정 이메일 보내기
+                </Button>
             </Form>
             {isVisible && (
-                <PasswordResetModal closeModal={closeModal} email={email} />
+                <PasswordResetModal
+                    closeModal={closeModal}
+                    email={email}
+                    isLoading={isLoading}
+                    setEmail={setEmail}
+                />
             )}
+            {isLoading && <LoadingModal />}
         </>
     );
 };
