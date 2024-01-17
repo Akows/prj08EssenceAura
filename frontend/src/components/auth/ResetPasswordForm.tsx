@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useModal } from '../../hooks/auth/useModal';
 import { useResetPassword } from '../../hooks/auth/useResetPassword';
-import EmailVerificationModal from './EmailVerificationModal';
+import PasswordResetModal from './PasswordResetModal';
 
 const Form = styled.form`
     width: 100%; // 부모 요소의 너비를 차지하도록 설정
@@ -37,8 +37,23 @@ const Button = styled.button`
 `;
 
 const ResetPasswordForm: React.FC = () => {
-    const { email, setEmail, handleSubmit } = useResetPassword();
-    const { isVisible, openModal, closeModal } = useModal();
+    const { handlePasswordResetRequest } = useResetPassword();
+    const { closeModal, openModal, isVisible } = useModal();
+    const [email, setEmail] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) {
+            alert('이메일을 입력해주세요.');
+            return;
+        }
+        try {
+            await handlePasswordResetRequest(email);
+            openModal(); // 이메일 인증 요청 후 모달 열기
+        } catch (error) {
+            alert('이메일 발송에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
 
     return (
         <>
@@ -52,16 +67,12 @@ const ResetPasswordForm: React.FC = () => {
                 <Input
                     type="email"
                     value={email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEmail(e.target.value)
-                    }
-                    placeholder="이메일"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="이메일 주소 입력"
                 />
-                <Button type="button" onClick={openModal}>
-                    인증 메일 보내기
-                </Button>
+                <Button type="submit">비밀번호 재설정 이메일 보내기</Button>
             </Form>
-            {isVisible && <EmailVerificationModal closeModal={closeModal} />}
+            {isVisible && <PasswordResetModal closeModal={closeModal} />}
         </>
     );
 };

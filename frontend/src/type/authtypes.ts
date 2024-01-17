@@ -104,3 +104,14 @@ export interface EmailVerificationResponse {
 export interface VerificationCancelResponse {
     message: string;
 }
+
+// 비밀번호 재설정 이메일 요청의 데이터 반환타입
+export interface PasswordResetRequestResponse {
+    success: boolean;
+    message: string;
+}
+// 비밀번호 재설정 인증 코드 검증 및 변경의 데이터 반환타입
+export interface PasswordResetVerificationResponse {
+    success: boolean;
+    message: string;
+}

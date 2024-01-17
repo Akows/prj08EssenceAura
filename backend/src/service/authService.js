@@ -138,7 +138,7 @@ const updateUser = async (email, userData) => {
         throw error;
     }
 }
-// 주기적인 임시 사용자 데이터 삭제 로직
+// 주기적인 임시 사용자 데이터 삭제 로직 (미사용)
 const cleanUpTempUsers = async () => {
     // 예: 인증받지 못한 사용자 데이터를 48시간 후에 삭제
     const query = `

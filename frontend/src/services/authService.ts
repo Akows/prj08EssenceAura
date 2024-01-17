@@ -1,5 +1,7 @@
 import {
     EmailVerificationResponse,
+    PasswordResetRequestResponse,
+    PasswordResetVerificationResponse,
     VerificationCancelResponse,
 } from '../type/authtypes';
 
@@ -62,6 +64,56 @@ export const cancelSignUp = async (
         return data;
     } catch (error) {
         console.error('회원가입 취소 요청 중 오류 발생:', error);
+        throw error;
+    }
+};
+
+// 비밀번호 재설정 이메일 요청 함수
+export const requestPasswordResetEmail = async (
+    email: string
+): Promise<PasswordResetRequestResponse> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/password-reset/request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        if (!response.ok) {
+            throw new Error('비밀번호 재설정 이메일 요청 실패');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('비밀번호 재설정 이메일 요청 중 오류 발생:', error);
+        throw error;
+    }
+};
+
+// 비밀번호 재설정 - 인증 코드 검증 및 변경 함수
+export const resetPassword = async (
+    email: string,
+    code: string,
+    newPassword: string
+): Promise<PasswordResetVerificationResponse> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/password-reset/verify`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, code, newPassword }),
+        });
+
+        if (!response.ok) {
+            throw new Error('비밀번호 재설정 실패');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('비밀번호 재설정 중 오류 발생:', error);
         throw error;
     }
 };

@@ -1,23 +1,57 @@
 import { useState } from 'react';
-import { isEmailValid } from '../../utils/auth';
+import {
+    requestPasswordResetEmail,
+    resetPassword,
+} from '../../services/authService';
+import {
+    PasswordResetRequestResponse,
+    PasswordResetVerificationResponse,
+} from '../../type/authtypes';
 
 export const useResetPassword = () => {
-    const [email, setEmail] = useState<string>('');
+    const [email, setEmail] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [resetRequestStatus, setResetRequestStatus] =
+        useState<PasswordResetRequestResponse | null>(null);
+    const [resetStatus, setResetStatus] =
+        useState<PasswordResetVerificationResponse | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handlePasswordResetRequest = async (email: string) => {
+        setEmail(email);
 
-        if (!isEmailValid(email)) {
-            alert('잘못된 이메일 형식입니다.');
-            return;
+        try {
+            const response = await requestPasswordResetEmail(email);
+            setResetRequestStatus(response);
+        } catch (error) {
+            console.error('비밀번호 재설정 요청 중 오류 발생:', error);
+            throw new Error('비밀번호 재설정 요청 중 오류 발생');
         }
+    };
 
-        // API 호출 또는 추가 처리
+    const handlePasswordReset = async (
+        email: string,
+        code: string,
+        newPassword: string
+    ) => {
+        try {
+            const response = await resetPassword(email, code, newPassword);
+            setResetStatus(response);
+        } catch (error) {
+            console.error('비밀번호 재설정 중 오류 발생:', error);
+            throw new Error('비밀번호 재설정 중 오류 발생');
+        }
     };
 
     return {
         email,
-        setEmail,
-        handleSubmit,
+        verificationCode,
+        setVerificationCode,
+        newPassword,
+        setNewPassword,
+        handlePasswordResetRequest,
+        handlePasswordReset,
+        resetRequestStatus,
+        resetStatus,
     };
 };
