@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser, requestPasswordReset, resetPassword } = require('../service/authService');
+const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser, requestPasswordReset, resetPassword, updateUserPassword } = require('../service/authService');
 const sendEmail = require('../utils/emailUtils');
 
 // 회원가입 처리 함수
@@ -194,7 +194,7 @@ const checkAuthHandler = async (req, res) => {
 };
 
 // 이메일 찾기 기능 함수
-const findEmail = async (req, res) => {
+const findEmailHandler = async (req, res) => {
     try {
         const { name, phone } = req.body;
         const email = await findEmailByNameAndPhone(name, phone);
@@ -211,7 +211,7 @@ const findEmail = async (req, res) => {
 };
 
 // 인증 이메일 발송 로직
-const sendVerificationEmail = async (req, res) => {
+const sendVerificationEmailHandler = async (req, res) => {
     const { email } = req.body;
     try {
         // 이메일 주소로 임시 회원 데이터 생성
@@ -232,9 +232,36 @@ const sendVerificationEmail = async (req, res) => {
         res.status(500).json({ message: '이메일 발송 중 오류가 발생했습니다.' });
     }
 };
+// 비밀번호 재설정을 위한 인증 이메일 발송 로직
+const sendPasswordResetEmailHandler = async (req, res) => {
+    const { email } = req.body;
+    try {
+        // 이메일 주소를 사용하여 유저 정보 조회
+        const user = await getUserByEmail(email);
+
+        // 유저가 존재하는 경우에만 인증 코드 생성 및 이메일 발송
+        if (user) {
+            const verificationCode = await createVerificationCode(email, user.user_id);
+
+            await sendEmail({
+                from: process.env.EMAIL_USERNAME,
+                to: email,
+                subject: '비밀번호 재설정 인증',
+                html: `<h1>비밀번호 재설정 인증 코드입니다: ${verificationCode}</h1>
+                       <p>이 코드를 입력하여 비밀번호 재설정을 진행해주세요.</p>`
+            });
+        }
+
+        // 보안상의 이유로 사용자에게는 항상 같은 메시지를 전송
+        res.status(200).json({ message: '비밀번호 재설정 이메일을 발송했습니다.' });
+    } catch (error) {
+        console.error('비밀번호 재설정 이메일 발송 중 에러:', error);
+        res.status(500).json({ message: '이메일 발송 중 오류가 발생했습니다.' });
+    }
+};
 
 // 인증 코드 검증 로직
-const verifyEmailCode = async (req, res) => {
+const verifyEmailCodeHandler = async (req, res) => {
     const { email, code } = req.body;
     try {
         const isVerified = await verifyVerificationCode(email, code);
@@ -251,26 +278,25 @@ const verifyEmailCode = async (req, res) => {
 };
 
 // 클라이언트로부터의 비밀번호 재설정 요청을 처리하는 핸들러
-const requestPasswordResetHandler = async (req, res) => {
+const verifyAndResetPasswordHandler = async (req, res) => {
+    const { email, code, newPassword } = req.body;
+
     try {
-        const { email } = req.body;
-        await requestPasswordReset(email);
-        res.status(200).json({ message: '인증 이메일을 발송했습니다.' });
+        // 여기서 verifyVerificationCode 함수는 제공된 코드가 유효한지 확인합니다.
+        const isVerified = await verifyVerificationCode(email, code);
+
+        if (!isVerified) {
+            return res.status(400).json({ message: '잘못된 인증 코드입니다.' });
+        }
+
+        // 새 비밀번호로 업데이트하는 로직을 여기에 구현합니다.
+        // updateUserPassword 함수는 새 비밀번호를 해싱하여 데이터베이스에 저장합니다.
+        await updateUserPassword(email, newPassword);
+
+        res.status(200).json({ message: '비밀번호가 성공적으로 변경되었습니다.' });
     } catch (error) {
-        console.error('인증 이메일 발송 중 에러:', error);
-        res.status(500).json({ message: '이메일 발송 중 오류가 발생했습니다.' });
-    }
-};
-    
-    // 클라이언트가 제출한 토큰과 새 비밀번호로 비밀번호 재설정을 처리하는 핸들러
-const resetPasswordHandler = async (req, res) => {
-    try {
-        const { token, newPassword } = req.body;
-        await resetPassword(token, newPassword);
-        res.status(200).json({ message: '비밀번호가 성공적으로 초기화되었습니다.' });
-    } catch (error) {
-        console.error('인증 이메일 발송 중 에러:', error);
-        res.status(500).json({ message: '비밀번호 초기화 중 오류가 발생했습니다.' });
+        console.error('비밀번호 변경 중 에러:', error);
+        res.status(500).json({ message: '비밀번호 변경 중 오류가 발생했습니다.' });
     }
 };
 
@@ -282,9 +308,9 @@ module.exports = {
     refreshTokenHandler, 
     logoutHandler, 
     checkAuthHandler, 
-    findEmail,
-    sendVerificationEmail,
-    verifyEmailCode,
-    requestPasswordResetHandler,
-    resetPasswordHandler,
+    findEmailHandler,
+    sendVerificationEmailHandler,
+    sendPasswordResetEmailHandler,
+    verifyEmailCodeHandler,
+    verifyAndResetPasswordHandler,
 };

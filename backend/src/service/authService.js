@@ -1,6 +1,7 @@
 const db = require("../config/database");
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { savePasswordResetToken } = require("./tokenService");
 
 const getUserAndTokenInfo = async (userId, isAdmin) => {
     try {
@@ -39,16 +40,19 @@ const checkEmailAvailability = async (email) => {
     }
 };
 
-const getUserByEmail = async (email, isAdmin) => {
-    const userTable = isAdmin ? 'admins' : 'users';
-    const query = `SELECT * FROM ${userTable} WHERE email = ?`;
+const getUserByEmail = async (email) => {
+    const query = `SELECT * FROM users WHERE email = ?`;
 
     try {
         const [rows] = await db.query(query, [email]);
-        return rows.length > 0 ? rows[0] : null;
+        if (rows.length > 0) {
+            return rows[0]; // 유저가 존재하는 경우 해당 유저 정보 반환
+        } else {
+            return null; // 유저가 존재하지 않는 경우 null 반환
+        }
     } catch (error) {
         console.error("데이터베이스 조회 중 오류 발생:", error);
-        throw error;
+        return null; // 데이터베이스 조회 중 오류 발생시 null 반환
     }
 }
 
@@ -221,42 +225,13 @@ const verifyVerificationCode = async (email, code) => {
     }
 };
 
-// 비밀번호 재설정 요청 처리
-const requestPasswordReset = async (email) => {
-    // 사용자 이메일을 기반으로 사용자 ID 조회
-    const [user] = await db.query("SELECT user_id FROM users WHERE email = ?", [email]);
+const updateUserPassword = async (email, newPassword) => {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    if (user.length === 0) {
-        throw new Error('계정이 존재하지 않습니다.');
-    }
-    
-    // 비밀번호 재설정 토큰 생성 및 저장
-    const resetToken = await tokenService.savePasswordResetToken(user[0].user_id);
-    
-    // 이메일로 비밀번호 재설정 링크 전송
-    await emailUtils.sendPasswordResetEmail(email, resetToken);
-    
-    return resetToken; // 이 토큰은 테스트 목적으로 반환하거나, 로그에 기록할 수 있습니다.
+    const query = 'UPDATE users SET password = ? WHERE email = ?';
+    await db.query(query, [hashedPassword, email]);
 };
-    
-// 비밀번호 재설정 처리
-const resetPassword = async (token, newPassword) => {
-    const userId = await tokenService.verifyPasswordResetToken(token);
 
-    if (!userId) {
-        throw new Error('유효하지 않은 토큰입니다.');
-    }
-    
-    // 새 비밀번호 해싱
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-    
-    // 사용자의 비밀번호 업데이트
-    await db.query("UPDATE users SET password = ? WHERE user_id = ?", [hashedPassword, userId]);
-    
-    // 사용한 비밀번호 재설정 토큰 무효화
-    await tokenService.invalidatePasswordResetToken(token);
-};
 
 module.exports = {
     getUserAndTokenInfo,
@@ -271,6 +246,5 @@ module.exports = {
     checkEmailVerified,
     createVerificationCode,
     verifyVerificationCode,
-    requestPasswordReset,
-    resetPassword,
+    updateUserPassword,
 };
