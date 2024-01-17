@@ -79,7 +79,11 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     };
 
     const handleCancel = () => {
-        if (window.confirm('가입을 취소하시겠습니까?')) {
+        if (
+            window.confirm(
+                '가입을 취소하시겠습니까? 이메일 인증은 5분 뒤에 다시 시도할 수 있습니다.'
+            )
+        ) {
             handleCancelSignUp(); // 취소 함수 호출
             closeModal(); // 모달 닫기
             window.removeEventListener('beforeunload', handleBeforeUnload); // 페이지 벗어남 이벤트 리스너 제거

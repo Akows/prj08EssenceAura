@@ -189,10 +189,32 @@ const createVerificationCode = async (email, userId) => {
     // 인증 코드 생성 (예: 랜덤 문자열)
     const verificationCode = crypto.randomBytes(16).toString('hex');
 
+    // 기존 인증 코드가 있고 아직 만료되지 않았는지 확인
+    const existingCodeQuery = `
+        SELECT expires_at FROM email_verification
+        WHERE email = ? AND expires_at > NOW()
+    `;
+    const [existingCodes] = await db.query(existingCodeQuery, [email]);
+
+    // 로깅을 추가하여 반환된 값을 확인
+    console.log('Existing codes:', existingCodes);
+
+    if (existingCodes.length > 0) {
+        const expiresAt = new Date(existingCodes[0].expires_at).getTime();
+        const now = new Date().getTime();
+
+        // 로깅을 추가하여 날짜 비교 결과를 확인
+        console.log(`Now: ${now}, Expires At: ${expiresAt}`);
+
+        if (expiresAt > now) {
+            throw new Error('인증 재시도는 5분 후에 가능합니다.');
+        }
+    }
+
     // 생성된 코드를 데이터베이스에 저장
     const insertQuery = `
         INSERT INTO email_verification (user_id, email, code, created_at, expires_at)
-        VALUES (?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))
+        VALUES (?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 5 MINUTE))
     `;
     await db.query(insertQuery, [userId, email, verificationCode]);
 
@@ -224,7 +246,22 @@ const verifyVerificationCode = async (email, code) => {
         return false;
     }
 };
+// 인증코드 자동 정리 함수
+const cleanUpExpiredVerificationCodes = async () => {
+    const query = `
+        DELETE FROM email_verification
+        WHERE expires_at < NOW()
+    `;
 
+    try {
+        await db.execute(query);
+        console.log('만료된 인증 코드가 정리되었습니다.');
+    } catch (error) {
+        console.error('만료된 인증 코드 정리 중 오류 발생:', error);
+    }
+};
+
+// 비밀번호 변경 함수
 const updateUserPassword = async (email, newPassword) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -246,5 +283,6 @@ module.exports = {
     checkEmailVerified,
     createVerificationCode,
     verifyVerificationCode,
+    cleanUpExpiredVerificationCodes,
     updateUserPassword,
 };

@@ -61,10 +61,10 @@ const ResetPasswordForm: React.FC = () => {
     return (
         <>
             <Form onSubmit={handleSubmit}>
-                <h2>비밀번호 초기화</h2>
+                <h2>비밀번호 재설정</h2>
                 <p>
-                    가입하신 이메일 주소를 입력하시면, 이메일로 임시 비밀번호를
-                    보내드립니다.
+                    가입하신 이메일 주소를 입력하시면, 이메일로 인증 코드를
+                    발송합니다.
                 </p>
                 <Label>E-MAIL</Label>
                 <Input

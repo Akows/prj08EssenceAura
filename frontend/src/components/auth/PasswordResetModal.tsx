@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useResetPassword } from '../../hooks/auth/useResetPassword';
 
@@ -53,21 +54,49 @@ const Button = styled.button`
 `;
 
 const PasswordResetModal: React.FC = ({ closeModal, email }) => {
+    const navigate = useNavigate();
     const { handlePasswordReset } = useResetPassword();
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = '';
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await handlePasswordReset(email, verificationCode, newPassword);
-            alert('비밀번호 변경이 완료되었습니다.');
+            alert('비밀번호 재설정이 완료되었습니다.');
             closeModal();
+
+            // 재설정 성공 후 '/login' 페이지로 리디렉션
+            navigate('/login');
         } catch (error) {
-            alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
-            console.error('비밀번호 변경 실패:', error);
+            alert('비밀번호 재설정에 실패했습니다. 다시 시도해주세요.');
+            console.error('비밀번호 재설정 실패:', error);
         }
     };
+
+    const handleCancel = () => {
+        if (
+            window.confirm(
+                '비밀번호 재설정을 취소하시겠습니까? 이메일 인증은 5분 뒤에 다시 시도할 수 있습니다.'
+            )
+        ) {
+            closeModal(); // 모달 닫기
+            window.removeEventListener('beforeunload', handleBeforeUnload); // 페이지 벗어남 이벤트 리스너 제거
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
     return (
         <ModalBackdrop>
@@ -87,7 +116,7 @@ const PasswordResetModal: React.FC = ({ closeModal, email }) => {
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <Button type="submit">비밀번호 변경</Button>
-                    <Button onClick={closeModal}>닫기</Button>
+                    <Button onClick={handleCancel}>닫기</Button>
                 </Form>
             </ModalContainer>
         </ModalBackdrop>
