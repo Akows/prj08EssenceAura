@@ -39,8 +39,6 @@ export const useUserInfo = () => {
         setIsLoading(true); // 업데이트 시작
         try {
             await updateUserInfoInformation(newUserInfo);
-
-            // 성공 메시지 또는 처리
         } catch (error) {
             // 오류 처리
         } finally {

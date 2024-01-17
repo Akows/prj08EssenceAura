@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import useAlertConfirmModal from '../../hooks/common/useAlertConfirmModal';
 import { useUserInfo } from '../../hooks/user/useUserInfo';
+import AlertConfirmModal from '../common/AlertConfirmModal';
 import LoadingModal from '../common/LoadingModal';
 
 const Form = styled.form`
@@ -45,6 +47,8 @@ const SectionTitle = styled.h2`
 const UserInfoForm: React.FC = () => {
     const { userInfo, setUserInfo, updateUserInfo, isLoading } = useUserInfo();
     const [isEditMode, setIsEditMode] = useState(false);
+    const { isModalOpen, modalMessage, showModal, closeModal } =
+        useAlertConfirmModal();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -55,10 +59,10 @@ const UserInfoForm: React.FC = () => {
         event.preventDefault();
         try {
             await updateUserInfo(userInfo);
-            alert('정보가 업데이트 되었습니다.');
-            setIsEditMode(false); // 수정이 완료되면 조회 모드로 전환
+            showModal('정보가 업데이트 되었습니다.');
+            setIsEditMode(false);
         } catch (error) {
-            alert('정보 업데이트 중 오류가 발생했습니다.');
+            showModal('정보 업데이트 중 오류가 발생했습니다.');
             console.error(error);
         }
     };
@@ -134,6 +138,16 @@ const UserInfoForm: React.FC = () => {
             </Form>
 
             {isLoading && <LoadingModal />}
+
+            {isModalOpen && (
+                <AlertConfirmModal
+                    title="알림"
+                    onClose={closeModal}
+                    showConfirmButton={false}
+                >
+                    <p>{modalMessage}</p>
+                </AlertConfirmModal>
+            )}
         </>
     );
 };
