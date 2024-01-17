@@ -255,9 +255,10 @@ const requestPasswordResetHandler = async (req, res) => {
     try {
         const { email } = req.body;
         await requestPasswordReset(email);
-        res.status(200).send('Password reset email sent.');
+        res.status(200).json({ message: '인증 이메일을 발송했습니다.' });
     } catch (error) {
-        res.status(500).send(error.message);
+        console.error('인증 이메일 발송 중 에러:', error);
+        res.status(500).json({ message: '이메일 발송 중 오류가 발생했습니다.' });
     }
 };
     
@@ -266,9 +267,10 @@ const resetPasswordHandler = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
         await resetPassword(token, newPassword);
-        res.status(200).send('Password has been reset successfully.');
+        res.status(200).json({ message: '비밀번호가 성공적으로 초기화되었습니다.' });
     } catch (error) {
-        res.status(500).send(error.message);
+        console.error('인증 이메일 발송 중 에러:', error);
+        res.status(500).json({ message: '비밀번호 초기화 중 오류가 발생했습니다.' });
     }
 };
 
