@@ -26,4 +26,8 @@ router.post('/password-reset/request', authController.sendPasswordResetEmailHand
 // 비밀번호 재설정 - 인증 코드 검증 및 비밀번호 변경
 router.post('/password-reset/verify', authController.verifyAndResetPasswordHandler);
 
+// 비밀번호 재설정 취소 라우트
+router.post('/cancel-passwordreset', authController.cancelResetPasswordHandler);
+
+
 module.exports = router;

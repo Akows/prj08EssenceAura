@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { validateSignupData, validateLoginData } = require('../utils/authUtils');
 const { verifyRefreshTokenInDatabase, generateAccessToken, generateRefreshToken } = require('../utils/tokenUtils');
 const { saveRefreshToken, invalidateRefreshToken } = require('../service/tokenService');
-const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser, requestPasswordReset, resetPassword, updateUserPassword } = require('../service/authService');
+const { getUserAndTokenInfo, validateUserPassword, checkEmailAvailability, findEmailByNameAndPhone, createVerificationCode, verifyVerificationCode, checkEmailVerified, createUserTemp, deleteTempUser, getUserByEmail, updateUser, requestPasswordReset, resetPassword, updateUserPassword, deleteVerificationInfo } = require('../service/authService');
 const sendEmail = require('../utils/emailUtils');
 
 // 회원가입 처리 함수
@@ -314,6 +314,26 @@ const verifyAndResetPasswordHandler = async (req, res) => {
     }
 };
 
+// 클라이언트로부터의 비밀번호 재설정 취소를 처리하는 핸들러
+const cancelResetPasswordHandler = async (req, res) => {
+    const { email } = req.body;
+    try {
+        // 이메일 주소를 사용하여 유저 정보 조회
+        const user = await getUserByEmail(email);
+
+        // 유저가 존재하지 않는 경우
+        if (!user) {
+            return res.status(404).json({ message: '존재하지 않는 사용자입니다.' });
+        }
+
+        await deleteVerificationInfo(email, user.user_id);
+        res.json({ message: '비밀번호 재설정 절차가 취소되었습니다.' });
+    } catch (error) {
+        console.error('비밀번호 재설정 취소 처리 중 에러:', error);
+        res.status(500).json({ message: '비밀번호 재설정 취소 중 오류가 발생했습니다.' });
+    }
+};
+
 module.exports = {
     signUpHandler,
     cancelSignUpHandler,
@@ -327,4 +347,5 @@ module.exports = {
     sendPasswordResetEmailHandler,
     verifyEmailCodeHandler,
     verifyAndResetPasswordHandler,
+    cancelResetPasswordHandler,
 };

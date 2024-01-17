@@ -68,7 +68,8 @@ const PasswordResetModal: React.FC<PasswordResetModalProps> = ({
     setEmail,
 }) => {
     const navigate = useNavigate();
-    const { handlePasswordReset } = useResetPassword();
+    const { handlePasswordReset, handleCancelPasswordReset } =
+        useResetPassword();
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
@@ -99,6 +100,7 @@ const PasswordResetModal: React.FC<PasswordResetModalProps> = ({
                 '비밀번호 재설정을 취소하시겠습니까? 이메일 인증은 5분 뒤에 다시 시도할 수 있습니다.'
             )
         ) {
+            handleCancelPasswordReset(email);
             closeModal(); // 모달 닫기
             window.removeEventListener('beforeunload', handleBeforeUnload); // 페이지 벗어남 이벤트 리스너 제거
         } else {

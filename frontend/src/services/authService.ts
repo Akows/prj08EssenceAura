@@ -1,5 +1,6 @@
 import {
     EmailVerificationResponse,
+    PasswordResetCancelResponse,
     PasswordResetRequestResponse,
     PasswordResetVerificationResponse,
     VerificationCancelResponse,
@@ -122,6 +123,26 @@ export const resetPassword = async (
         return await response.json();
     } catch (error) {
         console.error('비밀번호 재설정 중 오류 발생:', error);
+        throw error;
+    }
+};
+
+// 비밀번호 취소 함수
+export const cancelPasswordReset = async (
+    email: string
+): Promise<PasswordResetCancelResponse> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/cancel-passwordreset`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('비밀번호 재설정 취소 중 오류 발생:', error);
         throw error;
     }
 };

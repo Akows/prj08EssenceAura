@@ -251,7 +251,7 @@ const cleanUpExpiredVerificationCodes = async () => {
     }
 };
 
-// 비밀번호 변경 함수
+// 비밀번호 재설정 함수
 const updateUserPassword = async (email, newPassword) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -259,6 +259,31 @@ const updateUserPassword = async (email, newPassword) => {
     await db.query(query, [hashedPassword, email]);
 };
 
+// 비밀번호 재설정 취소 함수
+const deleteVerificationInfo = async (email, user_id) => {
+    // 데이터베이스 연결 풀에서 연결을 가져옴
+    const connection = await db.getConnection();
+    try {
+        // 트랜잭션 시작
+        await connection.beginTransaction();
+
+        // 먼저 email_verification 테이블에서 해당 이메일과 관련된 레코드를 삭제
+        // 이 작업은 users 테이블의 레코드를 참조하는 외래 키 제약 조건을 해결하기 위함임
+        const deleteVerificationInfo = `DELETE FROM email_verification WHERE email = ? AND user_id = ?;`;
+        await connection.query(deleteVerificationInfo, [email, user_id]);
+
+        // 모든 쿼리가 성공적으로 실행되면 트랜잭션을 커밋함
+        await connection.commit();
+    } catch (error) {
+        // 오류가 발생하면 트랜잭션을 롤백하여 데이터베이스의 일관성 유지
+        await connection.rollback();
+        console.error("임시 사용자 데이터 삭제 중 오류 발생:", error);
+        throw error;
+    } finally {
+        // 작업이 완료되면 데이터베이스 연결을 풀로 반환
+        connection.release();
+    }
+};
 
 module.exports = {
     getUserAndTokenInfo,
@@ -275,4 +300,5 @@ module.exports = {
     verifyVerificationCode,
     cleanUpExpiredVerificationCodes,
     updateUserPassword,
+    deleteVerificationInfo,
 };

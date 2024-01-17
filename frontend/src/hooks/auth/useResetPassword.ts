@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+    cancelPasswordReset,
     requestPasswordResetEmail,
     resetPassword,
 } from '../../services/authService';
@@ -48,6 +49,20 @@ export const useResetPassword = (): UseResetPasswordReturn => {
         }
     };
 
+    // 취소 처리 핸들러
+    const handleCancelPasswordReset = async (email: string) => {
+        try {
+            const response = await cancelPasswordReset(email);
+
+            if (!response) {
+                throw new Error('비밀번호 재설정 요청 실패');
+            }
+            alert('비밀번호 재설정이 취소되었습니다.');
+        } catch (error) {
+            console.error('비밀번호 재설정 취소 중 에러:', error);
+        }
+    };
+
     return {
         isLoading,
         verificationCode,
@@ -58,5 +73,6 @@ export const useResetPassword = (): UseResetPasswordReturn => {
         handlePasswordReset,
         resetRequestStatus,
         resetStatus,
+        handleCancelPasswordReset,
     };
 };
