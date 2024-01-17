@@ -9,7 +9,6 @@ import {
 } from '../../type/authtypes';
 
 export const useResetPassword = () => {
-    const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [resetRequestStatus, setResetRequestStatus] =
@@ -18,8 +17,6 @@ export const useResetPassword = () => {
         useState<PasswordResetVerificationResponse | null>(null);
 
     const handlePasswordResetRequest = async (email: string) => {
-        setEmail(email);
-
         try {
             const response = await requestPasswordResetEmail(email);
             setResetRequestStatus(response);
@@ -44,7 +41,6 @@ export const useResetPassword = () => {
     };
 
     return {
-        email,
         verificationCode,
         setVerificationCode,
         newPassword,

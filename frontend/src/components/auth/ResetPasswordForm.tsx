@@ -49,6 +49,9 @@ const ResetPasswordForm: React.FC = () => {
         }
         try {
             await handlePasswordResetRequest(email);
+            alert(
+                '이메일이 발송되었습니다. 인증 코드와 새 비밀번호를 입력해주세요.'
+            );
             openModal(); // 이메일 인증 요청 후 모달 열기
         } catch (error) {
             alert('이메일 발송에 실패했습니다. 다시 시도해주세요.');
@@ -72,7 +75,9 @@ const ResetPasswordForm: React.FC = () => {
                 />
                 <Button type="submit">비밀번호 재설정 이메일 보내기</Button>
             </Form>
-            {isVisible && <PasswordResetModal closeModal={closeModal} />}
+            {isVisible && (
+                <PasswordResetModal closeModal={closeModal} email={email} />
+            )}
         </>
     );
 };

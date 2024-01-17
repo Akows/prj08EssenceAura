@@ -52,8 +52,8 @@ const Button = styled.button`
     }
 `;
 
-const PasswordResetModal: React.FC = ({ closeModal }) => {
-    const { email, handlePasswordReset } = useResetPassword();
+const PasswordResetModal: React.FC = ({ closeModal, email }) => {
+    const { handlePasswordReset } = useResetPassword();
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
@@ -61,6 +61,8 @@ const PasswordResetModal: React.FC = ({ closeModal }) => {
         e.preventDefault();
         try {
             await handlePasswordReset(email, verificationCode, newPassword);
+            alert('비밀번호 변경이 완료되었습니다.');
+            closeModal();
         } catch (error) {
             alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
             console.error('비밀번호 변경 실패:', error);

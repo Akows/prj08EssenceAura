@@ -281,6 +281,8 @@ const verifyEmailCodeHandler = async (req, res) => {
 const verifyAndResetPasswordHandler = async (req, res) => {
     const { email, code, newPassword } = req.body;
 
+    console.log(req.body);
+
     try {
         // 여기서 verifyVerificationCode 함수는 제공된 코드가 유효한지 확인합니다.
         const isVerified = await verifyVerificationCode(email, code);
