@@ -189,26 +189,16 @@ const createVerificationCode = async (email, userId) => {
     // 인증 코드 생성 (예: 랜덤 문자열)
     const verificationCode = crypto.randomBytes(16).toString('hex');
 
-    // 기존 인증 코드가 있고 아직 만료되지 않았는지 확인
+    // 최근 5분 이내에 생성된 인증 코드가 있는지 확인
     const existingCodeQuery = `
         SELECT expires_at FROM email_verification
-        WHERE email = ? AND expires_at > NOW()
+        WHERE email = ? AND created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)
     `;
     const [existingCodes] = await db.query(existingCodeQuery, [email]);
 
-    // 로깅을 추가하여 반환된 값을 확인
-    console.log('Existing codes:', existingCodes);
-
+    // 최근 5분 이내에 생성된 인증 코드가 있다면 오류를 발생시키고 함수 실행을 중지
     if (existingCodes.length > 0) {
-        const expiresAt = new Date(existingCodes[0].expires_at).getTime();
-        const now = new Date().getTime();
-
-        // 로깅을 추가하여 날짜 비교 결과를 확인
-        console.log(`Now: ${now}, Expires At: ${expiresAt}`);
-
-        if (expiresAt > now) {
-            throw new Error('인증 재시도는 5분 후에 가능합니다.');
-        }
+        return { error: '인증 재시도는 5분 후에 가능합니다.' };
     }
 
     // 생성된 코드를 데이터베이스에 저장

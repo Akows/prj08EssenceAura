@@ -54,7 +54,7 @@ const ResetPasswordForm: React.FC = () => {
             );
             openModal(); // 이메일 인증 요청 후 모달 열기
         } catch (error) {
-            alert('이메일 발송에 실패했습니다. 다시 시도해주세요.');
+            alert(error.message);
         }
     };
 

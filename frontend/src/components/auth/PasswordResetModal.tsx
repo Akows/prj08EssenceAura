@@ -74,7 +74,7 @@ const PasswordResetModal: React.FC = ({ closeModal, email }) => {
             // 재설정 성공 후 '/login' 페이지로 리디렉션
             navigate('/login');
         } catch (error) {
-            alert('비밀번호 재설정에 실패했습니다. 다시 시도해주세요.');
+            alert(error);
             console.error('비밀번호 재설정 실패:', error);
         }
     };

@@ -82,6 +82,9 @@ export const requestPasswordResetEmail = async (
         });
 
         if (!response.ok) {
+            if (response.status === 429) {
+                throw new Error('이메일 재인증은 5분 뒤에 가능합니다.');
+            }
             throw new Error('비밀번호 재설정 이메일 요청 실패');
         }
 

@@ -241,13 +241,18 @@ const sendPasswordResetEmailHandler = async (req, res) => {
 
         // 유저가 존재하는 경우에만 인증 코드 생성 및 이메일 발송
         if (user) {
-            const verificationCode = await createVerificationCode(email, user.user_id);
+            const result  = await createVerificationCode(email, user.user_id);
+
+            // 인증 코드 생성 중 에러가 발생한 경우
+            if (result.error) {
+                return res.status(429).json({ message: result.error });
+            }
 
             await sendEmail({
                 from: process.env.EMAIL_USERNAME,
                 to: email,
                 subject: '비밀번호 재설정 인증',
-                html: `<h1>비밀번호 재설정 인증 코드입니다: ${verificationCode}</h1>
+                html: `<h1>비밀번호 재설정 인증 코드입니다: ${result}</h1>
                        <p>이 코드를 입력하여 비밀번호 재설정을 진행해주세요.</p>`
             });
         }

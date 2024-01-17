@@ -22,7 +22,7 @@ export const useResetPassword = () => {
             setResetRequestStatus(response);
         } catch (error) {
             console.error('비밀번호 재설정 요청 중 오류 발생:', error);
-            throw new Error('비밀번호 재설정 요청 중 오류 발생');
+            throw new Error(`${error}`);
         }
     };
 
