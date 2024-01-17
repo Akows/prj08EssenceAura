@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { UseLoginReturn } from '../../type/authtypes';
+import LoadingModal from '../common/LoadingModal';
 
 const Form = styled.form`
     margin-top: 20px;
@@ -92,6 +93,8 @@ const LoginForm: React.FC<UseLoginReturn> = ({
                     {isSubmitting ? '로그인 중...' : '로그인'}
                 </Button>
             </LoginForms>
+
+            {isSubmitting && <LoadingModal />}
         </>
     );
 };

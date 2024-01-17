@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useMenuState } from '../../hooks/useMenuState';
 import useLogout from '../../hooks/auth/useLogout';
+import LoadingModal from './LoadingModal';
 
 const NavigationContainer = styled.nav`
     background-color: #333;
@@ -239,148 +240,160 @@ const ShopNavigation: React.FC = () => {
         (state: RootState) => state.auth.userInfo?.isAdmin
     );
 
-    const handleLogout = useLogout(); // 로그아웃 훅 사용
+    const { isLoading, handleLogout } = useLogout(); // 로그아웃 훅 사용
 
     return (
-        <NavigationContainer>
-            {/* 로고 및 네비게이션 링크 */}
-            <Logo>
-                <Link to="/">EssenceAura</Link>
-            </Logo>
+        <>
+            <NavigationContainer>
+                {/* 로고 및 네비게이션 링크 */}
+                <Logo>
+                    <Link to="/">EssenceAura</Link>
+                </Logo>
 
-            {/* 데스크톱 네비게이션 링크 */}
-            <NavLinks>
-                <NavLink to="/shop" onClick={closeMenus}>
-                    Menu1
-                </NavLink>
-                <NavLink to="/about" onClick={closeMenus}>
-                    About
-                </NavLink>
-                {/* ... 기타 링크 ... */}
-            </NavLinks>
+                {/* 데스크톱 네비게이션 링크 */}
+                <NavLinks>
+                    <NavLink to="/shop" onClick={closeMenus}>
+                        Menu1
+                    </NavLink>
+                    <NavLink to="/about" onClick={closeMenus}>
+                        About
+                    </NavLink>
+                    {/* ... 기타 링크 ... */}
+                </NavLinks>
 
-            {/* 아이콘 컨테이너 */}
-            <IconsContainer>
-                <IconWrapper>
-                    {/* 로그인 상태에 따라 다른 경로로 이동 */}
-                    {isLoggedIn ? (
-                        <>
-                            <LoginButton to={isAdmin ? '/admin' : '/user'}>
-                                <FaUserCircle size={24} />
-                            </LoginButton>
-                            <div onClick={handleLogout}>
-                                <FaSignOutAlt size={24} />
-                            </div>
-                        </>
-                    ) : (
-                        <LoginButton to="/login">
-                            <FaUserCircle size={24} />
-                        </LoginButton>
-                    )}
-                </IconWrapper>
-                <IconWrapper>
-                    <SettingsMenu onClick={toggleSettingsMenu}>
-                        <FiSettings size={24} />
-                    </SettingsMenu>
-                </IconWrapper>
-                {/* HamburgerMenu는 모바일 뷰에서만 표시되므로 IconsContainer에 포함시키지 않음 */}
-            </IconsContainer>
-
-            {/* 햄버거 메뉴 아이콘 */}
-            <HamburgerMenu onClick={toggleHamburgerMenu}>
-                <FaBars size={24} />
-            </HamburgerMenu>
-
-            {/* 설정 드롭다운 메뉴 */}
-            {isSettingsMenuOpen && (
-                <DropdownMenu>
-                    <Section>
-                        <SectionTitle>언어 선택</SectionTitle>
-                        <ButtonColumn>
-                            <Button
-                                onClick={() => changeLanguage('en')}
-                                className={
-                                    currentLanguage === 'en' ? 'selected' : ''
-                                }
-                            >
-                                English
-                            </Button>
-                            <Button
-                                onClick={() => changeLanguage('ko')}
-                                className={
-                                    currentLanguage === 'ko' ? 'selected' : ''
-                                }
-                            >
-                                한국어
-                            </Button>
-                        </ButtonColumn>
-                    </Section>
-                    <Section>
-                        <SectionTitle>테마 선택</SectionTitle>
-                        <ButtonColumn>
-                            <Button
-                                onClick={() => changeTheme('light')}
-                                className={
-                                    currentTheme === 'light' ? 'selected' : ''
-                                }
-                            >
-                                화이트
-                            </Button>
-                            <Button
-                                onClick={() => changeTheme('dark')}
-                                className={
-                                    currentTheme === 'dark' ? 'selected' : ''
-                                }
-                            >
-                                블랙
-                            </Button>
-                        </ButtonColumn>
-                    </Section>
-                </DropdownMenu>
-            )}
-
-            {/* 모바일 뷰용 드롭다운 메뉴 */}
-            {isHamburgerMenuOpen && (
-                <MobileMenu>
-                    <IconRow>
-                        {/* 아이콘들을 감싸는 행 */}
-                        <IconContainer>
-                            {/* 로그인 상태에 따라 다른 경로로 이동 */}
-                            {isLoggedIn ? (
-                                <>
-                                    <LoginButton
-                                        to={isAdmin ? '/admin' : '/user'}
-                                    >
-                                        <FaUserCircle size={24} />
-                                    </LoginButton>
-                                    <div onClick={handleLogout}>
-                                        <FaSignOutAlt size={24} />
-                                    </div>
-                                </>
-                            ) : (
-                                <LoginButton to="/login">
+                {/* 아이콘 컨테이너 */}
+                <IconsContainer>
+                    <IconWrapper>
+                        {/* 로그인 상태에 따라 다른 경로로 이동 */}
+                        {isLoggedIn ? (
+                            <>
+                                <LoginButton to={isAdmin ? '/admin' : '/user'}>
                                     <FaUserCircle size={24} />
                                 </LoginButton>
-                            )}
-                        </IconContainer>
-                        <IconContainer>
-                            {/* 설정 아이콘 */}
-                            <SettingsMenu onClick={toggleSettingsMenu}>
-                                <FiSettings size={24} />
-                            </SettingsMenu>
-                        </IconContainer>
-                    </IconRow>
-                    {/* NavLink 컴포넌트들 */}
-                    <NavLinkStyled to="/shop" onClick={closeMenus}>
-                        Menu1
-                    </NavLinkStyled>
-                    <NavLinkStyled to="/about" onClick={closeMenus}>
-                        About
-                    </NavLinkStyled>
-                    {/* ... 기타 링크 ... */}
-                </MobileMenu>
-            )}
-        </NavigationContainer>
+                                <div onClick={handleLogout}>
+                                    <FaSignOutAlt size={24} />
+                                </div>
+                            </>
+                        ) : (
+                            <LoginButton to="/login">
+                                <FaUserCircle size={24} />
+                            </LoginButton>
+                        )}
+                    </IconWrapper>
+                    <IconWrapper>
+                        <SettingsMenu onClick={toggleSettingsMenu}>
+                            <FiSettings size={24} />
+                        </SettingsMenu>
+                    </IconWrapper>
+                    {/* HamburgerMenu는 모바일 뷰에서만 표시되므로 IconsContainer에 포함시키지 않음 */}
+                </IconsContainer>
+
+                {/* 햄버거 메뉴 아이콘 */}
+                <HamburgerMenu onClick={toggleHamburgerMenu}>
+                    <FaBars size={24} />
+                </HamburgerMenu>
+
+                {/* 설정 드롭다운 메뉴 */}
+                {isSettingsMenuOpen && (
+                    <DropdownMenu>
+                        <Section>
+                            <SectionTitle>언어 선택</SectionTitle>
+                            <ButtonColumn>
+                                <Button
+                                    onClick={() => changeLanguage('en')}
+                                    className={
+                                        currentLanguage === 'en'
+                                            ? 'selected'
+                                            : ''
+                                    }
+                                >
+                                    English
+                                </Button>
+                                <Button
+                                    onClick={() => changeLanguage('ko')}
+                                    className={
+                                        currentLanguage === 'ko'
+                                            ? 'selected'
+                                            : ''
+                                    }
+                                >
+                                    한국어
+                                </Button>
+                            </ButtonColumn>
+                        </Section>
+                        <Section>
+                            <SectionTitle>테마 선택</SectionTitle>
+                            <ButtonColumn>
+                                <Button
+                                    onClick={() => changeTheme('light')}
+                                    className={
+                                        currentTheme === 'light'
+                                            ? 'selected'
+                                            : ''
+                                    }
+                                >
+                                    화이트
+                                </Button>
+                                <Button
+                                    onClick={() => changeTheme('dark')}
+                                    className={
+                                        currentTheme === 'dark'
+                                            ? 'selected'
+                                            : ''
+                                    }
+                                >
+                                    블랙
+                                </Button>
+                            </ButtonColumn>
+                        </Section>
+                    </DropdownMenu>
+                )}
+
+                {/* 모바일 뷰용 드롭다운 메뉴 */}
+                {isHamburgerMenuOpen && (
+                    <MobileMenu>
+                        <IconRow>
+                            {/* 아이콘들을 감싸는 행 */}
+                            <IconContainer>
+                                {/* 로그인 상태에 따라 다른 경로로 이동 */}
+                                {isLoggedIn ? (
+                                    <>
+                                        <LoginButton
+                                            to={isAdmin ? '/admin' : '/user'}
+                                        >
+                                            <FaUserCircle size={24} />
+                                        </LoginButton>
+                                        <div onClick={handleLogout}>
+                                            <FaSignOutAlt size={24} />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <LoginButton to="/login">
+                                        <FaUserCircle size={24} />
+                                    </LoginButton>
+                                )}
+                            </IconContainer>
+                            <IconContainer>
+                                {/* 설정 아이콘 */}
+                                <SettingsMenu onClick={toggleSettingsMenu}>
+                                    <FiSettings size={24} />
+                                </SettingsMenu>
+                            </IconContainer>
+                        </IconRow>
+                        {/* NavLink 컴포넌트들 */}
+                        <NavLinkStyled to="/shop" onClick={closeMenus}>
+                            Menu1
+                        </NavLinkStyled>
+                        <NavLinkStyled to="/about" onClick={closeMenus}>
+                            About
+                        </NavLinkStyled>
+                        {/* ... 기타 링크 ... */}
+                    </MobileMenu>
+                )}
+            </NavigationContainer>
+
+            {isLoading && <LoadingModal />}
+        </>
     );
 };
 

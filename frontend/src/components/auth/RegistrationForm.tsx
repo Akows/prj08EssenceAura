@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useModal } from '../../hooks/auth/useModal';
 import { UseRegistrationReturn } from '../../type/authtypes';
+import LoadingModal from '../common/LoadingModal';
 import EmailVerificationModal from './EmailVerificationModal';
 
 const Form = styled.form`
@@ -149,8 +150,10 @@ const RegistrationForm: React.FC<UseRegistrationReturn> = ({
                 </Button>
             </Form>
 
+            {signUpIsSubmitting && <LoadingModal />}
+
             {/* 이메일 인증 모달 */}
-            {isVisible && (
+            {isVisible && !signUpIsSubmitting && (
                 <EmailVerificationModal
                     closeModal={closeModal}
                     handleVerifyEmailCode={handleVerifyEmailCode}

@@ -217,12 +217,18 @@ const sendVerificationEmailHandler = async (req, res) => {
         // 이메일 주소로 임시 회원 데이터 생성
         const userId = await createUserTemp(email);
 
-        const verificationCode = await createVerificationCode(email, userId);
+        const result  = await createVerificationCode(email, userId);
+
+        // 인증 코드 생성 중 에러가 발생한 경우
+        if (result.error) {
+            return res.status(429).json({ message: result.error });
+        }
+
         await sendEmail({
             from: process.env.EMAIL_USERNAME,
             to: email,
             subject: '이메일 인증',
-            html: `<h1>이메일 인증 코드입니다: ${verificationCode}</h1> 
+            html: `<h1>이메일 인증 코드입니다: ${result}</h1> 
             <p>앱에서 이 코드를 입력하여 이메일 인증을 완료해주세요.</p> 
             `});
 

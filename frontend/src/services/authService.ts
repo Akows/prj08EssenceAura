@@ -41,8 +41,10 @@ export const verifyEmailCode = async (
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || '인증 코드 검증에 실패했습니다.');
+        if (response.status === 400) {
+            throw new Error('잘못된 인증 코드 입니다.');
+        }
+        throw new Error('인증 코드 검증에 실패했습니다.');
     }
 
     return response.json();

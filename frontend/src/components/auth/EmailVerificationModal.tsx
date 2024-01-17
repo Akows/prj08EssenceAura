@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { EmailVerificationModalProps } from '../../type/authtypes';
+import LoadingModal from '../common/LoadingModal';
 
 const ModalBackdrop = styled.div`
     position: fixed;
@@ -64,16 +65,20 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     };
 
     const [verificationCode, setVerificationCode] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             await handleVerifyEmailCode(verificationCode);
             alert('이메일 인증이 완료되었습니다.');
             setIsVerified(true); // 인증 상태 업데이트
+            setIsLoading(false);
             closeModal();
         } catch (error) {
             alert('인증 코드가 잘못되었습니다. 다시 시도해주세요.');
+            setIsLoading(false);
             console.error('인증 실패:', error);
         }
     };
@@ -101,26 +106,32 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     }, []);
 
     return (
-        <ModalBackdrop>
-            <ModalContainer>
-                <h2>이메일 인증</h2>
-                <p>등록하신 이메일 주소로 발송된 인증코드를 입력해주세요.</p>
-                <Form onSubmit={handleSubmit}>
-                    <Label>인증코드</Label>
-                    <Input
-                        type="text"
-                        value={verificationCode}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setVerificationCode(e.target.value)
-                        }
-                    />
-                    <Button type="submit">인증 확인</Button>
-                    <Button type="button" onClick={handleCancel}>
-                        닫기
-                    </Button>
-                </Form>
-            </ModalContainer>
-        </ModalBackdrop>
+        <>
+            <ModalBackdrop>
+                <ModalContainer>
+                    <h2>이메일 인증</h2>
+                    <p>
+                        등록하신 이메일 주소로 발송된 인증코드를 입력해주세요.
+                    </p>
+                    <Form onSubmit={handleSubmit}>
+                        <Label>인증코드</Label>
+                        <Input
+                            type="text"
+                            value={verificationCode}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setVerificationCode(e.target.value)}
+                        />
+                        <Button type="submit">인증 확인</Button>
+                        <Button type="button" onClick={handleCancel}>
+                            닫기
+                        </Button>
+                    </Form>
+                </ModalContainer>
+            </ModalBackdrop>
+
+            {isLoading && <LoadingModal />}
+        </>
     );
 };
 

@@ -122,7 +122,7 @@ const useRegistration = (): UseRegistrationReturn => {
             alert('이메일 인증이 완료되었습니다.');
         } catch (error) {
             console.error('이메일 인증 중 오류 발생:', error);
-            alert('잘못된 인증 코드입니다. 다시 확인해주세요.');
+            throw new Error('잘못된 인증 코드 입니다. 다시 확인해주세요.');
         }
     };
 
