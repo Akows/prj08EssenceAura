@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import UserInfoForm from '../../components/user/UserInfoForm';
 
 interface TabProps {
     active: boolean;
@@ -19,32 +20,6 @@ const Container = styled.div`
 const Title = styled.h1`
     text-align: center;
     margin-top: 20px;
-`;
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-`;
-
-const Label = styled.label`
-    margin-top: 15px;
-`;
-
-const Input = styled.input`
-    padding: 8px;
-    margin-top: 5px;
-`;
-
-const Button = styled.button`
-    padding: 10px 15px;
-    margin-top: 20px;
-    background-color: #e44d26;
-    color: white;
-    border: none;
-    cursor: pointer;
-    &:hover {
-        background-color: #f55f3b;
-    }
 `;
 
 const SectionTitle = styled.h2`
@@ -91,24 +66,8 @@ const dummyOrders = [
 ];
 
 // 회원 정보 페이지 컴포넌트
-const UserProfilePage = () => {
-    const [userInfo, setUserInfo] = useState({
-        name: '홍길동',
-        email: 'user@example.com',
-        address: '서울시 강남구',
-    });
-
+const UserProfilePage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('userInfo');
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setUserInfo({ ...userInfo, [name]: value });
-    };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        alert('정보가 업데이트 되었습니다.');
-    };
 
     // 구매 확인 페이지에서 회원 정보 페이지로 넘어왔을 때, 구매내역 컴포넌트가 렌더링되도록 하는 기능.
     // 페이지를 이동할 때 쿼리 파라미터를 사용. navigate('/user?tab=orders');
@@ -148,39 +107,7 @@ const UserProfilePage = () => {
                 </Tab>
             </Tabs>
 
-            {activeTab === 'userInfo' && (
-                <Form onSubmit={handleSubmit}>
-                    <SectionTitle>회원정보</SectionTitle>
-                    <Label htmlFor="name">이름</Label>
-                    <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={userInfo.name}
-                        onChange={handleChange}
-                    />
-
-                    <Label htmlFor="email">이메일</Label>
-                    <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={userInfo.email}
-                        onChange={handleChange}
-                    />
-
-                    <Label htmlFor="address">주소</Label>
-                    <Input
-                        id="address"
-                        name="address"
-                        type="text"
-                        value={userInfo.address}
-                        onChange={handleChange}
-                    />
-
-                    <Button type="submit">정보 수정</Button>
-                </Form>
-            )}
+            {activeTab === 'userInfo' && <UserInfoForm />}
 
             {activeTab === 'orders' && (
                 <OrderList>

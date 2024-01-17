@@ -14,7 +14,7 @@ import CartPage from './pages/shop/CartPage';
 import CheckoutPage from './pages/shop/CheckoutPage';
 import RegistrationPage from './pages/auth/RegistrationPage';
 import LoginPage from './pages/auth/LoginPage';
-import UserProfilePage from './pages/auth/UserProfilePage';
+import UserProfilePage from './pages/user/UserProfilePage';
 import FindAccountPage from './pages/auth/FindAccountPage';
 import PaymentConfirmationPage from './pages/shop/PaymentConfirmationPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
