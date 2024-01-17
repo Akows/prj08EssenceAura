@@ -13,7 +13,7 @@ const useLogout = () => {
         setIsloading(true);
         try {
             // 서버로 로그아웃 요청 보냄
-            const response = await fetch('http://localhost:3001/api/logout', {
+            const response = await fetch('http://localhost:3001/auth/logout', {
                 method: 'POST',
                 credentials: 'include', // 쿠키를 포함시키기 위한 설정
             });

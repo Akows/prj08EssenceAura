@@ -9,7 +9,7 @@ const useCheckAuth = () => {
         const checkAuth = async () => {
             try {
                 const response = await fetch(
-                    'http://localhost:3001/api/check-auth',
+                    'http://localhost:3001/auth/check-auth',
                     {
                         method: 'GET',
                         credentials: 'include', // 쿠키를 포함시키기 위한 설정

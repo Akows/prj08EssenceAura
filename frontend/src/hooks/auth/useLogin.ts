@@ -45,7 +45,7 @@ const useLogin = (): UseLoginReturn => {
         if (Object.keys(errors).length === 0) {
             try {
                 const response = await fetch(
-                    'http://localhost:3001/api/login',
+                    'http://localhost:3001/auth/login',
                     {
                         method: 'POST',
                         headers: {

@@ -1,6 +1,6 @@
 import { UserUpdateInfo } from '../type/usertypes';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:3001/user';
 
 // 현재 로그인한 사용자의 정보를 가져오는 함수
 export const getUserInfoInformation = async () => {

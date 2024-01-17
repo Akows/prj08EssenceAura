@@ -16,7 +16,7 @@ export const useFindEmail = () => {
 
         try {
             const response = await fetch(
-                'http://localhost:3001/api/find-email',
+                'http://localhost:3001/auth/find-email',
                 {
                     method: 'POST',
                     headers: {
@@ -33,7 +33,7 @@ export const useFindEmail = () => {
             // 제공된 JavaScript 객체를 자동으로 JSON으로 변환 해주기에 JSON.stringify()를 호출할 필요도 없다.
 
             // const response = await axios.post(
-            //     'http://localhost:3001/api/find-email',
+            //     'http://localhost:3001/auth/find-email',
             //     { name, phone }
             // );
 

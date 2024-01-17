@@ -5,7 +5,7 @@ import {
     VerificationCancelResponse,
 } from '../type/authtypes';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:3001/auth';
 
 // 이메일 인증 코드 요청 함수
 export const sendVerificationRequest = async (
