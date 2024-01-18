@@ -125,7 +125,6 @@ const UserManagement: React.FC = () => {
 
     const handleDeleteAdmin = (adminId: number) => {
         deleteAdminHandler(adminId);
-        // 다른 처리가 필요할 수 있음
     };
 
     const handleTabChange = (tab: 'user' | 'admin') => setActiveTab(tab);
@@ -194,9 +193,8 @@ const UserManagement: React.FC = () => {
                         <UserAdminList
                             admins={admins}
                             onEdit={handleEditAdmin}
-                            onDelete={handleDeleteAdmin}
+                            handleDeleteAdmin={handleDeleteAdmin}
                             fetchAllAdminsHandler={fetchAllAdminsHandler}
-                            loading={loading}
                         />
                     )}
                 </UserTable>
@@ -205,8 +203,9 @@ const UserManagement: React.FC = () => {
             {isModalOpen && (
                 <UserAdminFormModal
                     admin={editingUser as Admin}
-                    onClose={handleModalClose}
-                    onSave={createAdminHandler}
+                    handleModalClose={handleModalClose}
+                    createAdminHandler={createAdminHandler}
+                    fetchAllAdminsHandler={fetchAllAdminsHandler}
                 />
             )}
 

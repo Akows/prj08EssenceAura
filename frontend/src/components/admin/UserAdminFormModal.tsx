@@ -4,8 +4,9 @@ import { Admin } from '../../type/admintypes';
 
 interface AdminFormModalProps {
     admin?: Admin;
-    onClose: () => void;
-    onSave: (adminData: Admin) => void;
+    handleModalClose: () => void;
+    createAdminHandler: (adminData: Admin) => Promise<void>;
+    fetchAllAdminsHandler: () => Promise<void>;
 }
 
 const ModalOverlay = styled.div`
@@ -75,8 +76,9 @@ const ActionButton = styled.button`
 
 const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
     admin,
-    onClose,
-    onSave,
+    handleModalClose,
+    createAdminHandler,
+    fetchAllAdminsHandler,
 }) => {
     const [formData, setFormData] = useState<Partial<Admin>>({
         username: '',
@@ -106,15 +108,19 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
     };
 
     const handleSave = () => {
-        onSave(formData);
-        onClose();
+        createAdminHandler(formData);
+        alert('새 관리자 계정이 추가되었습니다.');
+        handleModalClose();
+        fetchAllAdminsHandler();
     };
 
     return (
         <>
             <ModalOverlay>
                 <ModalBody>
-                    <CloseButton onClick={onClose}>&times;</CloseButton>
+                    <CloseButton onClick={handleModalClose}>
+                        &times;
+                    </CloseButton>
                     <h2>{admin ? '관리자 정보 수정' : '관리자 추가'}</h2>
                     <FormField>
                         <Label>이름</Label>
@@ -145,7 +151,10 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
                         <ActionButton className="save" onClick={handleSave}>
                             저장
                         </ActionButton>
-                        <ActionButton className="cancel" onClick={onClose}>
+                        <ActionButton
+                            className="cancel"
+                            onClick={handleModalClose}
+                        >
                             취소
                         </ActionButton>
                     </FormField>

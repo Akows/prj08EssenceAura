@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Admin } from '../../type/admintypes';
 import AlertConfirmModal from '../common/AlertConfirmModal';
@@ -6,9 +6,8 @@ import AlertConfirmModal from '../common/AlertConfirmModal';
 interface UserAdminListProps {
     admins: Admin[];
     onEdit: (admin: Admin) => void;
-    onDelete: (adminId: number) => void;
+    handleDeleteAdmin: (adminId: number) => void;
     fetchAllAdminsHandler: () => Promise<void>;
-    loading: boolean;
 }
 
 const TableRow = styled.tr`
@@ -49,19 +48,23 @@ const ActionButton = styled.button`
 const UserAdminList: React.FC<UserAdminListProps> = ({
     admins,
     onEdit,
-    onDelete,
+    handleDeleteAdmin,
     fetchAllAdminsHandler,
-    loading,
 }) => {
     useEffect(() => {
         fetchAllAdminsHandler();
     }, [fetchAllAdminsHandler]);
 
+    const prevAdminCount = useRef(admins.length);
+
     useEffect(() => {
-        if (loading) {
+        // 관리자 목록의 길이가 변경되었을 때만 API 호출
+        if (admins.length !== prevAdminCount.current) {
+            console.log('리렌더!');
             fetchAllAdminsHandler();
+            prevAdminCount.current = admins.length;
         }
-    }, [loading, fetchAllAdminsHandler]);
+    }, [admins, fetchAllAdminsHandler]);
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedAdminId, setSelectedAdminId] = useState<number | null>(null);
@@ -73,7 +76,7 @@ const UserAdminList: React.FC<UserAdminListProps> = ({
 
     const handleDeleteConfirm = () => {
         if (selectedAdminId !== null) {
-            onDelete(selectedAdminId);
+            handleDeleteAdmin(selectedAdminId);
             setIsDeleteModalOpen(false);
         }
     };

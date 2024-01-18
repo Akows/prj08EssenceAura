@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import InventoryManagement from '../../components/user/InventoryManagement';
 import OrderManagement from '../../components/user/OrderManagement';
 import UserManagement from '../../components/admin/UserManagement';
+import { useLocation } from 'react-router-dom';
 
 const DashboardContainer = styled.div`
     margin: 30px;
@@ -65,6 +66,8 @@ const DashboardFooter = styled.footer`
 `;
 
 const AdminDashboardPage: React.FC = () => {
+    const location = useLocation();
+
     const [activeTab, setActiveTab] = useState('orders');
 
     const renderContent = () => {
@@ -81,6 +84,20 @@ const AdminDashboardPage: React.FC = () => {
                 return <Card>선택된 탭에 해당하는 정보가 없습니다.</Card>;
         }
     };
+
+    useEffect(() => {
+        // URL 쿼리 파라미터를 사용하여 현재 탭 상태 설정
+        const queryParams = new URLSearchParams(location.search);
+        const tab = queryParams.get('tab');
+
+        if (!tab) {
+            setActiveTab('orders');
+        }
+
+        if (tab === 'admin') {
+            setActiveTab('admin');
+        }
+    }, [location]);
 
     return (
         <DashboardContainer>
