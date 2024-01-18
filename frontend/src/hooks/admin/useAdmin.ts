@@ -38,8 +38,7 @@ export const useAdmin = (): AdminHook => {
         setError('');
         try {
             const data = await getAllUsers();
-            console.log(data);
-            setUsers(data[0]);
+            setUsers(data);
         } catch (err) {
             // 에러 객체인지 확인
             if (err instanceof Error) {

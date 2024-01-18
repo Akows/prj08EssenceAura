@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 require('dotenv').config();
 
 // CORS 미들웨어 설정
@@ -23,5 +24,8 @@ app.use('/auth', authRoutes);
 
 // 유저 라우트 추가
 app.use('/user', userRoutes);
+
+// 관리자 라우트 추가
+app.use('/admin', adminRoutes);
 
 module.exports = app;

@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Admin } from '../../type/admintypes';
 
@@ -5,6 +6,7 @@ interface UserAdminListProps {
     admins: Admin[];
     onEdit: (admin: Admin) => void;
     onDelete: (adminId: number) => void;
+    fetchAllAdminsHandler: () => Promise<void>;
 }
 
 const TableRow = styled.tr`
@@ -46,7 +48,12 @@ const UserAdminList: React.FC<UserAdminListProps> = ({
     admins,
     onEdit,
     onDelete,
+    fetchAllAdminsHandler,
 }) => {
+    useEffect(() => {
+        fetchAllAdminsHandler();
+    }, [fetchAllAdminsHandler]);
+
     return (
         <tbody>
             {admins.map((admin) => (

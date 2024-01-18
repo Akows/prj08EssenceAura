@@ -40,7 +40,7 @@ const handleResponse = async (response: Response) => {
 // 유저 검색 (이메일로 검색)
 export const searchUserByEmail = async (emailKeyword: string) => {
     const response = await fetch(
-        `${API_BASE_URL}/users/search?email=${emailKeyword}`,
+        `${API_BASE_URL}/searchUser/search?email=${emailKeyword}`,
         {
             ...fetchOptions,
             method: 'GET',
@@ -51,7 +51,7 @@ export const searchUserByEmail = async (emailKeyword: string) => {
 
 // 전체 유저 목록 조회
 export const getAllUsers = async () => {
-    const response = await fetch(`${API_BASE_URL}/users`, {
+    const response = await fetch(`${API_BASE_URL}/getusers`, {
         ...fetchOptions,
         method: 'GET',
     });
@@ -60,7 +60,7 @@ export const getAllUsers = async () => {
 
 // 유저 정보 업데이트
 export const updateUser = async (userId: number, userData: User) => {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/putusers/${userId}`, {
         ...fetchOptions,
         method: 'PUT',
         body: JSON.stringify(userData),
@@ -70,16 +70,19 @@ export const updateUser = async (userId: number, userData: User) => {
 
 // 유저 비활성화
 export const deactivateUser = async (userId: number) => {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}/deactivate`, {
-        ...fetchOptions,
-        method: 'PATCH',
-    });
+    const response = await fetch(
+        `${API_BASE_URL}/patchusers/${userId}/deactivate`,
+        {
+            ...fetchOptions,
+            method: 'PATCH',
+        }
+    );
     return await handleResponse(response);
 };
 
 // 전체 관리자 목록 조회
 export const getAllAdmins = async () => {
-    const response = await fetch(`${API_BASE_URL}/admins`, {
+    const response = await fetch(`${API_BASE_URL}/getadmins`, {
         ...fetchOptions,
         method: 'GET',
     });
@@ -88,7 +91,7 @@ export const getAllAdmins = async () => {
 
 // 관리자 정보 추가
 export const createAdmin = async (adminData: Admin) => {
-    const response = await fetch(`${API_BASE_URL}/admins`, {
+    const response = await fetch(`${API_BASE_URL}/postadmins`, {
         ...fetchOptions,
         method: 'POST',
         body: JSON.stringify(adminData),
@@ -98,7 +101,7 @@ export const createAdmin = async (adminData: Admin) => {
 
 // 관리자 정보 업데이트
 export const updateAdmin = async (adminId: number, adminData: Admin) => {
-    const response = await fetch(`${API_BASE_URL}/admins/${adminId}`, {
+    const response = await fetch(`${API_BASE_URL}/putadmins/${adminId}`, {
         ...fetchOptions,
         method: 'PUT',
         body: JSON.stringify(adminData),
@@ -108,7 +111,7 @@ export const updateAdmin = async (adminId: number, adminData: Admin) => {
 
 // 관리자 삭제
 export const deleteAdmin = async (adminId: number) => {
-    const response = await fetch(`${API_BASE_URL}/admins/${adminId}`, {
+    const response = await fetch(`${API_BASE_URL}/deleteadmins/${adminId}`, {
         ...fetchOptions,
         method: 'DELETE',
     });

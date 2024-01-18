@@ -3,7 +3,8 @@ const db = require('../config/database');
 // 모든 유저 정보 조회
 const getAllUsers = async () => {
     try {
-        const [users] = await db.query('SELECT * FROM users WHERE is_active = 1');
+        const [users] = await db.query('SELECT user_id, username, email, address, phone_number, created_at, is_active FROM users WHERE is_active = 1');
+
         return users;
     } catch (error) {
         throw new Error('유저 정보 조회 중 데이터베이스 오류가 발생했습니다.');
@@ -44,7 +45,7 @@ const deactivateUser = async (userId) => {
 // 관리자 전체 조회
 const getAllAdmins = async () => {
     try {
-        const [admins] = await db.query('SELECT * FROM admins');
+        const [admins] = await db.query('SELECT admin_id, username, email, created_at FROM admins');
         return admins;
     } catch (error) {
         throw new Error('관리자 정보 조회 중 데이터베이스 오류가 발생했습니다.');

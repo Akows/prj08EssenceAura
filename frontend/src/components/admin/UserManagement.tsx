@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAdmin } from '../../hooks/admin/useAdmin';
 import { Admin, User } from '../../type/admintypes';
@@ -95,11 +95,6 @@ const UserManagement: React.FC = () => {
     // 편집 중인 사용자 또는 관리자 객체를 저장하는 상태
     const [editingUser, setEditingUser] = useState<User | Admin | null>(null);
 
-    useEffect(() => {
-        fetchAllUsersHandler();
-        fetchAllAdminsHandler();
-    }, [fetchAllUsersHandler, fetchAllAdminsHandler]);
-
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
 
@@ -166,12 +161,14 @@ const UserManagement: React.FC = () => {
                             users={users}
                             onEdit={handleEditUser}
                             onDelete={handleDeleteUser}
+                            fetchAllUsersHandler={fetchAllUsersHandler}
                         />
                     ) : (
                         <UserAdminList
                             admins={admins}
                             onEdit={handleEditAdmin}
                             onDelete={handleDeleteAdmin}
+                            fetchAllAdminsHandler={fetchAllAdminsHandler}
                         />
                     )}
                 </UserTable>

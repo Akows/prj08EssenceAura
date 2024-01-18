@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { User } from '../../type/admintypes';
 
@@ -5,6 +6,7 @@ interface UserListProps {
     users: User[];
     onEdit: (user: User) => void;
     onDelete: (userId: number) => void;
+    fetchAllUsersHandler: () => Promise<void>;
 }
 
 const TableRow = styled.tr`
@@ -42,7 +44,16 @@ const ActionButton = styled.button`
 `;
 
 // 일반 회원 목록을 렌더링하는 컴포넌트
-const UserList: React.FC<UserListProps> = ({ users, onEdit, onDelete }) => {
+const UserList: React.FC<UserListProps> = ({
+    users,
+    onEdit,
+    onDelete,
+    fetchAllUsersHandler,
+}) => {
+    useEffect(() => {
+        fetchAllUsersHandler();
+    }, [fetchAllUsersHandler]);
+
     return (
         <tbody>
             {users.map((user) => (
