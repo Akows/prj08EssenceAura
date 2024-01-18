@@ -137,24 +137,41 @@ const UserManagement: React.FC = () => {
                             관리자 목록
                         </TabButton>
                     </div>
-                    <div>
-                        <AddUserButtonStyled onClick={handleModalOpen}>
-                            관리자 추가
-                        </AddUserButtonStyled>
-                    </div>
+
+                    {activeTab === 'user' ? (
+                        <div>
+                            <AddUserButtonStyled>비활성화</AddUserButtonStyled>
+                        </div>
+                    ) : (
+                        <div>
+                            <AddUserButtonStyled onClick={handleModalOpen}>
+                                관리자 추가
+                            </AddUserButtonStyled>
+                        </div>
+                    )}
                 </UserHeader>
                 <UserTable>
                     <thead>
-                        <tr>
-                            <TableHeader>ID</TableHeader>
-                            <TableHeader>이름</TableHeader>
-                            <TableHeader>이메일</TableHeader>
-                            <TableHeader>주소</TableHeader>
-                            <TableHeader>전화번호</TableHeader>
-                            <TableHeader>계정 생성 날짜</TableHeader>
-                            <TableHeader>계정 상태</TableHeader>
-                            <TableHeader>관리</TableHeader>
-                        </tr>
+                        {activeTab === 'user' ? (
+                            <tr>
+                                <TableHeader>ID</TableHeader>
+                                <TableHeader>이름</TableHeader>
+                                <TableHeader>이메일</TableHeader>
+                                <TableHeader>주소</TableHeader>
+                                <TableHeader>전화번호</TableHeader>
+                                <TableHeader>계정 생성 날짜</TableHeader>
+                                <TableHeader>계정 상태</TableHeader>
+                                <TableHeader>관리</TableHeader>
+                            </tr>
+                        ) : (
+                            <tr>
+                                <TableHeader>ID</TableHeader>
+                                <TableHeader>이름</TableHeader>
+                                <TableHeader>이메일</TableHeader>
+                                <TableHeader>계정 생성 날짜</TableHeader>
+                                <TableHeader>관리</TableHeader>
+                            </tr>
+                        )}
                     </thead>
                     {activeTab === 'user' ? (
                         <UserList
