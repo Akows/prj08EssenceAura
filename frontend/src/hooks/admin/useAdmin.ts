@@ -139,7 +139,6 @@ export const useAdmin = (): AdminHook => {
         setError('');
         try {
             await createAdmin(adminData);
-            // 필요한 경우 상태 업데이트
         } catch (err) {
             // 에러 객체인지 확인
             if (err instanceof Error) {

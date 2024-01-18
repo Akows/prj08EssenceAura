@@ -5,7 +5,7 @@ import { Admin } from '../../type/admintypes';
 interface AdminFormModalProps {
     admin?: Admin;
     onClose: () => void;
-    onSave: (adminData: Partial<Admin>) => void;
+    onSave: (adminData: Admin) => void;
 }
 
 const ModalOverlay = styled.div`
@@ -111,45 +111,47 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
     };
 
     return (
-        <ModalOverlay>
-            <ModalBody>
-                <CloseButton onClick={onClose}>&times;</CloseButton>
-                <h2>{admin ? '관리자 정보 수정' : '관리자 추가'}</h2>
-                <FormField>
-                    <Label>이름</Label>
-                    <Input
-                        name="username"
-                        value={formData.username || ''}
-                        onChange={handleChange}
-                    />
-                </FormField>
-                <FormField>
-                    <Label>이메일</Label>
-                    <Input
-                        name="email"
-                        value={formData.email || ''}
-                        onChange={handleChange}
-                    />
-                </FormField>
-                <FormField>
-                    <Label>비밀번호</Label>
-                    <Input
-                        type="password"
-                        name="password"
-                        value={formData.password || ''}
-                        onChange={handleChange}
-                    />
-                </FormField>
-                <FormField>
-                    <ActionButton className="save" onClick={handleSave}>
-                        저장
-                    </ActionButton>
-                    <ActionButton className="cancel" onClick={onClose}>
-                        취소
-                    </ActionButton>
-                </FormField>
-            </ModalBody>
-        </ModalOverlay>
+        <>
+            <ModalOverlay>
+                <ModalBody>
+                    <CloseButton onClick={onClose}>&times;</CloseButton>
+                    <h2>{admin ? '관리자 정보 수정' : '관리자 추가'}</h2>
+                    <FormField>
+                        <Label>이름</Label>
+                        <Input
+                            name="username"
+                            value={formData.username || ''}
+                            onChange={handleChange}
+                        />
+                    </FormField>
+                    <FormField>
+                        <Label>이메일</Label>
+                        <Input
+                            name="email"
+                            value={formData.email || ''}
+                            onChange={handleChange}
+                        />
+                    </FormField>
+                    <FormField>
+                        <Label>비밀번호</Label>
+                        <Input
+                            type="password"
+                            name="password"
+                            value={formData.password || ''}
+                            onChange={handleChange}
+                        />
+                    </FormField>
+                    <FormField>
+                        <ActionButton className="save" onClick={handleSave}>
+                            저장
+                        </ActionButton>
+                        <ActionButton className="cancel" onClick={onClose}>
+                            취소
+                        </ActionButton>
+                    </FormField>
+                </ModalBody>
+            </ModalOverlay>
+        </>
     );
 };
 export default UserAdminFormModal;

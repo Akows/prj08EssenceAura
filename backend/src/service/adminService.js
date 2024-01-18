@@ -1,4 +1,5 @@
 const db = require('../config/database');
+const bcrypt = require('bcrypt');
 
 // 모든 유저 정보 조회
 const getAllUsers = async () => {
@@ -54,10 +55,17 @@ const getAllAdmins = async () => {
 
 // 관리자 추가
 const createAdmin = async (adminData) => {
+    // 먼저 데이터베이스에서 이메일 주소가 이미 사용 중인지 확인합니다.
+    const [existingAdmins] = await db.query('SELECT * FROM admins WHERE email = ?', [adminData.email]);
+    if (existingAdmins.length > 0) {
+        throw new Error('이미 사용 중인 이메일 주소입니다.');
+    }
+
+    // 이메일 주소가 중복되지 않았다면, 관리자 계정을 생성합니다.
+    const hashedPassword = await bcrypt.hash(adminData.password, 10);
     try {
-        const [result] = await db.query('INSERT INTO admins SET ?', [adminData]);
-        const [createdAdmin] = await db.query('SELECT * FROM admins WHERE admin_id = ?', [result.insertId]);
-        return createdAdmin[0];
+        const [result] = await db.query('INSERT INTO admins (username, email, password, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW());', [adminData.username, adminData.email, hashedPassword]);
+        await db.query('SELECT * FROM admins WHERE admin_id = ?', [result.insertId]);
     } catch (error) {
         throw new Error('관리자 추가 중 데이터베이스 오류가 발생했습니다.');
     }

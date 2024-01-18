@@ -60,9 +60,12 @@ const getAllAdminsHandler = async (req, res) => {
 // 관리자 추가
 const createAdminHandler = async (req, res) => {
     try {
-        const admin = await createAdmin(req.body);
-        res.status(201).json(admin);
+        await createAdmin(req.body);
+        res.status(201);
     } catch (error) {
+        if (error.message === '이미 사용 중인 이메일 주소입니다.') {
+            return res.status(409).send({ message: error.message }); // 409 Conflict
+        }
         res.status(500).send({ message: '관리자 추가 중 오류가 발생했습니다.' });
     }
 };

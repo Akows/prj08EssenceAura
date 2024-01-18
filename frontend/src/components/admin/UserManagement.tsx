@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAdmin } from '../../hooks/admin/useAdmin';
 import { Admin, User } from '../../type/admintypes';
+import AlertConfirmModal from '../common/AlertConfirmModal';
+import LoadingModal from '../common/LoadingModal';
 import UserAdminFormModal from './UserAdminFormModal';
 import UserAdminList from './UserAdminList';
 import UserList from './UserList';
@@ -95,11 +97,19 @@ const UserManagement: React.FC = () => {
     // 편집 중인 사용자 또는 관리자 객체를 저장하는 상태
     const [editingUser, setEditingUser] = useState<User | Admin | null>(null);
 
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (error) {
+            setIsErrorModalOpen(true); // 에러가 있을 경우 모달 창을 엽니다.
+        }
+    }, [error]);
+
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
 
-    const handleEditUser = (user: User) => {
-        setEditingUser(user);
+    const handleCreateAdmin = () => {
+        setEditingUser(null);
         handleModalOpen();
     };
 
@@ -120,12 +130,12 @@ const UserManagement: React.FC = () => {
 
     const handleTabChange = (tab: 'user' | 'admin') => setActiveTab(tab);
 
+    const handleCloseErrorModal = () => {
+        setIsErrorModalOpen(false);
+    };
+
     return (
         <div>
-            {/* 로딩 및 에러 처리 */}
-            {loading && <div>Loading...</div>}
-            {error && <div>Error: {error}</div>}
-
             <UserCard>
                 <UserHeader>
                     <UserTitle>회원 현황</UserTitle>
@@ -144,7 +154,7 @@ const UserManagement: React.FC = () => {
                         </div>
                     ) : (
                         <div>
-                            <AddUserButtonStyled onClick={handleModalOpen}>
+                            <AddUserButtonStyled onClick={handleCreateAdmin}>
                                 관리자 추가
                             </AddUserButtonStyled>
                         </div>
@@ -176,9 +186,9 @@ const UserManagement: React.FC = () => {
                     {activeTab === 'user' ? (
                         <UserList
                             users={users}
-                            onEdit={handleEditUser}
                             onDelete={handleDeleteUser}
                             fetchAllUsersHandler={fetchAllUsersHandler}
+                            loading={loading}
                         />
                     ) : (
                         <UserAdminList
@@ -186,6 +196,7 @@ const UserManagement: React.FC = () => {
                             onEdit={handleEditAdmin}
                             onDelete={handleDeleteAdmin}
                             fetchAllAdminsHandler={fetchAllAdminsHandler}
+                            loading={loading}
                         />
                     )}
                 </UserTable>
@@ -198,6 +209,19 @@ const UserManagement: React.FC = () => {
                     onSave={createAdminHandler}
                 />
             )}
+
+            {/* 에러 모달 창 */}
+            {isErrorModalOpen && (
+                <AlertConfirmModal
+                    title="에러"
+                    onClose={handleCloseErrorModal}
+                    showConfirmButton={false}
+                >
+                    <p>{error}</p>
+                </AlertConfirmModal>
+            )}
+
+            {loading && <LoadingModal />}
         </div>
     );
 };

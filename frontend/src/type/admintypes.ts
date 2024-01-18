@@ -16,10 +16,10 @@ export interface User {
 
 // Admin 인터페이스 정의
 export interface Admin {
-    admin_id: number;
+    admin_id?: number;
     username: string;
     email: string;
     password: string;
-    created_at: string;
-    updated_at: string;
+    created_at?: string;
+    updated_at?: string;
 }

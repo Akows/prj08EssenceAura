@@ -4,9 +4,9 @@ import { User } from '../../type/admintypes';
 
 interface UserListProps {
     users: User[];
-    onEdit: (user: User) => void;
     onDelete: (userId: number) => void;
     fetchAllUsersHandler: () => Promise<void>;
+    loading: boolean;
 }
 
 const TableRow = styled.tr`
@@ -46,13 +46,19 @@ const ActionButton = styled.button`
 // 일반 회원 목록을 렌더링하는 컴포넌트
 const UserList: React.FC<UserListProps> = ({
     users,
-    onEdit,
     onDelete,
     fetchAllUsersHandler,
+    loading,
 }) => {
     useEffect(() => {
         fetchAllUsersHandler();
     }, [fetchAllUsersHandler]);
+
+    useEffect(() => {
+        if (loading) {
+            fetchAllUsersHandler();
+        }
+    }, [loading, fetchAllUsersHandler]);
 
     return (
         <tbody>
@@ -68,7 +74,7 @@ const UserList: React.FC<UserListProps> = ({
                     <TableCell>
                         <ActionButton
                             className="edit"
-                            onClick={() => onEdit(user)}
+                            onClick={() => console.log('수정모드로!')}
                         >
                             수정
                         </ActionButton>
