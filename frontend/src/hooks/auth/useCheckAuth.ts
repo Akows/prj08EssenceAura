@@ -17,7 +17,7 @@ const useCheckAuth = () => {
                 );
                 const data = await response.json();
                 if (response.ok) {
-                    dispatch(loginSuccess(data.user));
+                    dispatch(loginSuccess(data.userInfo));
                 } else {
                     dispatch(loginFailure(data.message)); // 실패 응답에 포함된 메시지를 사용
                 }

@@ -188,7 +188,14 @@ const checkAuthHandler = async (req, res) => {
             return res.status(404).json({ message: '사용자를 찾을 수 없음' });
         }
 
-        return res.json({ user });
+        return res.json({
+            userInfo: {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                isAdmin: isAdmin
+            },
+        });
     } catch (err) {
         return res.status(401).json({ message: '인증되지 않음' });
     }
