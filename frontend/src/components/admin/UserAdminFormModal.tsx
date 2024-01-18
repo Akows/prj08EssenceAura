@@ -100,7 +100,7 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
         <ModalOverlay>
             <ModalBody>
                 <CloseButton onClick={onClose}>&times;</CloseButton>
-                <h2>{admin ? '회원 정보 수정' : '회원 추가'}</h2>
+                <h2>{admin ? '관리자 정보 수정' : '관리자 추가'}</h2>
                 <FormField>
                     <Label>이름</Label>
                     <Input
@@ -125,14 +125,6 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
                         value={formData.password || ''}
                         onChange={handleChange}
                     />
-                </FormField>
-                <FormField>
-                    <ActionButton className="save" onClick={handleSave}>
-                        저장
-                    </ActionButton>
-                    <ActionButton className="cancel" onClick={onClose}>
-                        취소
-                    </ActionButton>
                 </FormField>
                 <FormField>
                     <ActionButton className="save" onClick={handleSave}>

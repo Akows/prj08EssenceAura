@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import UserAdminFormModal from './UserAdminFormModal';
 import UserAdminList from './UserAdminList';
-import UserFormModal from './UserFormModal';
 import UserList from './UserList';
 
 // User 인터페이스 정의
@@ -133,9 +132,6 @@ const UserManagement: React.FC = () => {
     // 모달 창의 열림/닫힘 상태를 관리하는 상태
     const [isModalOpen, setModalOpen] = useState(false);
 
-    // 현재 열릴 모달의 타입을 결정하는 상태 ('user' 또는 'admin')
-    const [modalType, setModalType] = useState<'user' | 'admin'>('user');
-
     // 편집 중인 사용자 또는 관리자 객체를 저장하는 상태
     const [editingUser, setEditingUser] = useState<User | Admin | null>(null);
 
@@ -145,13 +141,6 @@ const UserManagement: React.FC = () => {
     // 관리자 데이터 목록을 저장하는 상태
     const [admins] = useState<Admin[]>(adminsData);
 
-    // 사용자 데이터를 저장하는 함수
-    const saveUser = (userData: Partial<User>) => {
-        alert('저장할 회원:' + JSON.stringify(userData));
-        // API 호출로 사용자 정보를 업데이트하는 로직 구현 예정
-        closeModal();
-    };
-
     // 관리자 데이터를 저장하는 함수
     const saveAdmin = (adminsData: Partial<Admin>) => {
         alert('저장할 관리자:' + JSON.stringify(adminsData));
@@ -160,9 +149,8 @@ const UserManagement: React.FC = () => {
     };
 
     // 모달을 열 때 사용하는 함수, 새 사용자 추가 시에는 editingUser를 비워둠
-    const openAddModal = (type: 'user' | 'admin') => {
+    const openAddModal = () => {
         setEditingUser(null);
-        setModalType(type); // 'user' 또는 'admin'을 설정하여 모달 타입을 결정함
         setModalOpen(true);
     };
 
@@ -226,14 +214,7 @@ const UserManagement: React.FC = () => {
                         </TabButton>
                     </div>
                     <div>
-                        <AddUserButtonStyled
-                            onClick={() => openAddModal('user')}
-                        >
-                            회원 추가
-                        </AddUserButtonStyled>
-                        <AddUserButtonStyled
-                            onClick={() => openAddModal('admin')}
-                        >
+                        <AddUserButtonStyled onClick={() => openAddModal()}>
                             관리자 추가
                         </AddUserButtonStyled>
                     </div>
@@ -256,20 +237,13 @@ const UserManagement: React.FC = () => {
             </UserCard>
 
             {/* 회원 추가/수정 모달 */}
-            {isModalOpen &&
-                (modalType === 'user' ? (
-                    <UserFormModal
-                        user={editingUser as User} // 여기서 editingUser는 User 타입이라고 가정합니다.
-                        onClose={() => setModalOpen(false)}
-                        onSave={saveUser} // 일반 회원 데이터를 저장하는 함수
-                    />
-                ) : (
-                    <UserAdminFormModal
-                        admin={editingUser as Admin} // 여기서 editingUser는 Admin 타입이라고 가정합니다.
-                        onClose={() => setModalOpen(false)}
-                        onSave={saveAdmin} // 관리자 데이터를 저장하는 함수 (이 함수는 별도로 구현해야 합니다.)
-                    />
-                ))}
+            {isModalOpen && (
+                <UserAdminFormModal
+                    admin={editingUser as Admin} // 여기서 editingUser는 Admin 타입이라고 가정합니다.
+                    onClose={() => setModalOpen(false)}
+                    onSave={saveAdmin} // 관리자 데이터를 저장하는 함수 (이 함수는 별도로 구현해야 합니다.)
+                />
+            )}
         </>
     );
 };
