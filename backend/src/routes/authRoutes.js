@@ -29,5 +29,4 @@ router.post('/password-reset/verify', authController.verifyAndResetPasswordHandl
 // 비밀번호 재설정 취소 라우트
 router.post('/cancel-passwordreset', authController.cancelResetPasswordHandler);
 
-
 module.exports = router;
