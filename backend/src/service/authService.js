@@ -56,14 +56,40 @@ const getUserByEmail = async (email) => {
     }
 }
 
+const getAdminByEmail = async (email) => {
+    const query = `SELECT * FROM admins WHERE email = ?`;
+
+    try {
+        const [rows] = await db.query(query, [email]);
+        if (rows.length > 0) {
+            return rows[0]; // 관리자가 존재하는 경우 해당 유저 정보 반환
+        } else {
+            return null; // 관리자가 존재하지 않는 경우 null 반환
+        }
+    } catch (error) {
+        console.error("데이터베이스 조회 중 오류 발생:", error);
+        return null; // 데이터베이스 조회 중 오류 발생시 null 반환
+    }
+}
+
 const validateUserPassword = async (email, password, isAdmin) => {
-    const user = await getUserByEmail(email, isAdmin);
-    if (!user) {
+    let result; 
+
+    // 관리자 여부를 확인하여 어느 테이블에서 정보를 조회해야하는지 확인.
+    if (isAdmin) {
+        result = await getAdminByEmail(email);
+    }
+    else {
+        result = await getUserByEmail(email);
+    }
+
+    // 조회된 정보가 없으면 false를 반환.
+    if (!result) {
         return false;
     }
 
-    const isValid = await bcrypt.compare(password, user.password);
-    return isValid ? user : null;
+    const isValid = await bcrypt.compare(password, result.password);
+    return isValid ? result : null;
 }
 
 // 회원 정보의 임시 저장

@@ -75,10 +75,11 @@ const loginHandler = async (req, res) => {
 
     try {
         const { email, password, isAdmin } = req.body;
+
         const user = await validateUserPassword(email, password, isAdmin);
 
         if (!user) {
-            return res.status(401).json({ message: '비밀번호가 틀립니다.' });
+            return res.status(401).json({ message: '아이디 혹은 비밀번호가 일치하지 않습니다.' });
         }
 
         // 관리자인지 여부에 따라 올바른 ID 필드 사용
