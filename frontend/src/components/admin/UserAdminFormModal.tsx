@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Admin } from './UserManagement';
+import { Admin } from '../../type/admintypes';
 
 interface AdminFormModalProps {
     admin?: Admin;
@@ -78,11 +78,25 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
     onClose,
     onSave,
 }) => {
-    const [formData, setFormData] = useState<Partial<Admin>>({});
+    const [formData, setFormData] = useState<Partial<Admin>>({
+        username: '',
+        email: '',
+        password: '',
+    });
 
     useEffect(() => {
         if (admin) {
-            setFormData(admin);
+            setFormData({
+                username: admin.username,
+                email: admin.email,
+                password: admin.password,
+            });
+        } else {
+            setFormData({
+                username: '',
+                email: '',
+                password: '',
+            });
         }
     }, [admin]);
 
@@ -138,5 +152,4 @@ const UserAdminFormModal: React.FC<AdminFormModalProps> = ({
         </ModalOverlay>
     );
 };
-
 export default UserAdminFormModal;

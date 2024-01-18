@@ -1,34 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useAdmin } from '../../hooks/admin/useAdmin';
+import { Admin, User } from '../../type/admintypes';
 import UserAdminFormModal from './UserAdminFormModal';
 import UserAdminList from './UserAdminList';
 import UserList from './UserList';
-
-// User 인터페이스 정의
-export interface User {
-    user_id: number;
-    username: string;
-    email: string;
-    password: string;
-    address: string;
-    building_name?: string;
-    unit_number?: string;
-    phone_number: string;
-    created_at: string;
-    updated_at: string;
-    is_active: boolean;
-    is_member: boolean;
-}
-
-// Admin 인터페이스 정의
-export interface Admin {
-    admin_id: number;
-    username: string;
-    email: string;
-    password: string;
-    created_at: string;
-    updated_at: string;
-}
 
 const UserCard = styled.div`
     background: white;
@@ -95,37 +71,21 @@ const TabButton = styled(AddUserButton)`
     }
 `;
 
-// 임시 데이터
-const usersData = [
-    {
-        user_id: 1,
-        username: 'user1',
-        email: 'user1@example.com',
-        password: 'hashed_password',
-        address: '123 Main St',
-        phone_number: '123-456-7890',
-        created_at: '2021-01-01',
-        updated_at: '2021-01-02',
-        is_active: true,
-        is_member: true,
-    },
-    // ... 추가 데이터 ...
-];
-
-// 임시 데이터
-const adminsData = [
-    {
-        admin_id: 1,
-        username: 'admin1',
-        email: 'admin1@example.com',
-        password: 'hashed_password',
-        created_at: '2021-01-01',
-        updated_at: '2021-01-02',
-    },
-    // ... 추가 데이터 ...
-];
-
 const UserManagement: React.FC = () => {
+    const {
+        loading,
+        error,
+        users,
+        admins,
+        fetchAllUsersHandler,
+        fetchAllAdminsHandler,
+        updateUserHandler,
+        deactivateUserHandler,
+        createAdminHandler,
+        updateAdminHandler,
+        deleteAdminHandler,
+    } = useAdmin();
+
     // 현재 활성화된 탭을 관리하는 상태 ('user' 또는 'admin')
     const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user');
 
@@ -135,73 +95,42 @@ const UserManagement: React.FC = () => {
     // 편집 중인 사용자 또는 관리자 객체를 저장하는 상태
     const [editingUser, setEditingUser] = useState<User | Admin | null>(null);
 
-    // 일반 사용자 데이터 목록을 저장하는 상태
-    const [users] = useState<User[]>(usersData);
+    useEffect(() => {
+        fetchAllUsersHandler();
+        fetchAllAdminsHandler();
+    }, [fetchAllUsersHandler, fetchAllAdminsHandler]);
 
-    // 관리자 데이터 목록을 저장하는 상태
-    const [admins] = useState<Admin[]>(adminsData);
+    const handleModalOpen = () => setModalOpen(true);
+    const handleModalClose = () => setModalOpen(false);
 
-    // 관리자 데이터를 저장하는 함수
-    const saveAdmin = (adminsData: Partial<Admin>) => {
-        alert('저장할 관리자:' + JSON.stringify(adminsData));
-        // API 호출로 관리자 정보를 업데이트하는 로직 구현 예정
-        closeModal();
-    };
-
-    // 모달을 열 때 사용하는 함수, 새 사용자 추가 시에는 editingUser를 비워둠
-    const openAddModal = () => {
-        setEditingUser(null);
-        setModalOpen(true);
-    };
-
-    // 모달을 닫을 때 사용하는 함수
-    const closeModal = () => {
-        setEditingUser(null);
-        setModalOpen(false);
-    };
-
-    // 편집 모달을 열 때 사용하는 함수, 현재 편집할 객체를 설정
-    const openEditModal = (user: User | Admin) => {
+    const handleEditUser = (user: User) => {
         setEditingUser(user);
-        setModalOpen(true);
+        handleModalOpen();
     };
 
-    // 사용자 또는 관리자를 삭제하는 함수입니다. API 연동 시 해당 로직으로 교체되어야 합니다.
-    const deleteUser = (product_id: number) => {
-        // TODO: API 호출로 제품을 삭제하는 로직 구현
-        alert(`제품 ID ${product_id} 삭제`);
+    const handleEditAdmin = (admin: Admin) => {
+        setEditingUser(admin);
+        handleModalOpen();
     };
 
-    // 활성 탭을 변경하는 함수입니다 ('user' 목록과 'admin' 목록 사이 전환).
-    const handleTabChange = (tab: string) => {
-        setActiveTab(tab as 'user' | 'admin');
+    const handleDeleteUser = (userId: number) => {
+        deactivateUserHandler(userId);
+        // 다른 처리가 필요할 수 있음
     };
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'user':
-                return (
-                    <UserList
-                        users={users}
-                        onEdit={openEditModal}
-                        onDelete={deleteUser}
-                    />
-                );
-            case 'admin':
-                return (
-                    <UserAdminList
-                        admins={admins}
-                        onEdit={openEditModal}
-                        onDelete={deleteUser}
-                    />
-                );
-            default:
-                return <div>선택된 탭에 해당하는 정보가 없습니다.</div>;
-        }
+    const handleDeleteAdmin = (adminId: number) => {
+        deleteAdminHandler(adminId);
+        // 다른 처리가 필요할 수 있음
     };
+
+    const handleTabChange = (tab: 'user' | 'admin') => setActiveTab(tab);
 
     return (
-        <>
+        <div>
+            {/* 로딩 및 에러 처리 */}
+            {loading && <div>Loading...</div>}
+            {error && <div>Error: {error}</div>}
+
             <UserCard>
                 <UserHeader>
                     <UserTitle>회원 현황</UserTitle>
@@ -214,7 +143,7 @@ const UserManagement: React.FC = () => {
                         </TabButton>
                     </div>
                     <div>
-                        <AddUserButtonStyled onClick={() => openAddModal()}>
+                        <AddUserButtonStyled onClick={handleModalOpen}>
                             관리자 추가
                         </AddUserButtonStyled>
                     </div>
@@ -232,19 +161,30 @@ const UserManagement: React.FC = () => {
                             <TableHeader>관리</TableHeader>
                         </tr>
                     </thead>
-                    {renderContent()}
+                    {activeTab === 'user' ? (
+                        <UserList
+                            users={users}
+                            onEdit={handleEditUser}
+                            onDelete={handleDeleteUser}
+                        />
+                    ) : (
+                        <UserAdminList
+                            admins={admins}
+                            onEdit={handleEditAdmin}
+                            onDelete={handleDeleteAdmin}
+                        />
+                    )}
                 </UserTable>
             </UserCard>
 
-            {/* 회원 추가/수정 모달 */}
             {isModalOpen && (
                 <UserAdminFormModal
-                    admin={editingUser as Admin} // 여기서 editingUser는 Admin 타입이라고 가정합니다.
-                    onClose={() => setModalOpen(false)}
-                    onSave={saveAdmin} // 관리자 데이터를 저장하는 함수 (이 함수는 별도로 구현해야 합니다.)
+                    admin={editingUser as Admin}
+                    onClose={handleModalClose}
+                    onSave={createAdminHandler}
                 />
             )}
-        </>
+        </div>
     );
 };
 

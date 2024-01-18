@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Admin } from './UserManagement';
+import { Admin } from '../../type/admintypes';
 
 interface UserAdminListProps {
     admins: Admin[];
@@ -54,10 +54,7 @@ const UserAdminList: React.FC<UserAdminListProps> = ({
                     <TableCell>{admin.admin_id}</TableCell>
                     <TableCell>{admin.username}</TableCell>
                     <TableCell>{admin.email}</TableCell>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
                     <TableCell>{admin.created_at}</TableCell>
-                    <TableCell>관리자</TableCell>
                     <TableCell>
                         <ActionButton
                             className="edit"

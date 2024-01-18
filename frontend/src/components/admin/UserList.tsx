@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { User } from './UserManagement';
+import { User } from '../../type/admintypes';
 
 interface UserListProps {
     users: User[];
