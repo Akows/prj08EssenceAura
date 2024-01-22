@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const getAllUsers = async () => {
     try {
         const [users] = await db.query('SELECT user_id, username, email, address, phone_number, created_at, is_active FROM users WHERE is_active = 1');
-
         return users;
     } catch (error) {
         throw new Error('유저 정보 조회 중 데이터베이스 오류가 발생했습니다.');
