@@ -1,4 +1,4 @@
-const { getAllUsers, searchUserByEmail, updateUser, deactivateUser, getAllAdmins, createAdmin, updateAdmin, deleteAdmin } = require("../service/adminService");
+const { getAllUsers, searchUserByEmail, updateUser, deactivateUser, getAllAdmins, createAdmin, updateAdmin, deleteAdmin, updateProduct, deleteProduct, addProduct, getProducts } = require("../service/adminService");
 
 // 모든 유저 정보 조회
 const getAllUsersHandler = async (req, res) => {
@@ -90,6 +90,48 @@ const deleteAdminHandler = async (req, res) => {
     }
 };
 
+// 상품 목록을 가져오는 컨트롤러 함수
+const getProductsHandler = async (req, res) => {
+    try {
+        const products = await getProducts();
+        res.json({ success: true, data: products });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 상품을 추가하는 컨트롤러 함수
+const addProductHandler = async (req, res) => {
+    try {
+        const newProduct = await addProduct(req.body);
+        res.status(201).json({ success: true, data: newProduct });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 상품 정보를 수정하는 컨트롤러 함수
+const updateProductHandler = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedProduct = await updateProduct(id, req.body);
+        res.json({ success: true, data: updatedProduct });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 상품을 삭제하는 컨트롤러 함수
+const deleteProductHandler = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await deleteProduct(id);
+        res.json({ success: true, message: '상품이 삭제되었습니다.' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getAllUsersHandler,
     searchUserByEmailHandler,
@@ -99,4 +141,8 @@ module.exports = {
     updateAdminHandler,
     createAdminHandler,
     deleteAdminHandler,
+    getProductsHandler,
+    addProductHandler, 
+    updateProductHandler,
+    deleteProductHandler,
 };

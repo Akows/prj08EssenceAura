@@ -88,6 +88,50 @@ const deleteAdmin = async (adminId) => {
     }
 };
 
+// 상품 목록을 가져오는 서비스 함수
+const getProducts = async () => {
+    try {
+        // 데이터베이스 쿼리를 실행하여 상품 목록을 가져온다.
+        const products = await db.query('SELECT * FROM products');
+        return products;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// 상품을 추가하는 서비스 함수
+const addProduct = async (productData) => {
+    try {
+        // 새 상품 데이터를 데이터베이스에 추가.
+        const result = await db.query('INSERT INTO products SET ?', productData);
+        return { id: result.insertId, ...productData };
+    } catch (error) {
+        throw error;
+    }
+};
+
+// 상품 정보를 수정하는 서비스 함수
+const updateProduct = async (id, productData) => {
+    try {
+        // 상품 ID를 기준으로 상품 정보를 업데이트.
+        await db.query('UPDATE products SET ? WHERE product_id = ?', [productData, id]);
+        return { id, ...productData };
+    } catch (error) {
+        throw error;
+    }
+};
+
+// 상품을 삭제하는 서비스 함수
+const deleteProduct = async (id) => {
+    try {
+        // 상품 ID를 기준으로 상품을 삭제.
+        await db.query('DELETE FROM products WHERE product_id = ?', id);
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 // 내보내기
 module.exports = {
     getAllUsers,
@@ -98,4 +142,8 @@ module.exports = {
     createAdmin,
     updateAdmin,
     deleteAdmin,
+    getProducts,
+    addProduct, 
+    updateProduct,
+    deleteProduct,
 };
