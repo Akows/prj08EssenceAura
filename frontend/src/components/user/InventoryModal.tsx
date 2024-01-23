@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Product } from './InventoryManagement';
+import { Product } from '../../redux/admin/adminThunks';
 
 // InventoryModal props의 타입 정의
 interface InventoryModalProps {
     product: Product | null;
     onClose: () => void;
-    onSave: (productData: Partial<Product>) => void;
+    onSave: (productData: Product) => void;
 }
 
 const ModalOverlay = styled.div`
@@ -87,8 +87,25 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
     onClose,
     onSave,
 }) => {
-    // 폼 입력을 위한 상태 관리
-    const [formData, setFormData] = useState<Partial<Product>>(product || {});
+    const [formData, setFormData] = useState<Product>({
+        name: '',
+        description: '',
+        price: 0,
+        category: '',
+        tags: '',
+        stock: 0,
+        imageUrl: '',
+        createdAt: '',
+        whatEvent: '',
+        discountRate: 0,
+    });
+
+    useEffect(() => {
+        // 기존 제품 데이터로 폼 초기화
+        if (product) {
+            setFormData({ ...product });
+        }
+    }, [product]);
 
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -99,7 +116,6 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
 
     const handleSave = () => {
         onSave(formData);
-        onClose();
     };
 
     return (
@@ -107,24 +123,91 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
             <ModalBody>
                 <CloseButton onClick={onClose}>&times;</CloseButton>
                 <h2>{product ? '제품 수정' : '제품 추가'}</h2>
-                {/* Form fields for product details */}
+
                 <FormField>
                     <Label>이름</Label>
                     <Input
                         name="name"
-                        value={formData.name}
+                        value={formData.name || ''}
                         onChange={handleChange}
                     />
                 </FormField>
+
                 <FormField>
                     <Label>설명</Label>
                     <Textarea
                         name="description"
-                        value={formData.description}
+                        value={formData.description || ''}
                         onChange={handleChange}
                     />
                 </FormField>
-                {/* ... 다른 필드들 ... */}
+
+                <FormField>
+                    <Label>가격</Label>
+                    <Input
+                        name="price"
+                        type="number"
+                        value={formData.price || ''}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
+                <FormField>
+                    <Label>카테고리</Label>
+                    <Input
+                        name="category"
+                        value={formData.category || ''}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
+                <FormField>
+                    <Label>태그</Label>
+                    <Input
+                        name="tags"
+                        value={formData.tags || ''}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
+                <FormField>
+                    <Label>재고 수량</Label>
+                    <Input
+                        name="stock"
+                        type="number"
+                        value={formData.stock || 0}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
+                <FormField>
+                    <Label>이미지 URL</Label>
+                    <Input
+                        name="image_url"
+                        value={formData.imageUrl || ''}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
+                <FormField>
+                    <Label>이벤트 분류</Label>
+                    <Input
+                        name="whatEvent"
+                        value={formData.whatEvent || ''}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
+                <FormField>
+                    <Label>할인율</Label>
+                    <Input
+                        name="discount_rate"
+                        type="number"
+                        value={formData.discountRate || 0}
+                        onChange={handleChange}
+                    />
+                </FormField>
+
                 <FormField>
                     <ActionButton className="save" onClick={handleSave}>
                         저장

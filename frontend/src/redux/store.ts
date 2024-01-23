@@ -1,6 +1,8 @@
 // Redux Toolkit을 사용하여 스토어를 구성하기 위한 configureStore 함수를 가져온다.
 import { configureStore } from '@reduxjs/toolkit';
 
+import adminReducer from './admin/adminSlice';
+
 import uiReducer from './slices/uiSlice';
 import authReducer from './slices/authSlice';
 import cartReducer from './slices/cartSlice';
@@ -11,6 +13,8 @@ import reviewReducer from './slices/reviewSlice'; // 리뷰 관련 상태 관리
 // 스토어를 구성합니다. 이 스토어는 애플리케이션의 전체 상태를 관리.
 export const store = configureStore({
     reducer: {
+        admin: adminReducer, // 관리자 슬라이스의 리듀서를 스토어에 연결.
+
         ui: uiReducer, // ui 슬라이스의 리듀서를 스토어에 연결.
         auth: authReducer, // auth 슬라이스의 리듀서를 스토어에 연결.
         cart: cartReducer, // cart 슬라이스의 리듀서를 스토어에 연결.

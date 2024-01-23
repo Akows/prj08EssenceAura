@@ -86,7 +86,7 @@ const adminSlice = createSlice({
                 updateProduct.fulfilled,
                 (state, action: PayloadAction<ApiResponse<Product>>) => {
                     const index = state.products.findIndex(
-                        (p) => p.id === action.payload.data.id
+                        (p) => p.product_id === action.payload.data.product_id
                     );
                     if (index !== -1) {
                         state.products[index] = action.payload.data;
@@ -109,7 +109,7 @@ const adminSlice = createSlice({
                 deleteProduct.fulfilled,
                 (state, action: PayloadAction<ApiResponse<Product>>) => {
                     state.products = state.products.filter(
-                        (p) => p.id !== action.payload.data.id
+                        (p) => p.product_id !== action.payload.data.product_id
                     );
                 }
             )

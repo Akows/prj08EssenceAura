@@ -2,11 +2,17 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 
 export type Product = {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    // 기타 필요한 필드...
+    product_id?: number; // 상품 ID
+    name: string; // 상품 이름
+    description: string; // 상품 설명
+    price: number; // 가격
+    category: string; // 카테고리
+    tags: string | null; // 태그 (null 허용)
+    stock: number; // 재고 수량
+    imageUrl: string; // 이미지 URL
+    createdAt: string; // 생성된 날짜 및 시간
+    whatEvent: string; // 어떤 이벤트에 속하는지
+    discountRate: number | null; // 할인율 (null 허용)
 };
 
 export type ApiResponse<T> = {
@@ -30,7 +36,8 @@ export type ApiResponse<T> = {
 // 상품 정보 가져오기
 
 // 이 함수는 상품 목록을 서버에서 가져온다.
-// 서버에 GET 요청을 보내고, 성공적으로 데이터를 받으면 이를 반환.
+// 서버에 GET 요청을 보내고,
+// 성공적으로 데이터를 받으면 이를 반환.
 // 오류가 발생하면 오류 정보를 반환.
 
 // 비동기 함수의 첫 번째 인자 _?
@@ -55,7 +62,9 @@ export const fetchProducts = createAsyncThunk<ApiResponse<Product[]>>(
 // 상품 추가
 
 // 새로운 상품 데이터를 서버에 추가.
-// 서버에 POST 요청을 보내고, 성공적으로 처리되면 추가된 상품 정보를 반환.
+// 서버에 POST 요청을 보내고,
+// 성공적으로 처리되면 추가된 상품 정보를 반환.
+// 오류가 발생하면 오류 정보를 반환.
 export const addProduct = createAsyncThunk<ApiResponse<Product>, Product>(
     'admin/addProduct',
     async (productData, { rejectWithValue }) => {
@@ -76,7 +85,9 @@ export const addProduct = createAsyncThunk<ApiResponse<Product>, Product>(
 // 상품 수정
 
 // 기존 상품의 정보를 수정.
-// 각 상품의 고유 ID를 사용하여 서버에 PUT 요청을 보내고, 성공적으로 처리되면 수정된 상품 정보를 반환.
+// 각 상품의 고유 ID를 사용하여 서버에 PUT 요청을 보내고,
+// 성공적으로 처리되면 수정된 상품 정보를 반환.
+// 오류가 발생하면 오류 정보를 반환.
 export const updateProduct = createAsyncThunk<
     ApiResponse<Product>,
     { id: number; productData: Product }
@@ -97,7 +108,9 @@ export const updateProduct = createAsyncThunk<
 // 상품 삭제
 
 // 상품을 삭제.
-// 상품의 ID를 사용하여 서버에 DELETE 요청을 보내고, 성공적으로 처리되면 삭제된 상품의 정보를 반환.
+// 상품의 ID를 사용하여 서버에 DELETE 요청을 보내고,
+// 성공적으로 처리되면 삭제된 상품의 정보를 반환.
+// 오류가 발생하면 오류 정보를 반환.
 export const deleteProduct = createAsyncThunk<ApiResponse<Product>, number>(
     'admin/deleteProduct',
     async (id, { rejectWithValue }) => {

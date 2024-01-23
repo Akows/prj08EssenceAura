@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../redux/store';
 import styled from 'styled-components';
+import {
+    addProduct,
+    deleteProduct,
+    fetchProducts,
+    Product,
+    updateProduct,
+} from '../../redux/admin/adminThunks';
+import LoadingModal from '../common/LoadingModal';
 import InventoryModal from './InventoryModal';
-
-export interface Product {
-    product_id: number;
-    name: string;
-    description: string;
-    price: string; // 가격이 문자열 형식으로 제공되므로 string 타입으로 지정
-    category: string;
-    tags: string; // 태그는 콤마로 구분된 문자열로 가정
-    stock: number;
-    image_url: string;
-    created_at: string; // 생성 날짜를 문자열 형식으로 가정
-    is_event: boolean;
-    discount_rate: number;
-}
 
 const InventoryCard = styled.div`
     background: white;
@@ -97,53 +93,52 @@ const ActionButton = styled.button`
     }
 `;
 
-// 임시 데이터
-const products = [
-    {
-        product_id: 1,
-        name: '에센스 오일',
-        description: '피부에 좋은 천연 오일',
-        price: '₩19,000',
-        category: '스킨케어',
-        tags: '천연, 오일',
-        stock: 15,
-        image_url: 'https://via.placeholder.com/150',
-        created_at: '2024-01-07',
-        is_event: true,
-        discount_rate: 10,
-    },
-    // ... 더 많은 제품 데이터 ...
-];
-
 const InventoryManagement: React.FC = () => {
-    // 모달 상태 관리
+    const dispatch = useDispatch<AppDispatch>();
+    const { products, loading, error } = useSelector(
+        (state: RootState) => state.admin
+    );
     const [isModalOpen, setModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-    const saveProduct = (productData: Partial<Product>) => {
-        alert('저장할 제품:' + productData);
-        // TODO: API 호출로 제품 정보를 업데이트하는 로직 구현
+    // 컴포넌트 마운트 시 상품 데이터 로드
+    useEffect(() => {
+        dispatch(fetchProducts());
+    }, [dispatch]);
+
+    const handleAddProduct = (productData: Product) => {
+        dispatch(addProduct(productData));
         closeModal();
     };
 
+    const handleUpdateProduct = (productData: Product) => {
+        if (editingProduct && editingProduct.product_id !== undefined) {
+            dispatch(
+                updateProduct({
+                    id: editingProduct.product_id,
+                    productData,
+                })
+            );
+        }
+        closeModal();
+    };
+    const handleDeleteProduct = (product_id: number) => {
+        dispatch(deleteProduct(product_id));
+    };
+
     const openAddModal = () => {
-        setEditingProduct(null); // 새 제품 추가 시 null을 editingProduct로 설정
+        setEditingProduct(null);
+        setModalOpen(true);
+    };
+
+    const openEditModal = (product: Product) => {
+        setEditingProduct(product);
         setModalOpen(true);
     };
 
     const closeModal = () => {
         setEditingProduct(null);
         setModalOpen(false);
-    };
-
-    const openEditModal = (product: Product) => {
-        setEditingProduct(product); // 수정할 제품 설정
-        setModalOpen(true);
-    };
-
-    const deleteProduct = (product_id: number) => {
-        // TODO: API 호출로 제품을 삭제하는 로직 구현
-        alert(`제품 ID ${product_id} 삭제`);
     };
 
     return (
@@ -176,9 +171,9 @@ const InventoryManagement: React.FC = () => {
                                 <TableCell>{product.price}</TableCell>
                                 <TableCell>{product.category}</TableCell>
                                 <TableCell>{product.stock}</TableCell>
-                                <TableCell>{product.created_at}</TableCell>
+                                <TableCell>{product.createdAt}</TableCell>
                                 <TableCell>
-                                    {product.is_event ? '예' : '아니오'}
+                                    {product.whatEvent ? '예' : '아니오'}
                                 </TableCell>
                                 <TableCell>
                                     <ActionButton
@@ -189,9 +184,15 @@ const InventoryManagement: React.FC = () => {
                                     </ActionButton>
                                     <ActionButton
                                         className="delete"
-                                        onClick={() =>
-                                            deleteProduct(product.product_id)
-                                        }
+                                        onClick={() => {
+                                            if (
+                                                product.product_id !== undefined
+                                            ) {
+                                                handleDeleteProduct(
+                                                    product.product_id
+                                                );
+                                            }
+                                        }}
                                     >
                                         삭제
                                     </ActionButton>
@@ -207,9 +208,14 @@ const InventoryManagement: React.FC = () => {
                 <InventoryModal
                     product={editingProduct}
                     onClose={closeModal}
-                    onSave={saveProduct}
+                    onSave={
+                        editingProduct ? handleUpdateProduct : handleAddProduct
+                    }
                 />
             )}
+
+            {loading && <LoadingModal />}
+            {error && 'Error!'}
         </>
     );
 };
