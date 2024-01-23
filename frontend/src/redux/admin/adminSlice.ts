@@ -67,17 +67,19 @@ const adminSlice = createSlice({
             .addCase(
                 addProduct.fulfilled,
                 (state, action: PayloadAction<ApiResponse<Product>>) => {
+                    state.loading = false;
                     state.products.push(action.payload.data);
                 }
             )
             // 상품 추가: rejected 상태
             .addCase(addProduct.rejected, (state, action) => {
+                state.loading = false;
                 state.error =
                     action.error.message ||
                     '상품 추가 작업 중 예기치 못한 에러가 발생하였습니다.';
             })
             // 상품 수정: pending 상태
-            .addCase(updateProduct.fulfilled, (state) => {
+            .addCase(updateProduct.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
@@ -85,6 +87,7 @@ const adminSlice = createSlice({
             .addCase(
                 updateProduct.fulfilled,
                 (state, action: PayloadAction<ApiResponse<Product>>) => {
+                    state.loading = false;
                     const index = state.products.findIndex(
                         (p) => p.product_id === action.payload.data.product_id
                     );
@@ -95,12 +98,13 @@ const adminSlice = createSlice({
             )
             // 상품 수정: rejected 상태
             .addCase(updateProduct.rejected, (state, action) => {
+                state.loading = false;
                 state.error =
                     action.error.message ||
                     '상품 수정 작업 중 예기치 못한 에러가 발생하였습니다.';
             })
             // 상품 삭제: pending 상태
-            .addCase(deleteProduct.fulfilled, (state) => {
+            .addCase(deleteProduct.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
@@ -108,6 +112,7 @@ const adminSlice = createSlice({
             .addCase(
                 deleteProduct.fulfilled,
                 (state, action: PayloadAction<ApiResponse<Product>>) => {
+                    state.loading = false;
                     state.products = state.products.filter(
                         (p) => p.product_id !== action.payload.data.product_id
                     );
@@ -115,6 +120,7 @@ const adminSlice = createSlice({
             )
             // 상품 삭제: rejected 상태
             .addCase(deleteProduct.rejected, (state, action) => {
+                state.loading = false;
                 state.error =
                     action.error.message ||
                     '상품 삭제 작업 중 예기치 못한 에러가 발생하였습니다.';

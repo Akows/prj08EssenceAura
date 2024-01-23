@@ -101,7 +101,7 @@ const deleteAdmin = async (adminId) => {
 // 상품 가져오기
 const getProducts = async () => {
     try {
-        const products = await db.query('SELECT * FROM products');
+        const [products] = await db.query('SELECT * FROM products');
         return products;
     } catch (error) {
         throw new DatabaseError('상품 정보 조회 중 오류 발생');

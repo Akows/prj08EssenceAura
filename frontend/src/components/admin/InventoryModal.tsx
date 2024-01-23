@@ -183,7 +183,7 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
                 <FormField>
                     <Label>이미지 URL</Label>
                     <Input
-                        name="image_url"
+                        name="imageUrl"
                         value={formData.imageUrl || ''}
                         onChange={handleChange}
                     />
@@ -201,7 +201,7 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
                 <FormField>
                     <Label>할인율</Label>
                     <Input
-                        name="discount_rate"
+                        name="discountRate"
                         type="number"
                         value={formData.discountRate || 0}
                         onChange={handleChange}

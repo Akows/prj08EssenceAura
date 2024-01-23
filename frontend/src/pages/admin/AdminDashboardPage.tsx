@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import InventoryManagement from '../../components/user/InventoryManagement';
+import InventoryManagement from '../../components/admin/InventoryManagement';
 import OrderManagement from '../../components/user/OrderManagement';
 import UserManagement from '../../components/admin/UserManagement';
 import { useLocation } from 'react-router-dom';

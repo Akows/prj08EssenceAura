@@ -19,7 +19,7 @@ router.delete('/deleteadmins/:id', authenticateRefreshToken, adminController.del
 router.get('/products', adminController.getProductsHandler);
 
 // 상품 추가
-router.post('/product', adminController.addProductHandler);
+router.post('/addProduct', adminController.addProductHandler);
 
 // 상품 수정
 router.put('/product/:id', adminController.updateProductHandler);
