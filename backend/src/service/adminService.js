@@ -104,6 +104,7 @@ const getProducts = async () => {
         const [products] = await db.query('SELECT * FROM products');
         return products;
     } catch (error) {
+        console.error('상품 추가 중 오류 발생: ', error.sqlMessage); // 로깅
         throw new DatabaseError('상품 정보 조회 중 오류 발생');
     }
 };
@@ -112,10 +113,19 @@ const getProducts = async () => {
 // 상품 추가
 const addProduct = async (productData) => {
     try {
+        // 현재 시간을 YYYY-MM-DD HH:MM:SS 형식으로 설정
+        productData.created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+        // 문자열 값으로 넘어오는 입력값을 소수 혹은 정수로 변환
+        productData.price = parseFloat(productData.price);
+        productData.stock = parseInt(productData.stock);
+        productData.discount_rate = parseFloat(productData.discount_rate);
+
         const result = await db.query('INSERT INTO products SET ?', productData);
         return { id: result.insertId, ...productData };
     } catch (error) {
-        throw new DatabaseError('상품 추가 중 오류 발생');
+        console.error('상품 추가 중 오류 발생: ', error.sqlMessage); // 로깅
+        throw new DatabaseError('상품 정보 추가 중 오류 발생');
     }
 };
 
@@ -125,6 +135,7 @@ const updateProduct = async (id, productData) => {
         await db.query('UPDATE products SET ? WHERE product_id = ?', [productData, id]);
         return { id, ...productData };
     } catch (error) {
+        console.error('상품 추가 중 오류 발생: ', error.sqlMessage); // 로깅
         throw new DatabaseError('상품 정보 수정 중 오류 발생');
     }
 };
@@ -134,6 +145,7 @@ const deleteProduct = async (id) => {
     try {
         await db.query('DELETE FROM products WHERE product_id = ?', id);
     } catch (error) {
+        console.error('상품 추가 중 오류 발생: ', error.sqlMessage); // 로깅
         throw new DatabaseError('상품 삭제 중 오류 발생');
     }
 };

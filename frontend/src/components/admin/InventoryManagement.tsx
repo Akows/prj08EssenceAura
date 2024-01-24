@@ -160,6 +160,7 @@ const InventoryManagement: React.FC = () => {
                             <TableHeader>재고</TableHeader>
                             <TableHeader>등록 날짜</TableHeader>
                             <TableHeader>이벤트 상품</TableHeader>
+                            <TableHeader>할인률</TableHeader>
                             <TableHeader>제품 관리</TableHeader>
                         </tr>
                     </thead>
@@ -171,10 +172,9 @@ const InventoryManagement: React.FC = () => {
                                 <TableCell>{product.price}</TableCell>
                                 <TableCell>{product.category}</TableCell>
                                 <TableCell>{product.stock}</TableCell>
-                                <TableCell>{product.createdAt}</TableCell>
-                                <TableCell>
-                                    {product.whatEvent ? '예' : '아니오'}
-                                </TableCell>
+                                <TableCell>{product.created_at}</TableCell>
+                                <TableCell>{product.what_event}</TableCell>
+                                <TableCell>{product.discount_rate}</TableCell>
                                 <TableCell>
                                     <ActionButton
                                         className="edit"
@@ -215,7 +215,7 @@ const InventoryManagement: React.FC = () => {
             )}
 
             {loading && <LoadingModal />}
-            {error && 'Error!'}
+            {error && `${error}`}
         </>
     );
 };

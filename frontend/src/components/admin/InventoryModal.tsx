@@ -94,10 +94,10 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
         category: '',
         tags: '',
         stock: 0,
-        imageUrl: '',
-        createdAt: '',
-        whatEvent: '',
-        discountRate: 0,
+        image_url: '',
+        created_at: '',
+        what_event: '',
+        discount_rate: 0,
     });
 
     useEffect(() => {
@@ -183,8 +183,8 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
                 <FormField>
                     <Label>이미지 URL</Label>
                     <Input
-                        name="imageUrl"
-                        value={formData.imageUrl || ''}
+                        name="image_url"
+                        value={formData.image_url || ''}
                         onChange={handleChange}
                     />
                 </FormField>
@@ -192,8 +192,8 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
                 <FormField>
                     <Label>이벤트 분류</Label>
                     <Input
-                        name="whatEvent"
-                        value={formData.whatEvent || ''}
+                        name="what_event"
+                        value={formData.what_event || ''}
                         onChange={handleChange}
                     />
                 </FormField>
@@ -201,9 +201,9 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
                 <FormField>
                     <Label>할인율</Label>
                     <Input
-                        name="discountRate"
+                        name="discount_rate"
                         type="number"
-                        value={formData.discountRate || 0}
+                        value={formData.discount_rate || 0}
                         onChange={handleChange}
                     />
                 </FormField>

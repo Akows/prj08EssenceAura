@@ -11,10 +11,10 @@ export type Product = {
     category: string; // 카테고리
     tags: string | null; // 태그 (null 허용)
     stock: number; // 재고 수량
-    imageUrl: string; // 이미지 URL
-    createdAt: string; // 생성된 날짜 및 시간
-    whatEvent: string; // 어떤 이벤트에 속하는지
-    discountRate: number | null; // 할인율 (null 허용)
+    image_url: string; // 이미지 URL
+    created_at: string; // 생성된 날짜 및 시간
+    what_event: string; // 어떤 이벤트에 속하는지
+    discount_rate: number | null; // 할인율 (null 허용)
 };
 
 export type ApiResponse<T> = {
