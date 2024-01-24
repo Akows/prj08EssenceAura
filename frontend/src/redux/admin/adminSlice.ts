@@ -113,8 +113,13 @@ const adminSlice = createSlice({
                 deleteProduct.fulfilled,
                 (state, action: PayloadAction<ApiResponse<Product>>) => {
                     state.loading = false;
+                    // 확인: action.payload가 올바른 형태로 product_id를 포함하고 있는지.
+                    // action.payload.data.product_id가 문자열이므로, 숫자 타입의 product_id와 비교하기 위해 변환
                     state.products = state.products.filter(
-                        (p) => p.product_id !== action.payload.data.product_id
+                        (product) =>
+                            product.product_id &&
+                            product.product_id.toString() !==
+                                action.payload.product_id
                     );
                 }
             )

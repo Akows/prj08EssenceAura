@@ -20,6 +20,7 @@ export type Product = {
 export type ApiResponse<T> = {
     data: T;
     message: string;
+    product_id?: string;
 };
 
 // createAsyncThunk의 제네릭 파라미터:
@@ -50,7 +51,7 @@ export const fetchProducts = createAsyncThunk<ApiResponse<Product[]>>(
         try {
             // API에서 상품 목록을 GET 요청으로 가져온다.
             const response = await axios.get<ApiResponse<Product[]>>(
-                `${API_BASE_URL}/products`
+                `${API_BASE_URL}/fetchProducts`
             );
             // 요청이 성공하면 응답 데이터를 반환한다.
             return response.data;
@@ -98,7 +99,7 @@ export const updateProduct = createAsyncThunk<
     try {
         // API에 상품 ID를 사용하여 해당 상품을 PUT 요청으로 수정.
         const response = await axios.put<ApiResponse<Product>>(
-            `${API_BASE_URL}/products/${id}`,
+            `${API_BASE_URL}/updateProduct/${id}`,
             productData
         );
         return response.data;
@@ -120,8 +121,10 @@ export const deleteProduct = createAsyncThunk<ApiResponse<Product>, number>(
         try {
             // API에 상품 ID를 사용하여 해당 상품을 DELETE 요청으로 삭제.
             const response = await axios.delete<ApiResponse<Product>>(
-                `${API_BASE_URL}/products/${id}`
+                `${API_BASE_URL}/deleteProduct/${id}`
             );
+            console.log(response);
+            console.log(response.data);
             return response.data;
         } catch (error) {
             const axiosError = error as AxiosError;

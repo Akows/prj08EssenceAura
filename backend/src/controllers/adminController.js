@@ -168,8 +168,8 @@ const updateProductHandler = async (req, res) => {
 // 상품을 삭제하는 핸들러
 const deleteProductHandler = async (req, res) => {
     try {
-        await deleteProduct(req.params.id);
-        res.json({ success: true, message: '상품이 삭제되었습니다.' });
+        const deletedProductId = await deleteProduct(req.params.id);
+        res.json({ success: true, message: '상품이 삭제되었습니다.', product_id: deletedProductId });
     } catch (error) {
         if (error instanceof DatabaseError) {
             res.status(500).json({ success: false, message: error.message });

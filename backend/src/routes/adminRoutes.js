@@ -16,15 +16,15 @@ router.put('/putadmins/:id', authenticateRefreshToken, adminController.updateAdm
 router.delete('/deleteadmins/:id', authenticateRefreshToken, adminController.deleteAdminHandler);
 
 // 상품 목록 가져오기
-router.get('/products', adminController.getProductsHandler);
+router.get('/fetchProducts', adminController.getProductsHandler);
 
 // 상품 추가
 router.post('/addProduct', adminController.addProductHandler);
 
 // 상품 수정
-router.put('/product/:id', adminController.updateProductHandler);
+router.put('/updateProduct/:id', adminController.updateProductHandler);
 
 // 상품 삭제
-router.delete('/product/:id', adminController.deleteProductHandler);
+router.delete('/deleteProduct/:id', adminController.deleteProductHandler);
 
 module.exports = router;

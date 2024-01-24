@@ -121,8 +121,8 @@ const addProduct = async (productData) => {
         productData.stock = parseInt(productData.stock);
         productData.discount_rate = parseFloat(productData.discount_rate);
 
-        const result = await db.query('INSERT INTO products SET ?', productData);
-        return { id: result.insertId, ...productData };
+        const [result] = await db.query('INSERT INTO products SET ?', productData);
+        return { product_id: result.insertId, ...productData };
     } catch (error) {
         console.error('상품 추가 중 오류 발생: ', error.sqlMessage); // 로깅
         throw new DatabaseError('상품 정보 추가 중 오류 발생');
@@ -144,6 +144,7 @@ const updateProduct = async (id, productData) => {
 const deleteProduct = async (id) => {
     try {
         await db.query('DELETE FROM products WHERE product_id = ?', id);
+        return id; // 삭제된 상품의 ID 반환
     } catch (error) {
         console.error('상품 추가 중 오류 발생: ', error.sqlMessage); // 로깅
         throw new DatabaseError('상품 삭제 중 오류 발생');
