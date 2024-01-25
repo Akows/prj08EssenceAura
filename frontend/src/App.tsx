@@ -21,6 +21,7 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import useCheckAuth from './hooks/auth/useCheckAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
+import './App.css';
 
 // 사용자 상태에 따라 특정 라우터에는 접근하지 못하도록 하는 기능
 // 로그인하지 않은 사용자만 접근 가능한 라우트
