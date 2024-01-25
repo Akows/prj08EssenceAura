@@ -123,8 +123,6 @@ export const deleteProduct = createAsyncThunk<ApiResponse<Product>, number>(
             const response = await axios.delete<ApiResponse<Product>>(
                 `${API_BASE_URL}/deleteProduct/${id}`
             );
-            console.log(response);
-            console.log(response.data);
             return response.data;
         } catch (error) {
             const axiosError = error as AxiosError;

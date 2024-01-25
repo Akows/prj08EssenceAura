@@ -215,7 +215,7 @@ const NavLinkStyled = styled(NavLink)`
     }
 `;
 
-const ShopNavigation: React.FC = () => {
+const UpperNavigation: React.FC = () => {
     // 드롭다운 메뉴 관련 로직을 커스텀 훅으로 분리하여 사용.
     const {
         isHamburgerMenuOpen,
@@ -397,4 +397,4 @@ const ShopNavigation: React.FC = () => {
     );
 };
 
-export default ShopNavigation;
+export default UpperNavigation;
