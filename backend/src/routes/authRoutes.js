@@ -1,6 +1,6 @@
 const express = require('express');
 const authController = require('../controllers/authController');
-const { authenticateRefreshToken } = require('../middleware/authenticateToken');
+const { authenticateRefreshToken, authenticateAccessToken } = require('../middleware/authenticateToken');
 const router = express.Router();
 
 router.post('/signup', authController.signUpHandler);
@@ -8,10 +8,10 @@ router.post('/check-email', authController.checkEmailHandler);
 router.post('/login', authController.loginHandler);
 router.post('/logout', authenticateRefreshToken, authController.logoutHandler);
 
-// 사용자 로그인 상태 검증
-router.get('/check-auth', authenticateRefreshToken, authController.checkAuthHandler);
+// 사용자 로그인 상태 검증 - 액세스 토큰 검증.
+router.get('/check-auth', authenticateAccessToken, authController.checkAuthHandler);
 
-// 액세스 토큰 재발급
+// 액세스 토큰 재발급 - 리프래시 토큰 검증.
 router.get('/refresh-token', authenticateRefreshToken, authController.refreshTokenHandler);
 
 // 이메일 찾기 라우트

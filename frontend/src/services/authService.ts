@@ -146,3 +146,21 @@ export const cancelPasswordReset = async (
         throw error;
     }
 };
+
+// 새로운 액세스 토큰을 재발급 받는 함수
+export const fetchNewAccessToken = async () => {
+    // 서버에 리프래시 토큰을 사용해 새로운 액세스 토큰을 요청
+    const response = await fetch(`${API_BASE_URL}/refresh-token`, {
+        method: 'GET',
+        credentials: 'include', // 쿠키에 저장된 리프래시 토큰을 포함
+    });
+    const data = await response.json();
+
+    // 서버로부터 새로운 액세스 토큰을 정상적으로 받았다면 반환
+    if (response.ok) {
+        return data.accessToken;
+    } else {
+        // 새로운 액세스 토큰을 받지 못했다면, 오류를 발생
+        throw new Error(data.message || '액세스 토큰 재발급 실패');
+    }
+};
