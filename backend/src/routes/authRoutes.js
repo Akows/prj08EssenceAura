@@ -7,8 +7,14 @@ router.post('/signup', authController.signUpHandler);
 router.post('/check-email', authController.checkEmailHandler);
 router.post('/login', authController.loginHandler);
 router.post('/logout', authenticateRefreshToken, authController.logoutHandler);
+
+// 사용자 로그인 상태 검증
 router.get('/check-auth', authenticateRefreshToken, authController.checkAuthHandler);
 
+// 액세스 토큰 재발급
+router.get('/refresh-token', authenticateRefreshToken, authController.refreshTokenHandler);
+
+// 이메일 찾기 라우트
 router.post('/find-email', authController.findEmailHandler);
 
 // 이메일 인증 발송 라우트

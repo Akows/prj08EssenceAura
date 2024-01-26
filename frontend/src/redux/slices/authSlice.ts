@@ -9,6 +9,7 @@ interface UserInfo {
 
 interface AuthState {
     userInfo: UserInfo | null;
+    accessToken: string | null; // 액세스 토큰 추가
     isLoggedIn: boolean;
     loading: boolean;
     error: string | null;
@@ -16,6 +17,7 @@ interface AuthState {
 
 const initialState: AuthState = {
     userInfo: null,
+    accessToken: null, // 초기값 설정
     isLoggedIn: false,
     loading: false,
     error: null,
@@ -27,6 +29,7 @@ const authSlice = createSlice({
     reducers: {
         loginSuccess: (state, action) => {
             state.userInfo = action.payload;
+            state.accessToken = action.payload.accessToken; // 액세스 토큰 저장
             state.isLoggedIn = true;
         },
         loginFailure: (state, action) => {

@@ -89,6 +89,7 @@ const loginHandler = async (req, res) => {
 
         await saveRefreshToken(userId, refreshToken, isAdmin);
 
+        // 리프래시 토큰은 Http Only 쿠키에 담아서 반환
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -97,6 +98,7 @@ const loginHandler = async (req, res) => {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
 
+        // 액세스 토큰은 로그인 정보와 함께 브라우저로 반환
         return res.json({
             message: '로그인 성공',
             accessToken,
@@ -115,7 +117,7 @@ const loginHandler = async (req, res) => {
 
 // 리프레시 토큰을 기반으로 액세스 토큰을 재발급하는 기능
 const refreshTokenHandler = async (req, res) => {
-    const refreshToken = req.body.token;
+    const refreshToken = req.cookies['refreshToken'];
 
     if (!refreshToken) {
         return res.status(401).json({ message: '리프레시 토큰이 필요합니다.' });
@@ -127,7 +129,7 @@ const refreshTokenHandler = async (req, res) => {
             return res.status(403).json({ message: '유효하지 않은 리프레시 토큰입니다.' });
         }
 
-        // 리프레시 토큰에 저장된 사용자 정보를 추출합니다 (예: 사용자 ID와 관리자 여부)
+        // 리프레시 토큰에 저장된 사용자 정보를 추출 (예: 사용자 ID와 관리자 여부)
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
             if (err) {
                 return res.status(403).json({ message: '리프레시 토큰이 만료되었거나 유효하지 않습니다.' });
@@ -138,7 +140,12 @@ const refreshTokenHandler = async (req, res) => {
                 id: user.id,
                 isAdmin: user.isAdmin
             });
-            res.json({ accessToken: newAccessToken });
+
+            // 새 액세스 토큰 정보 반환.
+            return res.json({
+                message: '토큰 재발급 성공.',
+                accessToken: newAccessToken
+            });
         });
     } catch (error) {
         console.error('리프레시 토큰 처리 중 오류 발생:', error);
@@ -168,6 +175,7 @@ const logoutHandler = async (req, res) => {
     }
 };
 
+// 로그인 상태 검증
 const checkAuthHandler = async (req, res) => {
     const refreshToken = req.cookies['refreshToken'];
 
