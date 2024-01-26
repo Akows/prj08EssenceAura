@@ -67,7 +67,7 @@ const useRegistration = (): UseRegistrationReturn => {
 
         try {
             const response = await fetch(
-                'http://localhost:3001/api/check-email',
+                'http://localhost:3001/auth/check-email',
                 {
                     method: 'POST',
                     headers: {
@@ -153,7 +153,7 @@ const useRegistration = (): UseRegistrationReturn => {
 
             try {
                 const response = await fetch(
-                    'http://localhost:3001/api/signup',
+                    'http://localhost:3001/auth/signup',
                     {
                         method: 'POST',
                         headers: {

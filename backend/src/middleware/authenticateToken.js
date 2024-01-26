@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const authenticateAccessToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // "Bearer TOKEN" 형식에서 토큰 추출
-
+  
   // 인증 토큰이 없는 경우..
   if (token == null) {
     return res.sendStatus(401); 

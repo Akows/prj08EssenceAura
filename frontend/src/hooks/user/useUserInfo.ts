@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 import {
     getUserInfoInformation,
     updateUserInfoInformation,
@@ -18,12 +20,15 @@ export const useUserInfo = () => {
         isVerified: false,
     });
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+    const accessToken = useSelector(
+        (state: RootState) => state.auth.accessToken
+    );
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             setIsLoading(true); // 데이터 로드 시작
             try {
-                const response = await getUserInfoInformation();
+                const response = await getUserInfoInformation(accessToken);
                 setUserInfo(response[0]);
             } catch (error) {
                 // 오류 처리
@@ -33,12 +38,12 @@ export const useUserInfo = () => {
         };
 
         fetchUserInfo();
-    }, []);
+    }, [accessToken]); // accessToken을 의존성 배열에 추가
 
     const updateUserInfo = async (newUserInfo: UserUpdateInfo) => {
         setIsLoading(true); // 업데이트 시작
         try {
-            await updateUserInfoInformation(newUserInfo);
+            await updateUserInfoInformation(newUserInfo, accessToken);
         } catch (error) {
             // 오류 처리
         } finally {

@@ -3,9 +3,16 @@ const authController = require('../controllers/authController');
 const { authenticateRefreshToken, authenticateAccessToken } = require('../middleware/authenticateToken');
 const router = express.Router();
 
+// 사용자 회원가입
 router.post('/signup', authController.signUpHandler);
+
+// 이메일 중복검사
 router.post('/check-email', authController.checkEmailHandler);
+
+// 사용자 로그인
 router.post('/login', authController.loginHandler);
+
+// 사용자 로그아웃 - 리프래시 토큰
 router.post('/logout', authenticateRefreshToken, authController.logoutHandler);
 
 // 사용자 로그인 상태 검증 - 액세스 토큰 검증.
