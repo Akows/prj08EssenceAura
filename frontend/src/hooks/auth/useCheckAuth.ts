@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginFailure, loginSuccess } from '../../redux/slices/authSlice';
 import { RootState } from '../../redux/store';
-import { fetchNewAccessToken } from '../../services/authService';
+import {
+    checkAuthStatus,
+    fetchNewAccessToken,
+} from '../../services/authService';
 
 const useCheckAuth = () => {
     const dispatch = useDispatch();
@@ -16,16 +19,7 @@ const useCheckAuth = () => {
         try {
             // 초기 액세스 토큰으로 서버에 인증 상태 확인 요청을 보냅니다.
             let currentAccessToken = accessToken;
-            let response = await fetch(
-                'http://localhost:3001/auth/check-auth',
-                {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${currentAccessToken}`, // 헤더에 액세스 토큰 포함
-                    },
-                    credentials: 'include', // 쿠키 포함 설정
-                }
-            );
+            let response = await checkAuthStatus(currentAccessToken);
 
             // 성공적으로 인증되었을 경우, 로그인 상태를 Redux Store에 저장합니다.
             if (response.ok) {
@@ -51,16 +45,7 @@ const useCheckAuth = () => {
 
                 // 새로운 토큰으로 다시 인증 상태 확인을 시도합니다.
                 currentAccessToken = newAccessToken;
-                response = await fetch(
-                    'http://localhost:3001/auth/check-auth',
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `Bearer ${currentAccessToken}`,
-                        },
-                        credentials: 'include',
-                    }
-                );
+                response = await checkAuthStatus(currentAccessToken);
 
                 // 새로운 토큰으로 인증에 성공했을 경우, 로그인 상태를 Redux Store에 저장합니다.
                 if (response.ok) {
