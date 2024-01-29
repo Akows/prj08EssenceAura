@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchProduct, fetchProducts } from './productThunks';
+import {
+    fetchProduct,
+    fetchProducts,
+    fetchSearchSuggestions,
+} from './productThunks';
 
 interface Product {
     productId: number;
@@ -15,9 +19,16 @@ interface Product {
     discountRate: number | null;
 }
 
+interface SearchSuggestion {
+    categories: string[];
+    tags: string[];
+    events: string[];
+}
+
 interface ProductState {
     products: Product[];
     selectedProduct: Product | null;
+    searchSuggestions: SearchSuggestion;
     loading: boolean;
     error: string | null;
 }
@@ -25,6 +36,7 @@ interface ProductState {
 const initialState: ProductState = {
     products: [],
     selectedProduct: null,
+    searchSuggestions: { categories: [], tags: [], events: [] },
     loading: false,
     error: null,
 };
@@ -47,7 +59,9 @@ export const productSlice = createSlice({
             )
             .addCase(fetchProduct.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message || 'Failed to fetch product';
+                state.error =
+                    action.error.message ||
+                    '제품 데이터를 불러오는 과정에서 오류가 발생하였습니다.';
             })
             .addCase(fetchProducts.pending, (state) => {
                 state.loading = true;
@@ -62,7 +76,24 @@ export const productSlice = createSlice({
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error =
-                    action.error.message || 'Failed to fetch products';
+                    action.error.message ||
+                    '제품 데이터를 불러오는 과정에서 오류가 발생하였습니다.';
+            })
+            .addCase(fetchSearchSuggestions.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(
+                fetchSearchSuggestions.fulfilled,
+                (state, action: PayloadAction<SearchSuggestion>) => {
+                    state.loading = false;
+                    state.searchSuggestions = action.payload;
+                }
+            )
+            .addCase(fetchSearchSuggestions.rejected, (state, action) => {
+                state.loading = false;
+                state.error =
+                    action.error.message ||
+                    '제품 추천 데이터를 불러오는 과정에서 오류가 발생하였습니다.';
             });
     },
 });

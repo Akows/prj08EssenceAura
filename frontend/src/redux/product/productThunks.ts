@@ -51,3 +51,20 @@ export const fetchProducts = createAsyncThunk(
         }
     }
 );
+
+// 검색 제안을 가져오는 비동기 thunk
+export const fetchSearchSuggestions = createAsyncThunk(
+    'search/fetchSearchSuggestions',
+    async (keyword, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/suggestions?keyword=${keyword}`
+            );
+            return response.data;
+        } catch (error) {
+            // 오류 발생 시 처리
+            const axiosError = error as AxiosError;
+            return rejectWithValue(axiosError.response?.data);
+        }
+    }
+);
