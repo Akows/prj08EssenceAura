@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/slices/authSlice';
+import { fetchLogout } from '../../services/authService';
 
 const useLogout = () => {
     const dispatch = useDispatch();
@@ -13,10 +14,8 @@ const useLogout = () => {
         setIsloading(true);
         try {
             // 서버로 로그아웃 요청 보냄
-            const response = await fetch('http://localhost:3001/auth/logout', {
-                method: 'POST',
-                credentials: 'include', // 쿠키를 포함시키기 위한 설정
-            });
+            const response = await fetchLogout();
+
             if (response.ok) {
                 // Redux 스토어의 로그아웃 상태 업데이트
                 dispatch(logout());

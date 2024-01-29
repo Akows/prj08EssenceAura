@@ -60,6 +60,18 @@ const UserList: React.FC<UserListProps> = ({
         }
     }, [loading, fetchAllUsersHandler]);
 
+    const handleDelete = (user) => {
+        const answer = window.confirm('사용자를 삭제하시겠습니까?');
+
+        if (answer) {
+            onDelete(user.user_id);
+            alert('삭제되었습니다.');
+        } else {
+            alert('취소되었습니다.');
+            return;
+        }
+    };
+
     return (
         <tbody>
             {users.map((user) => (
@@ -72,17 +84,14 @@ const UserList: React.FC<UserListProps> = ({
                     <TableCell>{user.created_at}</TableCell>
                     <TableCell>{user.is_active ? '활성' : '비활성'}</TableCell>
                     <TableCell>
-                        <ActionButton
+                        {/* <ActionButton
                             className="edit"
                             onClick={() => console.log('수정모드로!')}
                         >
                             수정
-                        </ActionButton>
-                        <ActionButton
-                            className="delete"
-                            onClick={() => onDelete(user.user_id)}
-                        >
-                            삭제
+                        </ActionButton> */}
+                        <ActionButton className="delete" onClick={handleDelete}>
+                            유저 삭제
                         </ActionButton>
                     </TableCell>
                 </TableRow>

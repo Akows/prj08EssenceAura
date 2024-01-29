@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     cancelSignUp,
+    fetchRegistration,
     sendVerificationRequest,
     verifyEmailCode,
 } from '../../services/authService';
@@ -152,16 +153,7 @@ const useRegistration = (): UseRegistrationReturn => {
             setsignUpIsSubmitting(true);
 
             try {
-                const response = await fetch(
-                    'http://localhost:3001/auth/signup',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(signUpformData),
-                    }
-                );
+                const response = await fetchRegistration(signUpformData);
 
                 if (response.ok) {
                     const result = await response.json();

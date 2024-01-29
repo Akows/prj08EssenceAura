@@ -149,7 +149,9 @@ const UserManagement: React.FC = () => {
 
                     {activeTab === 'user' ? (
                         <div>
-                            <AddUserButtonStyled>비활성화</AddUserButtonStyled>
+                            <AddUserButtonStyled>
+                                ----------------
+                            </AddUserButtonStyled>
                         </div>
                     ) : (
                         <div>

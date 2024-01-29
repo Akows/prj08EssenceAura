@@ -1,8 +1,10 @@
 import {
     EmailVerificationResponse,
+    LoginFormData,
     PasswordResetCancelResponse,
     PasswordResetRequestResponse,
     PasswordResetVerificationResponse,
+    RegistrationFormData,
     VerificationCancelResponse,
 } from '../type/authtypes';
 
@@ -173,6 +175,62 @@ export const fetchCheckAuth = async (accessToken: string | null) => {
             Authorization: `Bearer ${accessToken}`, // 헤더에 액세스 토큰 포함
         },
         credentials: 'include', // 쿠키 포함 설정
+    });
+
+    return response;
+};
+
+// 이메일 찾기 함수
+export const fetchFindEmail = async (name: string, phone: string) => {
+    const response = await fetch(`${API_BASE_URL}/find-email`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, phone }),
+    });
+
+    return response;
+};
+
+// 회원가입 함수
+export const fetchRegistration = async (
+    signUpformData: RegistrationFormData
+) => {
+    const response = await fetch(`${API_BASE_URL}/signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signUpformData),
+    });
+
+    return response;
+};
+
+// 로그인 함수
+export const fetchLogin = async (formData: LoginFormData) => {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include', // 쿠키를 포함시키기 위한 설정
+        body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            isAdmin: formData.isAdmin,
+        }),
+    });
+
+    return response;
+};
+
+// 로그아웃 함수
+export const fetchLogout = async () => {
+    const response = await fetch(`${API_BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include', // 쿠키를 포함시키기 위한 설정
     });
 
     return response;

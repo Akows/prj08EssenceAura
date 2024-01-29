@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { fetchFindEmail } from '../../services/authService';
 
 export const useFindEmail = () => {
     const [name, setName] = useState<string>('');
@@ -15,16 +16,7 @@ export const useFindEmail = () => {
         }
 
         try {
-            const response = await fetch(
-                'http://localhost:3001/auth/find-email',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name, phone }),
-                }
-            );
+            const response = await fetchFindEmail(name, phone);
 
             // 만약 axios를 사용했을 경우..
             // HTTP 요청을 보낼 때 필요한 헤더와 본문의 형식을 정의하는 부분을 axios에서는 알아서 수행해준다.

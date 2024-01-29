@@ -178,7 +178,9 @@ const InventoryManagement: React.FC = () => {
                                 <TableCell>
                                     <ActionButton
                                         className="edit"
-                                        onClick={() => openEditModal(product)}
+                                        onClick={() => {
+                                            openEditModal(product);
+                                        }}
                                     >
                                         수정
                                     </ActionButton>
@@ -188,9 +190,15 @@ const InventoryManagement: React.FC = () => {
                                             if (
                                                 product.product_id !== undefined
                                             ) {
-                                                handleDeleteProduct(
-                                                    product.product_id
-                                                );
+                                                if (
+                                                    window.confirm(
+                                                        '상품을 삭제하시겠습니까?'
+                                                    )
+                                                ) {
+                                                    handleDeleteProduct(
+                                                        product.product_id
+                                                    );
+                                                }
                                             }
                                         }}
                                     >

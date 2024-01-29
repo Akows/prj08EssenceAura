@@ -115,7 +115,9 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
     };
 
     const handleSave = () => {
-        onSave(formData);
+        if (window.confirm('상품을 수정하시겠습니까?')) {
+            onSave(formData);
+        }
     };
 
     return (
@@ -210,7 +212,7 @@ const InventoryModal: React.FC<InventoryModalProps> = ({
 
                 <FormField>
                     <ActionButton className="save" onClick={handleSave}>
-                        저장
+                        {product ? '정보 수정' : '제품 추가'}
                     </ActionButton>
                     <ActionButton className="cancel" onClick={onClose}>
                         취소

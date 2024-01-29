@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginSuccess } from '../../redux/slices/authSlice';
+import { fetchLogin } from '../../services/authService';
 import {
     LoginFormData,
     LoginFormErrors,
@@ -44,21 +45,7 @@ const useLogin = (): UseLoginReturn => {
         const errors = validateLoginForm(formData);
         if (Object.keys(errors).length === 0) {
             try {
-                const response = await fetch(
-                    'http://localhost:3001/auth/login',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include', // 쿠키를 포함시키기 위한 설정
-                        body: JSON.stringify({
-                            email: formData.email,
-                            password: formData.password,
-                            isAdmin: formData.isAdmin,
-                        }),
-                    }
-                );
+                const response = await fetchLogin(formData);
 
                 // 로그인이 성공하게 되면 리프래시 토큰은 브라우저 쿠키에 저장됨.
                 const data = await response.json();

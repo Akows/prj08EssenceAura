@@ -60,7 +60,6 @@ const UserAdminList: React.FC<UserAdminListProps> = ({
     useEffect(() => {
         // 관리자 목록의 길이가 변경되었을 때만 API 호출
         if (admins.length !== prevAdminCount.current) {
-            console.log('리렌더!');
             fetchAllAdminsHandler();
             prevAdminCount.current = admins.length;
         }
