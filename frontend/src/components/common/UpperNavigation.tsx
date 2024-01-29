@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FaBars, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import {
+    FaBars,
+    FaSearch,
+    FaSignOutAlt,
+    FaTimes,
+    FaUserCircle,
+} from 'react-icons/fa';
 import { FiSettings } from 'react-icons/fi';
 import { useChangeTheme } from '../../hooks/useChangeTheme';
 import { useChangeLanguage } from '../../hooks/useChangeLanguage';
@@ -46,10 +52,18 @@ const IconWrapper = styled.div`
 
 const IconsContainer = styled.div`
     display: flex;
-    align-items: center; // 모든 아이콘을 수직 중앙 정렬
+    align-items: center;
+
+    // 모바일 환경에서는 숨기기
+    ${SearchIcon}, ${CloseIcon} {
+        display: block;
+    }
 
     @media (max-width: 768px) {
-        display: none; // 모바일 화면에서는 IconsContainer 숨김
+        & > *:not(${SearchIcon}),
+        &:not(${CloseIcon}) {
+            display: none;
+        }
     }
 `;
 
@@ -215,6 +229,68 @@ const NavLinkStyled = styled(NavLink)`
     }
 `;
 
+const SearchBarContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%; // Search bar takes full width
+
+    @media (max-width: 768px) {
+        width: auto; // On mobile, width is auto to fit content
+    }
+`;
+
+const SearchInput = styled.input`
+    padding: 8px 12px;
+    margin-right: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+
+    &:focus {
+        outline: none;
+        border-color: #aaa;
+    }
+`;
+
+const SearchIcon = styled(FaSearch)`
+    position: absolute;
+    right: 30px;
+    cursor: pointer;
+`;
+
+const CloseIcon = styled(FaTimes)`
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+`;
+
+const ShopButton = styled(NavLink)`
+    margin-left: 30px; // 로고와 쇼핑몰 버튼 간격
+    padding: 5px 10px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #555;
+    }
+`;
+
+// SearchBarContainer를 중앙에 배치하기 위한 스타일 변경
+const CenterContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; // 컨테이너가 가능한 공간을 모두 차지하도록 함
+
+    @media (max-width: 768px) {
+        flex-grow: 0; // 모바일 뷰에서는 flex-grow 비활성화
+    }
+`;
+
 const UpperNavigation: React.FC = () => {
     // 드롭다운 메뉴 관련 로직을 커스텀 훅으로 분리하여 사용.
     const {
@@ -242,6 +318,21 @@ const UpperNavigation: React.FC = () => {
 
     const { isLoading, handleLogout } = useLogout(); // 로그아웃 훅 사용
 
+    const [searchKeyword, setSearchKeyword] = useState('');
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchKeyword(event.target.value);
+    };
+
+    const handleSearchClear = () => {
+        setSearchKeyword('');
+    };
+
+    // 검색을 실행하는 함수입니다.
+    const handleSearch = () => {
+        // 추후 검색 실행 로직 추가
+    };
+
     return (
         <>
             <NavigationContainer>
@@ -250,16 +341,26 @@ const UpperNavigation: React.FC = () => {
                     <Link to="/">EssenceAura</Link>
                 </Logo>
 
-                {/* 데스크톱 네비게이션 링크 */}
-                <NavLinks>
-                    <NavLink to="/shop" onClick={closeMenus}>
-                        Menu1
-                    </NavLink>
-                    <NavLink to="/about" onClick={closeMenus}>
-                        About
-                    </NavLink>
-                    {/* ... 기타 링크 ... */}
-                </NavLinks>
+                {/* 쇼핑몰 버튼 */}
+                <ShopButton to="/shop" onClick={closeMenus}>
+                    쇼핑몰
+                </ShopButton>
+
+                {/* 중앙 검색창 */}
+                <CenterContainer>
+                    <SearchBarContainer>
+                        <SearchInput
+                            type="text"
+                            placeholder="키워드를 입력해주세요"
+                            value={searchKeyword}
+                            onChange={handleSearchChange}
+                        />
+                        {searchKeyword && (
+                            <CloseIcon size={16} onClick={handleSearchClear} />
+                        )}
+                        <SearchIcon size={20} onClick={handleSearch} />
+                    </SearchBarContainer>
+                </CenterContainer>
 
                 {/* 아이콘 컨테이너 */}
                 <IconsContainer>
@@ -382,10 +483,7 @@ const UpperNavigation: React.FC = () => {
                         </IconRow>
                         {/* NavLink 컴포넌트들 */}
                         <NavLinkStyled to="/shop" onClick={closeMenus}>
-                            Menu1
-                        </NavLinkStyled>
-                        <NavLinkStyled to="/about" onClick={closeMenus}>
-                            About
+                            쇼핑몰
                         </NavLinkStyled>
                         {/* ... 기타 링크 ... */}
                     </MobileMenu>
