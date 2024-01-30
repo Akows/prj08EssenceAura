@@ -31,6 +31,8 @@ const getProducts = async (queryParams) => {
       page = 1
     } = queryParams;
 
+    console.log(queryParams);
+
     // sort 파라미터를 분리하여 sortBy와 order 변수를 생성
     let sortBy = sort?.endsWith('_asc') ? sort.slice(0, -4) : sort?.slice(0, -5);
     let order = sort?.endsWith('_asc') ? 'ASC' : 'DESC';
@@ -96,6 +98,15 @@ const getProducts = async (queryParams) => {
       }
 };
 
+const getTotalProductsCount = async () => {
+    try {
+      const [result] = await db.query('SELECT COUNT(*) AS total FROM products');
+      return result[0].total;
+    } catch (error) {
+      throw new DatabaseError(error.message);
+    }
+};
+
 const getSearchSuggestions = async (keyword) => {
     try {
       const searchQuery = `%${keyword}%`;
@@ -122,5 +133,6 @@ const getSearchSuggestions = async (keyword) => {
 module.exports = {
     getProductById,
     getProducts,
+    getTotalProductsCount,
     getSearchSuggestions,
 };

@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import AlertConfirmModal from '../../components/common/AlertConfirmModal';
 import LoadingModal from '../../components/common/LoadingModal';
+import Pagination from '../../components/common/Pagination';
 import ProductCard from '../../components/shop/ProductCard';
 import { fetchProducts } from '../../redux/product/productThunks';
 
@@ -78,18 +80,40 @@ const SortButton = styled.button`
     }
 `;
 
+const DropdownSelect = styled.select`
+    padding: 5px 10px;
+    margin-left: 10px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+
+    &:hover {
+        background: #f0f0f0;
+    }
+`;
+
 const ProductListPage: React.FC = () => {
     const dispatch = useDispatch();
-    const { products, loading, error } = useSelector((state) => state.product);
+    const location = useLocation();
+
+    const { products, loading, error, totalPages } = useSelector((state) => ({
+        ...state.product,
+        totalPages: state.product.totalPages,
+    }));
+
+    // const { products, loading, error } = useSelector((state) => state.product);
     const [currentSort, setCurrentSort] =
         useState<SortOption>('created_at_asc');
     const [page, setPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(20);
     const observerRef = useRef<IntersectionObserver | null>(null);
 
     // 상품 데이터 불러오기
     useEffect(() => {
-        dispatch(fetchProducts({ sort: currentSort, page }));
-    }, [dispatch, currentSort, page]);
+        dispatch(
+            fetchProducts({ sort: currentSort, page, limit: itemsPerPage })
+        );
+    }, [dispatch, currentSort, page, itemsPerPage]);
 
     // 인피니티 스크롤 구현
     useEffect(() => {
@@ -117,8 +141,37 @@ const ProductListPage: React.FC = () => {
     // 정렬 변경 핸들러
     const handleSortChange = (sortOption: SortOption) => {
         setCurrentSort(sortOption);
+        setPage(1); // 페이지를 1로 설정
+        dispatch(
+            fetchProducts({ sort: sortOption, page: 1, limit: itemsPerPage })
+        ); // itemsPerPage 전달
+    };
+
+    // 페이지당 상품 표시 개수 변경 핸들러
+    const handleItemsPerPageChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        setItemsPerPage(Number(event.target.value));
         setPage(1);
-        dispatch(fetchProducts({ sort: sortOption, page: 1 }));
+        dispatch(
+            fetchProducts({
+                sort: currentSort,
+                page: 1,
+                limit: Number(event.target.value),
+            })
+        );
+    };
+
+    // 페이지 번호 변경 핸들러
+    const handlePageChange = (pageNumber: number) => {
+        setPage(pageNumber);
+        dispatch(
+            fetchProducts({
+                sort: currentSort,
+                page: pageNumber,
+                limit: itemsPerPage,
+            })
+        );
     };
 
     if (loading) {
@@ -154,6 +207,57 @@ const ProductListPage: React.FC = () => {
                     >
                         등록일 내림차순
                     </SortButton>
+
+                    <SortButton
+                        className={currentSort === 'price_asc' ? 'active' : ''}
+                        onClick={() => handleSortChange('price_asc')}
+                    >
+                        가격 낮은순
+                    </SortButton>
+                    <SortButton
+                        className={currentSort === 'price_desc' ? 'active' : ''}
+                        onClick={() => handleSortChange('price_desc')}
+                    >
+                        가격 높은순
+                    </SortButton>
+                    <SortButton
+                        className={
+                            currentSort === 'discount_rate_asc' ? 'active' : ''
+                        }
+                        onClick={() => handleSortChange('discount_rate_asc')}
+                    >
+                        할인율 낮은순
+                    </SortButton>
+                    <SortButton
+                        className={
+                            currentSort === 'discount_rate_desc' ? 'active' : ''
+                        }
+                        onClick={() => handleSortChange('discount_rate_desc')}
+                    >
+                        할인율 높은순
+                    </SortButton>
+                    <SortButton
+                        className={currentSort === 'stock_asc' ? 'active' : ''}
+                        onClick={() => handleSortChange('stock_asc')}
+                    >
+                        재고 많은순
+                    </SortButton>
+                    <SortButton
+                        className={currentSort === 'stock_desc' ? 'active' : ''}
+                        onClick={() => handleSortChange('stock_desc')}
+                    >
+                        재고 적은순
+                    </SortButton>
+
+                    {/* 페이지당 상품 표시 개수 선택 드롭다운 */}
+                    <DropdownSelect
+                        value={itemsPerPage}
+                        onChange={handleItemsPerPageChange}
+                    >
+                        <option value="20">20개 표시</option>
+                        <option value="32">32개 표시</option>
+                        <option value="46">46개 표시</option>
+                    </DropdownSelect>
                 </SortingBar>
 
                 {/* 상품 리스트 제목 */}
@@ -171,6 +275,13 @@ const ProductListPage: React.FC = () => {
                         />
                     ))}
                 </ProductGrid>
+
+                {/* 페이지네이션 컴포넌트 사용 */}
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={page}
+                    onPageChange={handlePageChange}
+                />
             </MainContent>
             <div id="page-end" /> {/* 인피니티 스크롤을 위한 페이지 끝 요소 */}
         </ProductListContainer>

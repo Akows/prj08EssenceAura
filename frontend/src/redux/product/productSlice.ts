@@ -33,6 +33,13 @@ interface ProductState {
     error: string | null;
 }
 
+interface ProductsResponse {
+    totalProducts: number;
+    products: Product[];
+    page: number;
+    totalPages: number;
+}
+
 const initialState: ProductState = {
     products: [],
     selectedProduct: null,
@@ -68,9 +75,11 @@ export const productSlice = createSlice({
             })
             .addCase(
                 fetchProducts.fulfilled,
-                (state, action: PayloadAction<Product[]>) => {
+                (state, action: PayloadAction<ProductsResponse>) => {
                     state.loading = false;
-                    state.products = action.payload;
+                    state.products = action.payload.products[0]; // 여기서 상품 목록을 업데이트
+                    state.totalPages = action.payload.totalPages; // 전체 페이지 수를 업데이트
+                    state.currentPage = action.payload.page; // 현재 페이지를 업데이트
                 }
             )
             .addCase(fetchProducts.rejected, (state, action) => {
