@@ -26,11 +26,14 @@ const getProducts = async (queryParams) => {
       category,
       tags,
       whatEvent,
-      sortBy,
-      order = 'asc',
+      sort,
       limit = 10,
       page = 1
     } = queryParams;
+
+    // sort 파라미터를 분리하여 sortBy와 order 변수를 생성
+    let sortBy = sort?.endsWith('_asc') ? sort.slice(0, -4) : sort?.slice(0, -5);
+    let order = sort?.endsWith('_asc') ? 'ASC' : 'DESC';
   
     try {
         // 기본 쿼리 설정. WHERE 1=1은 조건 추가를 용이하게 하기 위해 사용
@@ -80,6 +83,9 @@ const getProducts = async (queryParams) => {
         const offset = (page - 1) * limit;
         query += ' LIMIT ? OFFSET ?';
         queryParamsToEscape.push(Number(limit), offset);
+
+        console.log(query);
+        console.log(queryParamsToEscape);
 
         // 쿼리 실행. queryParamsToEscape 배열을 사용하여 쿼리 매개변수를 안전하게 삽입
         const products = await db.query(query, queryParamsToEscape);
