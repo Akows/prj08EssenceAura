@@ -1,497 +1,154 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import {
-    FaBars,
-    FaSearch,
-    FaSignOutAlt,
-    FaTimes,
-    FaUserCircle,
-} from 'react-icons/fa';
-import { FiSettings } from 'react-icons/fi';
-import { useChangeTheme } from '../../hooks/useChangeTheme';
-import { useChangeLanguage } from '../../hooks/useChangeLanguage';
-import { useStoredSettings } from '../../hooks/useStoredSettings';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { useMenuState } from '../../hooks/useMenuState';
-import useLogout from '../../hooks/auth/useLogout';
-import LoadingModal from './LoadingModal';
+import { MdSearch, MdPerson, MdSettings, MdMenu } from 'react-icons/md';
 
-const NavigationContainer = styled.nav`
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
+const NavBar = styled.nav`
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    background-color: #f8f9fa;
 `;
 
-const IconWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: row; // 아이콘들을 가로로 정렬
-    justify-content: flex-start; // 아이콘들을 왼쪽 정렬 또는 공간 분배 조정
-    margin-right: 10px;
-
-    &:last-child {
-        margin-right: 0; // 마지막 아이콘은 오른쪽 여백 없음
-    }
-
-    & > div {
-        margin-left: 10px;
-        margin-top: 5px;
-    }
-`;
-
-const IconsContainer = styled.div`
-    display: flex;
-    align-items: center;
-
-    // 모바일 환경에서는 숨기기
-    ${SearchIcon}, ${CloseIcon} {
-        display: block;
-    }
-
-    @media (max-width: 768px) {
-        & > *:not(${SearchIcon}),
-        &:not(${CloseIcon}) {
-            display: none;
-        }
-    }
-`;
-
-const HamburgerMenu = styled.div`
-    display: none;
-    @media (max-width: 768px) {
-        display: block;
-    }
-    cursor: pointer;
-`;
-
-const LoginButton = styled(Link)`
-    margin-left: 20px; // 버튼 간의 간격 조정
-    display: flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-
-    & > * {
-        width: 100%;
-    }
-`;
-
-const Logo = styled.div`
+const LogoButton = styled(Link)`
     font-size: 24px;
-    font-weight: bold;
-
-    & > a {
-        text-decoration: none;
-        color: white;
-    }
-`;
-
-const NavLinks = styled.div`
-    display: flex;
-    align-items: center;
-    @media (max-width: 768px) {
-        display: none;
-    }
-`;
-
-const NavLink = styled(Link)`
-    color: white;
+    color: black;
     text-decoration: none;
-    margin: 0 15px;
-`;
-
-const DropdownMenu = styled.div`
-    background-color: #f9f9f9;
-    position: absolute;
-    top: 60px; // Navigation bar의 높이에 맞춤
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    display: flex;
-    justify-content: start;
-    align-items: flex-start;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 20;
-`;
-
-const Section = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 1rem; // 섹션 간 간격
-`;
-
-const SectionTitle = styled.h4`
-    margin: 0 0 1rem 0; // 하단 마진 추가
-    font-size: 1rem;
-    color: #333;
-`;
-
-const Button = styled.button`
-    background: none;
-    border: none;
-    color: #333;
-    text-align: left;
-    padding: 0.25rem 0;
-    cursor: pointer;
-
-    &.selected {
-        background-color: #e0e0e0; // 선택된 버튼의 배경색
-    }
-
     &:hover {
-        text-decoration: underline;
+        color: #007bff;
     }
 `;
 
-const ButtonColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%; // 너비 조정
+const Dropdown = styled.div`
+    position: relative;
+    display: inline-block;
 `;
 
-const MobileMenu = styled.div`
+const DropdownContent = styled.div`
     display: none;
-    flex-direction: column; // 순서를 정상적으로 유지
-    align-items: center; // 모든 아이템을 중앙에 정렬
-    background-color: #333; // 백그라운드 색상을 설정 메뉴와 동일하게
     position: absolute;
-    top: 60px; // 헤더 바로 아래 나타나도록
-    left: 0;
-    right: 0;
-    padding: 20px; // 설정 메뉴와 같은 패딩
-    box-sizing: border-box;
-    z-index: 11;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 
-    @media (max-width: 768px) {
-        display: flex;
-    }
-
-    a,
-    div {
-        color: white; // 링크와 다른 텍스트 컬러
-        padding: 10px 0; // 각 항목의 상하 패딩
-        width: 100%; // 전체 너비 사용
-        text-decoration: none; // 링크의 밑줄 제거
-        border-bottom: none; // 모든 a 태그와 div의 기본 밑줄 제거
-    }
-
-    a:last-child,
-    div:last-child {
-        border-bottom: none; // 마지막 항목의 구분선 제거
+    ${Dropdown}:hover & {
+        display: block;
     }
 `;
 
-const IconRow = styled.div`
-    display: flex; // 가로로 아이템을 배치합니다.
-    justify-content: space-around; // 아이콘들 사이에 공간을 균등하게 분배
-    width: 100%; // 너비 100%
-    margin-bottom: 20px; // 아이콘과 링크 사이에 간격을 추가
-`;
-
-const IconContainer = styled.div`
-    flex: 1; // 사용 가능한 공간을 균등하게 나눕니다.
-    display: flex;
-    justify-content: center; // 가로 중앙 정렬
-    padding: 10px; // 패딩 조정
-    width: 10%; // 너비를 50%로 설정하여 두 아이콘 컨테이너가 각각 반씩 차지하도록 함
-    align-items: center; // 아이콘을 세로 중앙에 배치합니다.
-    border-bottom: none; // 밑줄 제거
-`;
-
-const SettingsMenu = styled.div`
-    cursor: pointer;
-
-    & > * {
-        width: 100%;
-    }
-`;
-
-const NavLinkStyled = styled(NavLink)`
-    display: flex;
-    justify-content: center;
-    width: 100%; // 너비를 100%로 설정하여 가로 전체를 차지하도록 함
-    margin-bottom: 10px; // 링크 사이에 간격을 추가
-
-    &:last-child {
-        margin-bottom: 0; // 마지막 링크는 마진 없음
+const DropdownLink = styled(Link)`
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    &:hover {
+        background-color: #ddd;
     }
 `;
 
 const SearchBarContainer = styled.div`
-    position: relative;
     display: flex;
-    align-items: center;
-    width: 100%; // Search bar takes full width
-
-    @media (max-width: 768px) {
-        width: auto; // On mobile, width is auto to fit content
-    }
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
 `;
 
 const SearchInput = styled.input`
-    padding: 8px 12px;
-    margin-right: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 200px;
-
-    &:focus {
-        outline: none;
-        border-color: #aaa;
-    }
+    border: none;
+    padding: 10px;
+    flex-grow: 1;
 `;
 
-const SearchIcon = styled(FaSearch)`
-    position: absolute;
-    right: 30px;
-    cursor: pointer;
-`;
-
-const CloseIcon = styled(FaTimes)`
-    position: absolute;
-    right: 5px;
-    cursor: pointer;
-`;
-
-const ShopButton = styled(NavLink)`
-    margin-left: 30px; // 로고와 쇼핑몰 버튼 간격
-    padding: 5px 10px;
+const SearchButton = styled.button`
+    background-color: #007bff;
     color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
     &:hover {
-        background-color: #555;
+        background-color: #0056b3;
     }
 `;
 
-// SearchBarContainer를 중앙에 배치하기 위한 스타일 변경
-const CenterContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1; // 컨테이너가 가능한 공간을 모두 차지하도록 함
-
-    @media (max-width: 768px) {
-        flex-grow: 0; // 모바일 뷰에서는 flex-grow 비활성화
-    }
+const IconButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
 `;
 
 const UpperNavigation: React.FC = () => {
-    // 드롭다운 메뉴 관련 로직을 커스텀 훅으로 분리하여 사용.
-    const {
-        isHamburgerMenuOpen,
-        isSettingsMenuOpen,
-        toggleHamburgerMenu,
-        toggleSettingsMenu,
-        closeMenus,
-    } = useMenuState();
-
-    useStoredSettings(); // 로컬 스토리지에서 설정 가져오기
-    const changeLanguage = useChangeLanguage();
-    const changeTheme = useChangeTheme();
-
-    const currentTheme = useSelector((state: RootState) => state.ui.theme);
-    const currentLanguage = useSelector(
-        (state: RootState) => state.ui.language
-    );
-
-    // Redux 스토어에서 로그인 상태 가져오기
-    const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-    const isAdmin = useSelector(
-        (state: RootState) => state.auth.userInfo?.isAdmin
-    );
-
-    const { isLoading, handleLogout } = useLogout(); // 로그아웃 훅 사용
-
     const [searchKeyword, setSearchKeyword] = useState('');
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const isAdmin = useSelector((state) => state.auth.userInfo?.isAdmin);
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchKeyword(event.target.value);
-    };
-
-    const handleSearchClear = () => {
-        setSearchKeyword('');
-    };
-
-    // 검색을 실행하는 함수입니다.
     const handleSearch = () => {
-        // 추후 검색 실행 로직 추가
+        // 여기에 검색 처리 로직 작성
     };
 
     return (
-        <>
-            <NavigationContainer>
-                {/* 로고 및 네비게이션 링크 */}
-                <Logo>
-                    <Link to="/">EssenceAura</Link>
-                </Logo>
+        <NavBar>
+            <LogoButton to="/shop">EssenceAura</LogoButton>
 
-                {/* 쇼핑몰 버튼 */}
-                <ShopButton to="/shop" onClick={closeMenus}>
-                    쇼핑몰
-                </ShopButton>
+            <Dropdown>
+                <button>상품보기</button>
+                <DropdownContent>
+                    <DropdownLink to="/shopdetail?category=category1">
+                        카테고리1
+                    </DropdownLink>
+                    {/* 여기에 추가 카테고리 및 태그 링크 */}
+                </DropdownContent>
+            </Dropdown>
 
-                {/* 중앙 검색창 */}
-                <CenterContainer>
-                    <SearchBarContainer>
-                        <SearchInput
-                            type="text"
-                            placeholder="키워드를 입력해주세요"
-                            value={searchKeyword}
-                            onChange={handleSearchChange}
-                        />
-                        {searchKeyword && (
-                            <CloseIcon size={16} onClick={handleSearchClear} />
-                        )}
-                        <SearchIcon size={20} onClick={handleSearch} />
-                    </SearchBarContainer>
-                </CenterContainer>
+            <SearchBarContainer>
+                <SearchInput
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    placeholder="검색어 입력"
+                />
+                <SearchButton onClick={handleSearch}>
+                    <MdSearch />
+                </SearchButton>
+            </SearchBarContainer>
 
-                {/* 아이콘 컨테이너 */}
-                <IconsContainer>
-                    <IconWrapper>
-                        {/* 로그인 상태에 따라 다른 경로로 이동 */}
-                        {isLoggedIn ? (
-                            <>
-                                <LoginButton to={isAdmin ? '/admin' : '/user'}>
-                                    <FaUserCircle size={24} />
-                                </LoginButton>
-                                <div onClick={handleLogout}>
-                                    <FaSignOutAlt size={24} />
-                                </div>
-                            </>
-                        ) : (
-                            <LoginButton to="/login">
-                                <FaUserCircle size={24} />
-                            </LoginButton>
-                        )}
-                    </IconWrapper>
-                    <IconWrapper>
-                        <SettingsMenu onClick={toggleSettingsMenu}>
-                            <FiSettings size={24} />
-                        </SettingsMenu>
-                    </IconWrapper>
-                    {/* HamburgerMenu는 모바일 뷰에서만 표시되므로 IconsContainer에 포함시키지 않음 */}
-                </IconsContainer>
+            {isLoggedIn ? (
+                <div>
+                    <IconButton
+                        onClick={() => {
+                            /* 로그아웃 처리 로직 */
+                        }}
+                    >
+                        <MdPerson />
+                    </IconButton>
+                    <IconButton as={Link} to={isAdmin ? '/admin' : '/user'}>
+                        <MdPerson />
+                    </IconButton>
+                </div>
+            ) : (
+                <IconButton as={Link} to="/login">
+                    <MdPerson />
+                </IconButton>
+            )}
 
-                {/* 햄버거 메뉴 아이콘 */}
-                <HamburgerMenu onClick={toggleHamburgerMenu}>
-                    <FaBars size={24} />
-                </HamburgerMenu>
+            <Dropdown>
+                <IconButton>
+                    <MdSettings />
+                </IconButton>
+                <DropdownContent>
+                    <DropdownLink to="#">English</DropdownLink>
+                    <DropdownLink to="#">한국어</DropdownLink>
+                    <DropdownLink to="#">화이트</DropdownLink>
+                    <DropdownLink to="#">블랙</DropdownLink>
+                </DropdownContent>
+            </Dropdown>
 
-                {/* 설정 드롭다운 메뉴 */}
-                {isSettingsMenuOpen && (
-                    <DropdownMenu>
-                        <Section>
-                            <SectionTitle>언어 선택</SectionTitle>
-                            <ButtonColumn>
-                                <Button
-                                    onClick={() => changeLanguage('en')}
-                                    className={
-                                        currentLanguage === 'en'
-                                            ? 'selected'
-                                            : ''
-                                    }
-                                >
-                                    English
-                                </Button>
-                                <Button
-                                    onClick={() => changeLanguage('ko')}
-                                    className={
-                                        currentLanguage === 'ko'
-                                            ? 'selected'
-                                            : ''
-                                    }
-                                >
-                                    한국어
-                                </Button>
-                            </ButtonColumn>
-                        </Section>
-                        <Section>
-                            <SectionTitle>테마 선택</SectionTitle>
-                            <ButtonColumn>
-                                <Button
-                                    onClick={() => changeTheme('light')}
-                                    className={
-                                        currentTheme === 'light'
-                                            ? 'selected'
-                                            : ''
-                                    }
-                                >
-                                    화이트
-                                </Button>
-                                <Button
-                                    onClick={() => changeTheme('dark')}
-                                    className={
-                                        currentTheme === 'dark'
-                                            ? 'selected'
-                                            : ''
-                                    }
-                                >
-                                    블랙
-                                </Button>
-                            </ButtonColumn>
-                        </Section>
-                    </DropdownMenu>
-                )}
-
-                {/* 모바일 뷰용 드롭다운 메뉴 */}
-                {isHamburgerMenuOpen && (
-                    <MobileMenu>
-                        <IconRow>
-                            {/* 아이콘들을 감싸는 행 */}
-                            <IconContainer>
-                                {/* 로그인 상태에 따라 다른 경로로 이동 */}
-                                {isLoggedIn ? (
-                                    <>
-                                        <LoginButton
-                                            to={isAdmin ? '/admin' : '/user'}
-                                        >
-                                            <FaUserCircle size={24} />
-                                        </LoginButton>
-                                        <div onClick={handleLogout}>
-                                            <FaSignOutAlt size={24} />
-                                        </div>
-                                    </>
-                                ) : (
-                                    <LoginButton to="/login">
-                                        <FaUserCircle size={24} />
-                                    </LoginButton>
-                                )}
-                            </IconContainer>
-                            <IconContainer>
-                                {/* 설정 아이콘 */}
-                                <SettingsMenu onClick={toggleSettingsMenu}>
-                                    <FiSettings size={24} />
-                                </SettingsMenu>
-                            </IconContainer>
-                        </IconRow>
-                        {/* NavLink 컴포넌트들 */}
-                        <NavLinkStyled to="/shop" onClick={closeMenus}>
-                            쇼핑몰
-                        </NavLinkStyled>
-                        {/* ... 기타 링크 ... */}
-                    </MobileMenu>
-                )}
-            </NavigationContainer>
-
-            {isLoading && <LoadingModal />}
-        </>
+            <IconButton className="mobile-menu-icon">
+                <MdMenu />
+            </IconButton>
+        </NavBar>
     );
 };
 
