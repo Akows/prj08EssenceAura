@@ -1,5 +1,5 @@
 const { DatabaseError, NotFoundError } = require('../error/error');
-const { getProductById, getProducts } = require('../service/productService');
+const { getProductById, getProducts, getTotalProductsCount } = require('../service/productService');
 
 const getProductByIdHandler = async (req, res) => {
     try {
@@ -23,19 +23,35 @@ const getProductByIdHandler = async (req, res) => {
 };
 
 const getProductsHandler = async (req, res) => {
-    try {
+  try {
+      // 쿼리 파라미터를 사용하여 페이지 정보와 기타 필터 옵션을 받습니다.
       const query = req.query;
-      const products = await getProducts(query);
-  
-      res.json(products);
-    } catch (error) {
+      const page = parseInt(query.page) || 1;
+      const limit = parseInt(query.limit) || 10;
+      const offset = (page - 1) * limit;
+
+      // 전체 상품 개수를 가져옵니다.
+      const totalProductsCount = await getTotalProductsCount();
+
+      // 현재 페이지에 해당하는 상품 목록을 가져옵니다.
+      const products = await getProducts({ ...query, limit, offset });
+
+      // 클라이언트에 전체 상품 개수와 페이지에 해당하는 상품 목록을 함께 반환합니다.
+      res.json({
+          totalProducts: totalProductsCount,
+          products,
+          page,
+          totalPages: Math.ceil(totalProductsCount / limit),
+      });
+  } catch (error) {
       if (error instanceof DatabaseError) {
-        res.status(500).send({ message: error.message });
+          res.status(500).send({ message: error.message });
       } else {
-        res.status(500).send({ message: '제품 목록 조회 중, 서버에서 오류가 발생하였습니다.' });
+          res.status(500).send({ message: '제품 목록 조회 중, 서버에서 오류가 발생하였습니다.' });
       }
-    }
+  }
 };
+
 
 const getSearchSuggestionsHandler = async (req, res) => {
     try {
