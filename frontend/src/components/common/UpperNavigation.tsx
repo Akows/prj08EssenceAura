@@ -1,8 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { MdSearch, MdPerson, MdSettings, MdMenu } from 'react-icons/md';
+import {
+    MdSearch,
+    MdPerson,
+    MdSettings,
+    MdMenu,
+    MdExitToApp,
+} from 'react-icons/md';
+
+const mobileSize = '768px';
+
+const NavBarContainer = styled.div`
+    position: relative; // DropdownContent를 absolute 위치로 조정하기 위한 기준점
+`;
+
+const LeftContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 const NavBar = styled.nav`
     display: flex;
@@ -10,6 +27,10 @@ const NavBar = styled.nav`
     justify-content: space-between;
     padding: 10px;
     background-color: #f8f9fa;
+
+    @media (max-width: 768px) {
+        justify-content: space-between;
+    }
 `;
 
 const LogoButton = styled(Link)`
@@ -24,22 +45,49 @@ const LogoButton = styled(Link)`
 const Dropdown = styled.div`
     position: relative;
     display: inline-block;
+    margin-left: 10px; // LogoButton으로부터 10px 오른쪽으로 이동
+`;
+
+const DropdownButton = styled.button`
+    background: #f8f9fa;
+    border: 1px solid #ddd; // 테두리 추가
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease; // 부드러운 배경 색상 변경 효과를 위해 추가
+
+    &:hover {
+        background-color: #e2e6ea; // 호버 시 배경 색상 변경
+        border-color: #dae0e5; // 호버 시 테두리 색상 변경
+    }
 `;
 
 const DropdownContent = styled.div`
     display: none;
     position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    background-color: white; // 배경색 변경
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); // 그림자 효과 수정
     z-index: 1;
+    min-width: 160px; // 최소 너비 설정
+    border-radius: 4px; // 둥근 모서리
+    overflow: hidden; // 내부 요소가 넘치지 않도록 설정
 
     ${Dropdown}:hover & {
-        display: block;
+        display: block; // 드롭다운 보이기
     }
 `;
 
+const DropdownTitle = styled.div`
+    font-size: 18px; // 대분류 항목의 글자 크기
+    font-weight: bold; // 대분류 항목을 굵게
+    text-decoration: underline; // 밑줄
+    padding: 8px 16px; // 패딩
+    background-color: #f8f9fa; // 배경색
+    border-bottom: 1px solid #ddd; // 구분선
+`;
+
 const DropdownLink = styled(Link)`
+    width: 100%;
     color: black;
     padding: 12px 16px;
     text-decoration: none;
@@ -49,11 +97,26 @@ const DropdownLink = styled(Link)`
     }
 `;
 
+const DropdownItem = styled(DropdownLink)`
+    font-size: 16px; // 소분류 항목의 글자 크기
+    padding: 8px 16px; // 패딩
+    color: #333; // 글자색
+    &:hover {
+        background-color: #e2e6ea; // 호버 배경색
+        color: #007bff; // 호버 글자색
+    }
+`;
+
 const SearchBarContainer = styled.div`
     display: flex;
     border: 1px solid #ddd;
     border-radius: 4px;
     overflow: hidden;
+    flex-grow: 0.5; // 너비를 2배로 확장
+
+    @media (max-width: ${mobileSize}) {
+        display: none; // 모바일 뷰에서는 검색창 숨김
+    }
 `;
 
 const SearchInput = styled.input`
@@ -73,82 +136,308 @@ const SearchButton = styled.button`
     }
 `;
 
+const SearchSuggestionsContainer = styled.div`
+    display: ${(props) => (props.show ? 'block' : 'none')};
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+    z-index: 10;
+
+    @media (max-width: 768px) {
+        top: 38px;
+    }
+`;
+
+const SuggestionItem = styled.div`
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    &:hover {
+        background-color: #f2f2f2;
+    }
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
 const IconButton = styled.button`
     background: none;
     border: none;
     cursor: pointer;
     font-size: 24px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+`;
+
+const ClearButton = styled.button`
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+        color: #007bff;
+    }
+`;
+
+const RightContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const DropdownContentRight = styled(DropdownContent)`
+    right: 0; // 드롭다운 메뉴를 오른쪽에 정렬합니다.
+    top: 100%; // 버튼 바로 아래에 메뉴가 위치하도록 설정합니다.
+`;
+
+const DropdownSectionTitle = styled(DropdownTitle)`
+    background-color: transparent; // 배경색을 투명하게 설정합니다.
+    border-bottom: none; // 구분선을 제거합니다.
+`;
+
+const MobileMenuButton = styled(IconButton)`
+    display: none;
+    @media (max-width: 768px) {
+        display: block;
+    }
+`;
+
+const MobileDropdownContent = styled(DropdownContent)`
+    display: none;
+    @media (max-width: 768px) {
+        display: flex;
+        width: 98%;
+        flex-direction: column; // 항목들을 세로로 정렬
+        padding: 0;
+        top: 55px; // 메뉴바 높이 조정
+    }
+`;
+
+const MobileSearchBarContainer = styled(SearchBarContainer)`
+    @media (max-width: ${mobileSize}) {
+        display: flex; // 모바일 뷰에서 검색창 표시
+        width: 100%; // 전체 너비를 사용
+        margin-bottom: 1rem; // 다른 메뉴 항목과의 간격
+    }
+`;
+
+const UserButtonContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+
+    @media (max-width: ${mobileSize}) {
+        width: 100%; // 모바일 뷰에서는 너비를 100%로 설정하여 버튼들이 가로로 정렬되도록 합니다.
+        justify-content: space-evenly; // 버튼 사이에 균등 간격을 둡니다.
+    }
 `;
 
 const UpperNavigation: React.FC = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [suggestions, setSuggestions] = useState([]);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const isAdmin = useSelector((state) => state.auth.userInfo?.isAdmin);
 
     const handleSearch = () => {
-        // 여기에 검색 처리 로직 작성
+        alert('검색');
     };
 
+    const handleClearSearch = () => {
+        setSearchKeyword('');
+    };
+
+    const handleLogout = () => {
+        alert('로그아웃');
+    };
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    useEffect(() => {
+        if (searchKeyword) {
+            // 추천 검색어 API 요청을 흉내내는 부분 (실제로는 API 호출을 해야 함)
+            setSuggestions(['추천 키워드 1', '추천 키워드 2', '추천 키워드 3']); // 예시 데이터
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    }, [searchKeyword]);
+
     return (
-        <NavBar>
-            <LogoButton to="/shop">EssenceAura</LogoButton>
+        <NavBarContainer>
+            <NavBar>
+                <LeftContainer>
+                    <LogoButton to="/shop">EssenceAura</LogoButton>
 
-            <Dropdown>
-                <button>상품보기</button>
-                <DropdownContent>
-                    <DropdownLink to="/shopdetail?category=category1">
-                        카테고리1
-                    </DropdownLink>
-                    {/* 여기에 추가 카테고리 및 태그 링크 */}
-                </DropdownContent>
-            </Dropdown>
+                    <Dropdown>
+                        <DropdownButton>상품보기</DropdownButton>
+                        <DropdownContent className="dropdown-content">
+                            <DropdownTitle>카테고리</DropdownTitle>
+                            <DropdownItem to="/shopdetail?category=1">
+                                1
+                            </DropdownItem>
+                            <DropdownItem to="/shopdetail?category=2">
+                                2
+                            </DropdownItem>
+                            <DropdownItem to="/shopdetail?category=3">
+                                3
+                            </DropdownItem>
+                            <DropdownTitle>태그</DropdownTitle>
+                            <DropdownItem to="/shopdetail?tag=1">
+                                1
+                            </DropdownItem>
+                            <DropdownItem to="/shopdetail?tag=2">
+                                2
+                            </DropdownItem>
+                            <DropdownItem to="/shopdetail?tag=3">
+                                3
+                            </DropdownItem>
+                            <DropdownTitle>이벤트</DropdownTitle>
+                            <DropdownItem to="/shopdetail?event=1">
+                                1
+                            </DropdownItem>
+                            <DropdownItem to="/shopdetail?event=2">
+                                2
+                            </DropdownItem>
+                            <DropdownItem to="/shopdetail?event=3">
+                                3
+                            </DropdownItem>
+                            {/* '태그', '이벤트' 대분류에 대한 드롭다운 메뉴 구성도 유사하게 추가 */}
+                        </DropdownContent>
+                    </Dropdown>
+                </LeftContainer>
 
-            <SearchBarContainer>
-                <SearchInput
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="검색어 입력"
-                />
-                <SearchButton onClick={handleSearch}>
-                    <MdSearch />
-                </SearchButton>
-            </SearchBarContainer>
+                <SearchBarContainer>
+                    <SearchInput
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        onFocus={() => setShowSuggestions(true)}
+                        onBlur={() => setShowSuggestions(false)}
+                        placeholder="검색어 입력"
+                    />
+                    <ClearButton onClick={() => setSearchKeyword('')}>
+                        X
+                    </ClearButton>
+                    <SearchButton onClick={handleSearch}>
+                        <MdSearch />
+                    </SearchButton>
+                    <SearchSuggestionsContainer show={showSuggestions}>
+                        {suggestions.map((suggestion, index) => (
+                            <SuggestionItem key={index}>
+                                {suggestion}
+                            </SuggestionItem>
+                        ))}
+                    </SearchSuggestionsContainer>
+                </SearchBarContainer>
 
-            {isLoggedIn ? (
-                <div>
-                    <IconButton
-                        onClick={() => {
-                            /* 로그아웃 처리 로직 */
-                        }}
-                    >
-                        <MdPerson />
-                    </IconButton>
-                    <IconButton as={Link} to={isAdmin ? '/admin' : '/user'}>
-                        <MdPerson />
-                    </IconButton>
-                </div>
-            ) : (
-                <IconButton as={Link} to="/login">
-                    <MdPerson />
-                </IconButton>
-            )}
+                <RightContainer>
+                    {isLoggedIn ? (
+                        <UserButtonContainer>
+                            <IconButton onClick={handleLogout}>
+                                <MdExitToApp /> {/* 로그아웃에 적합한 아이콘 */}
+                            </IconButton>
+                            <IconButton
+                                as={Link}
+                                to={isAdmin ? '/admin' : '/user'}
+                            >
+                                <MdPerson />
+                            </IconButton>
+                        </UserButtonContainer>
+                    ) : (
+                        <UserButtonContainer>
+                            <IconButton as={Link} to="/login">
+                                <MdPerson />
+                            </IconButton>
+                        </UserButtonContainer>
+                    )}
 
-            <Dropdown>
-                <IconButton>
-                    <MdSettings />
-                </IconButton>
-                <DropdownContent>
-                    <DropdownLink to="#">English</DropdownLink>
-                    <DropdownLink to="#">한국어</DropdownLink>
-                    <DropdownLink to="#">화이트</DropdownLink>
-                    <DropdownLink to="#">블랙</DropdownLink>
-                </DropdownContent>
-            </Dropdown>
+                    <Dropdown>
+                        <IconButton>
+                            <MdSettings />
+                        </IconButton>
+                        <DropdownContentRight>
+                            <DropdownSectionTitle>
+                                언어 설정
+                            </DropdownSectionTitle>
+                            <DropdownItem to="#">English</DropdownItem>
+                            <DropdownItem to="#">한국어</DropdownItem>
+                            <DropdownSectionTitle>
+                                테마 설정
+                            </DropdownSectionTitle>
+                            <DropdownItem to="#">화이트</DropdownItem>
+                            <DropdownItem to="#">블랙</DropdownItem>
+                        </DropdownContentRight>
+                    </Dropdown>
+                </RightContainer>
 
-            <IconButton className="mobile-menu-icon">
-                <MdMenu />
-            </IconButton>
-        </NavBar>
+                <MobileMenuButton onClick={toggleMobileMenu}>
+                    <MdMenu />
+                </MobileMenuButton>
+
+                {isMobileMenuOpen && (
+                    <MobileDropdownContent>
+                        {/* 모바일 환경에서의 드롭다운 메뉴 항목 */}
+                        <MobileSearchBarContainer>
+                            <SearchInput
+                                value={searchKeyword}
+                                onChange={(e) =>
+                                    setSearchKeyword(e.target.value)
+                                }
+                                onFocus={() => setShowSuggestions(true)}
+                                onBlur={() => setShowSuggestions(false)}
+                                placeholder="검색어 입력"
+                            />
+                            <ClearButton onClick={() => setSearchKeyword('')}>
+                                X
+                            </ClearButton>
+                            <SearchButton onClick={handleSearch}>
+                                <MdSearch />
+                            </SearchButton>
+                            <SearchSuggestionsContainer show={showSuggestions}>
+                                {suggestions.map((suggestion, index) => (
+                                    <SuggestionItem key={index}>
+                                        {suggestion}
+                                    </SuggestionItem>
+                                ))}
+                            </SearchSuggestionsContainer>
+                        </MobileSearchBarContainer>
+                        {isLoggedIn ? (
+                            <UserButtonContainer>
+                                <DropdownLink onClick={handleLogout}>
+                                    <MdExitToApp /> 로그아웃
+                                </DropdownLink>
+                                <DropdownLink to={isAdmin ? '/admin' : '/user'}>
+                                    <MdPerson /> 사용자 프로필
+                                </DropdownLink>
+                            </UserButtonContainer>
+                        ) : (
+                            <UserButtonContainer>
+                                <DropdownLink to="/login">
+                                    <MdPerson /> 로그인
+                                </DropdownLink>
+                            </UserButtonContainer>
+                        )}
+                        <DropdownSectionTitle>언어 설정</DropdownSectionTitle>
+                        <DropdownLink to="#">English</DropdownLink>
+                        <DropdownLink to="#">한국어</DropdownLink>
+                        <DropdownSectionTitle>테마 설정</DropdownSectionTitle>
+                        <DropdownLink to="#">화이트</DropdownLink>
+                        <DropdownLink to="#">블랙</DropdownLink>
+                    </MobileDropdownContent>
+                )}
+            </NavBar>
+        </NavBarContainer>
     );
 };
 
