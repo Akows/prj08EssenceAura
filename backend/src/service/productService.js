@@ -31,8 +31,6 @@ const getProducts = async (queryParams) => {
       page = 1
     } = queryParams;
 
-    console.log(queryParams);
-
     // sort 파라미터를 분리하여 sortBy와 order 변수를 생성
     let sortBy = sort?.endsWith('_asc') ? sort.slice(0, -4) : sort?.slice(0, -5);
     let order = sort?.endsWith('_asc') ? 'ASC' : 'DESC';
@@ -86,9 +84,6 @@ const getProducts = async (queryParams) => {
         query += ' LIMIT ? OFFSET ?';
         queryParamsToEscape.push(Number(limit), offset);
 
-        console.log(query);
-        console.log(queryParamsToEscape);
-
         // 쿼리 실행. queryParamsToEscape 배열을 사용하여 쿼리 매개변수를 안전하게 삽입
         const products = await db.query(query, queryParamsToEscape);
         return products;
@@ -98,9 +93,30 @@ const getProducts = async (queryParams) => {
       }
 };
 
-const getTotalProductsCount = async () => {
+const getTotalProductsCount = async (filters) => {
+    const whereClauses = [];
+    const queryParams = [];
+
+    if (filters.name) {
+      whereClauses.push("name LIKE ?");
+      queryParams.push(`%${filters.name}%`);
+    }
+    if (filters.category) {
+      whereClauses.push("category = ?");
+      queryParams.push(filters.category);
+    }
+    if (filters.tag) {
+      whereClauses.push("tags = ?");
+      queryParams.push(filters.tag);
+    }
+    if (filters.event) {
+      whereClauses.push("what_event = ?");
+      queryParams.push(filters.event);
+    }
+
+    const whereClause = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
     try {
-      const [result] = await db.query('SELECT COUNT(*) AS total FROM products');
+      const [result] = await db.query(`SELECT COUNT(*) AS total FROM products ${whereClause}`, queryParams);
       return result[0].total;
     } catch (error) {
       throw new DatabaseError(error.message);

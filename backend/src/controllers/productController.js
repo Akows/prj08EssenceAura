@@ -31,8 +31,8 @@ const getProductsHandler = async (req, res) => {
       const offset = (page - 1) * limit;
 
       // 전체 상품 개수를 가져옵니다.
-      const totalProductsCount = await getTotalProductsCount();
-
+      const totalProductsCount = await getTotalProductsCount(query);
+      
       // 현재 페이지에 해당하는 상품 목록을 가져옵니다.
       const products = await getProducts({ ...query, limit, offset });
 

@@ -129,9 +129,9 @@ const ProductListPage: React.FC = () => {
             filterParams.category = category;
         }
 
-        const tags = searchParams.get('tags');
-        if (tags) {
-            filterParams.tags = tags;
+        const tag = searchParams.get('tag');
+        if (tag) {
+            filterParams.tag = tag;
         }
 
         const event = searchParams.get('event');
