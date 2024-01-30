@@ -38,12 +38,14 @@ const CardPrice = styled.p`
 
 // 제품 카드 컴포넌트의 props 타입 정의
 interface ProductCardProps {
+    productId: number;
     imageUrl: string;
     title: string;
     price: string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+    productId,
     imageUrl,
     title,
     price,
@@ -51,7 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const navigate = useNavigate();
 
     const handleItemClick = () => {
-        navigate('/shopdetail');
+        navigate(`/shopdetail?${productId}`); // 제품 ID를 URL에 포함
     };
 
     return (
@@ -60,7 +62,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <CardBody>
                 <CardTitle>{title}</CardTitle>
                 <CardPrice>{price}</CardPrice>
-                {/* 필요에 따라 추가 버튼이나 기타 요소를 여기에 추가 */}
             </CardBody>
         </Card>
     );

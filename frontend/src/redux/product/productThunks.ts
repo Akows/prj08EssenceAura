@@ -43,7 +43,7 @@ export const fetchProducts = createAsyncThunk(
             // API로부터 조건에 맞는 제품 목록을 조회
             // 이때, 이름, 카테고리, 태그, 이벤트, 정렬 기준, 페이지네이션 등의 파라미터 사용
             const response = await axios.get(`${API_BASE_URL}`, { params });
-            return response.data;
+            return response.data[0];
         } catch (error) {
             // 오류 발생 시 처리
             const axiosError = error as AxiosError;
@@ -54,7 +54,7 @@ export const fetchProducts = createAsyncThunk(
 
 // 검색 제안을 가져오는 비동기 thunk
 export const fetchSearchSuggestions = createAsyncThunk(
-    'search/fetchSearchSuggestions',
+    'product/fetchSearchSuggestions',
     async (keyword, { rejectWithValue }) => {
         try {
             const response = await axios.get(

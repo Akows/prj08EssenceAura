@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     MdSearch,
     MdPerson,
@@ -9,6 +9,9 @@ import {
     MdMenu,
     MdExitToApp,
 } from 'react-icons/md';
+import useLogout from '../../hooks/auth/useLogout';
+import LoadingModal from './LoadingModal';
+import { fetchSearchSuggestions } from '../../redux/product/productThunks';
 
 const mobileSize = '768px';
 
@@ -247,197 +250,237 @@ const UpperNavigation: React.FC = () => {
     const [suggestions, setSuggestions] = useState([]);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const isAdmin = useSelector((state) => state.auth.userInfo?.isAdmin);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { isLoading, handleLogout } = useLogout(); // 로그아웃 훅 사용
 
     const handleSearch = () => {
-        alert('검색');
+        navigate(`/shoplist?name=${encodeURIComponent(searchKeyword)}`);
     };
 
-    const handleClearSearch = () => {
-        setSearchKeyword('');
-    };
-
-    const handleLogout = () => {
-        alert('로그아웃');
+    const onSuggestionClick = (suggestion) => {
+        navigate(`/shoplist?name=${encodeURIComponent(suggestion)}`);
     };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    useEffect(() => {
-        if (searchKeyword) {
-            // 추천 검색어 API 요청을 흉내내는 부분 (실제로는 API 호출을 해야 함)
-            setSuggestions(['추천 키워드 1', '추천 키워드 2', '추천 키워드 3']); // 예시 데이터
-            setShowSuggestions(true);
-        } else {
-            setShowSuggestions(false);
-        }
-    }, [searchKeyword]);
+    // 검색 제안을 가져오는 함수
+    // useEffect(() => {
+    //     if (searchKeyword) {
+    //         dispatch(fetchSearchSuggestions(searchKeyword))
+    //             .then((response) => {
+    //                 setSuggestions(response.payload);
+    //                 setShowSuggestions(true);
+    //             })
+    //             .catch((error) => console.error(error));
+    //     } else {
+    //         setShowSuggestions(false);
+    //     }
+    // }, [searchKeyword, dispatch]);
 
     return (
-        <NavBarContainer>
-            <NavBar>
-                <LeftContainer>
-                    <LogoButton to="/shop">EssenceAura</LogoButton>
+        <>
+            <NavBarContainer>
+                <NavBar>
+                    <LeftContainer>
+                        <LogoButton to="/shop">EssenceAura</LogoButton>
 
-                    <Dropdown>
-                        <DropdownButton>상품보기</DropdownButton>
-                        <DropdownContent className="dropdown-content">
-                            <DropdownTitle>카테고리</DropdownTitle>
-                            <DropdownItem to="/shopdetail?category=1">
-                                1
-                            </DropdownItem>
-                            <DropdownItem to="/shopdetail?category=2">
-                                2
-                            </DropdownItem>
-                            <DropdownItem to="/shopdetail?category=3">
-                                3
-                            </DropdownItem>
-                            <DropdownTitle>태그</DropdownTitle>
-                            <DropdownItem to="/shopdetail?tag=1">
-                                1
-                            </DropdownItem>
-                            <DropdownItem to="/shopdetail?tag=2">
-                                2
-                            </DropdownItem>
-                            <DropdownItem to="/shopdetail?tag=3">
-                                3
-                            </DropdownItem>
-                            <DropdownTitle>이벤트</DropdownTitle>
-                            <DropdownItem to="/shopdetail?event=1">
-                                1
-                            </DropdownItem>
-                            <DropdownItem to="/shopdetail?event=2">
-                                2
-                            </DropdownItem>
-                            <DropdownItem to="/shopdetail?event=3">
-                                3
-                            </DropdownItem>
-                            {/* '태그', '이벤트' 대분류에 대한 드롭다운 메뉴 구성도 유사하게 추가 */}
-                        </DropdownContent>
-                    </Dropdown>
-                </LeftContainer>
+                        <Dropdown>
+                            <DropdownButton>상품보기</DropdownButton>
+                            <DropdownContent className="dropdown-content">
+                                <DropdownTitle>전체상품</DropdownTitle>
+                                <DropdownItem to="/shoplist">
+                                    전체상품보기
+                                </DropdownItem>
+                                <DropdownTitle>카테고리</DropdownTitle>
+                                <DropdownItem to="/shoplist?category=women">
+                                    여성향수
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?category=men">
+                                    남성향수
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?category=unisex">
+                                    남녀공용
+                                </DropdownItem>
+                                <DropdownTitle>태그</DropdownTitle>
+                                <DropdownItem to="/shoplist?tag=floral">
+                                    플로랄
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?tag=citrus">
+                                    시트러스
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?tag=woody">
+                                    우디
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?tag=spicy">
+                                    스파이시
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?tag=musk">
+                                    머스크
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?tag=fruity">
+                                    프루티
+                                </DropdownItem>
+                                <DropdownTitle>이벤트</DropdownTitle>
+                                <DropdownItem to="/shoplist?event=spring_sale">
+                                    봄맞이할인
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?event=md_pick">
+                                    MD추천
+                                </DropdownItem>
+                                <DropdownItem to="/shoplist?event=special_offer">
+                                    특별할인
+                                </DropdownItem>
+                            </DropdownContent>
+                        </Dropdown>
+                    </LeftContainer>
 
-                <SearchBarContainer>
-                    <SearchInput
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        onFocus={() => setShowSuggestions(true)}
-                        onBlur={() => setShowSuggestions(false)}
-                        placeholder="검색어 입력"
-                    />
-                    <ClearButton onClick={() => setSearchKeyword('')}>
-                        X
-                    </ClearButton>
-                    <SearchButton onClick={handleSearch}>
-                        <MdSearch />
-                    </SearchButton>
-                    <SearchSuggestionsContainer show={showSuggestions}>
-                        {suggestions.map((suggestion, index) => (
-                            <SuggestionItem key={index}>
-                                {suggestion}
-                            </SuggestionItem>
-                        ))}
-                    </SearchSuggestionsContainer>
-                </SearchBarContainer>
+                    <SearchBarContainer>
+                        <SearchInput
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            onFocus={() => setShowSuggestions(true)}
+                            onBlur={() => setShowSuggestions(false)}
+                            placeholder="검색어 입력"
+                        />
+                        <ClearButton onClick={() => setSearchKeyword('')}>
+                            X
+                        </ClearButton>
+                        <SearchButton onClick={handleSearch}>
+                            <MdSearch />
+                        </SearchButton>
+                        <SearchSuggestionsContainer show={showSuggestions}>
+                            {suggestions.map((suggestion, index) => (
+                                <SuggestionItem
+                                    key={index}
+                                    onClick={() =>
+                                        onSuggestionClick(suggestion)
+                                    }
+                                >
+                                    {suggestion}
+                                </SuggestionItem>
+                            ))}
+                        </SearchSuggestionsContainer>
+                    </SearchBarContainer>
 
-                <RightContainer>
-                    {isLoggedIn ? (
-                        <UserButtonContainer>
-                            <IconButton onClick={handleLogout}>
-                                <MdExitToApp /> {/* 로그아웃에 적합한 아이콘 */}
-                            </IconButton>
-                            <IconButton
-                                as={Link}
-                                to={isAdmin ? '/admin' : '/user'}
-                            >
-                                <MdPerson />
-                            </IconButton>
-                        </UserButtonContainer>
-                    ) : (
-                        <UserButtonContainer>
-                            <IconButton as={Link} to="/login">
-                                <MdPerson />
-                            </IconButton>
-                        </UserButtonContainer>
-                    )}
-
-                    <Dropdown>
-                        <IconButton>
-                            <MdSettings />
-                        </IconButton>
-                        <DropdownContentRight>
-                            <DropdownSectionTitle>
-                                언어 설정
-                            </DropdownSectionTitle>
-                            <DropdownItem to="#">English</DropdownItem>
-                            <DropdownItem to="#">한국어</DropdownItem>
-                            <DropdownSectionTitle>
-                                테마 설정
-                            </DropdownSectionTitle>
-                            <DropdownItem to="#">화이트</DropdownItem>
-                            <DropdownItem to="#">블랙</DropdownItem>
-                        </DropdownContentRight>
-                    </Dropdown>
-                </RightContainer>
-
-                <MobileMenuButton onClick={toggleMobileMenu}>
-                    <MdMenu />
-                </MobileMenuButton>
-
-                {isMobileMenuOpen && (
-                    <MobileDropdownContent>
-                        {/* 모바일 환경에서의 드롭다운 메뉴 항목 */}
-                        <MobileSearchBarContainer>
-                            <SearchInput
-                                value={searchKeyword}
-                                onChange={(e) =>
-                                    setSearchKeyword(e.target.value)
-                                }
-                                onFocus={() => setShowSuggestions(true)}
-                                onBlur={() => setShowSuggestions(false)}
-                                placeholder="검색어 입력"
-                            />
-                            <ClearButton onClick={() => setSearchKeyword('')}>
-                                X
-                            </ClearButton>
-                            <SearchButton onClick={handleSearch}>
-                                <MdSearch />
-                            </SearchButton>
-                            <SearchSuggestionsContainer show={showSuggestions}>
-                                {suggestions.map((suggestion, index) => (
-                                    <SuggestionItem key={index}>
-                                        {suggestion}
-                                    </SuggestionItem>
-                                ))}
-                            </SearchSuggestionsContainer>
-                        </MobileSearchBarContainer>
+                    <RightContainer>
                         {isLoggedIn ? (
                             <UserButtonContainer>
-                                <DropdownLink onClick={handleLogout}>
-                                    <MdExitToApp /> 로그아웃
-                                </DropdownLink>
-                                <DropdownLink to={isAdmin ? '/admin' : '/user'}>
-                                    <MdPerson /> 사용자 프로필
-                                </DropdownLink>
+                                <IconButton onClick={handleLogout}>
+                                    <MdExitToApp />{' '}
+                                    {/* 로그아웃에 적합한 아이콘 */}
+                                </IconButton>
+                                <IconButton
+                                    as={Link}
+                                    to={isAdmin ? '/admin' : '/user'}
+                                >
+                                    <MdPerson />
+                                </IconButton>
                             </UserButtonContainer>
                         ) : (
                             <UserButtonContainer>
-                                <DropdownLink to="/login">
-                                    <MdPerson /> 로그인
-                                </DropdownLink>
+                                <IconButton as={Link} to="/login">
+                                    <MdPerson />
+                                </IconButton>
                             </UserButtonContainer>
                         )}
-                        <DropdownSectionTitle>언어 설정</DropdownSectionTitle>
-                        <DropdownLink to="#">English</DropdownLink>
-                        <DropdownLink to="#">한국어</DropdownLink>
-                        <DropdownSectionTitle>테마 설정</DropdownSectionTitle>
-                        <DropdownLink to="#">화이트</DropdownLink>
-                        <DropdownLink to="#">블랙</DropdownLink>
-                    </MobileDropdownContent>
-                )}
-            </NavBar>
-        </NavBarContainer>
+
+                        <Dropdown>
+                            <IconButton>
+                                <MdSettings />
+                            </IconButton>
+                            <DropdownContentRight>
+                                <DropdownSectionTitle>
+                                    언어 설정
+                                </DropdownSectionTitle>
+                                <DropdownItem to="#">English</DropdownItem>
+                                <DropdownItem to="#">한국어</DropdownItem>
+                                <DropdownSectionTitle>
+                                    테마 설정
+                                </DropdownSectionTitle>
+                                <DropdownItem to="#">화이트</DropdownItem>
+                                <DropdownItem to="#">블랙</DropdownItem>
+                            </DropdownContentRight>
+                        </Dropdown>
+                    </RightContainer>
+
+                    <MobileMenuButton onClick={toggleMobileMenu}>
+                        <MdMenu />
+                    </MobileMenuButton>
+
+                    {isMobileMenuOpen && (
+                        <MobileDropdownContent>
+                            {/* 모바일 환경에서의 드롭다운 메뉴 항목 */}
+                            <MobileSearchBarContainer>
+                                <SearchInput
+                                    value={searchKeyword}
+                                    onChange={(e) =>
+                                        setSearchKeyword(e.target.value)
+                                    }
+                                    onFocus={() => setShowSuggestions(true)}
+                                    onBlur={() => setShowSuggestions(false)}
+                                    placeholder="검색어 입력"
+                                />
+                                <ClearButton
+                                    onClick={() => setSearchKeyword('')}
+                                >
+                                    X
+                                </ClearButton>
+                                <SearchButton onClick={handleSearch}>
+                                    <MdSearch />
+                                </SearchButton>
+                                <SearchSuggestionsContainer
+                                    show={showSuggestions}
+                                >
+                                    {suggestions.map((suggestion, index) => (
+                                        <SuggestionItem
+                                            key={index}
+                                            onClick={() =>
+                                                onSuggestionClick(suggestion)
+                                            }
+                                        >
+                                            {suggestion}
+                                        </SuggestionItem>
+                                    ))}
+                                </SearchSuggestionsContainer>
+                            </MobileSearchBarContainer>
+                            {isLoggedIn ? (
+                                <UserButtonContainer>
+                                    <DropdownLink onClick={handleLogout}>
+                                        <MdExitToApp /> 로그아웃
+                                    </DropdownLink>
+                                    <DropdownLink
+                                        to={isAdmin ? '/admin' : '/user'}
+                                    >
+                                        <MdPerson /> 사용자 프로필
+                                    </DropdownLink>
+                                </UserButtonContainer>
+                            ) : (
+                                <UserButtonContainer>
+                                    <DropdownLink to="/login">
+                                        <MdPerson /> 로그인
+                                    </DropdownLink>
+                                </UserButtonContainer>
+                            )}
+                            <DropdownSectionTitle>
+                                언어 설정
+                            </DropdownSectionTitle>
+                            <DropdownLink to="#">English</DropdownLink>
+                            <DropdownLink to="#">한국어</DropdownLink>
+                            <DropdownSectionTitle>
+                                테마 설정
+                            </DropdownSectionTitle>
+                            <DropdownLink to="#">화이트</DropdownLink>
+                            <DropdownLink to="#">블랙</DropdownLink>
+                        </MobileDropdownContent>
+                    )}
+                </NavBar>
+            </NavBarContainer>
+
+            {isLoading && <LoadingModal />}
+        </>
     );
 };
 

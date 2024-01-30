@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import AlertConfirmModal from '../../components/common/AlertConfirmModal';
+import LoadingModal from '../../components/common/LoadingModal';
 import ProductCard from '../../components/shop/ProductCard';
-
-// 상품 데이터 인터페이스
-interface Product {
-    id: number;
-    imageUrl: string;
-    title: string;
-    price: string;
-}
+import { fetchProducts } from '../../redux/product/productThunks';
 
 // 정렬 옵션 타입
-type SortOption = 'newest' | 'price_low_high' | 'price_high_low';
+type SortOption =
+    | 'created_at_asc'
+    | 'created_at_desc'
+    | 'price_asc'
+    | 'price_desc'
+    | 'discount_rate_asc'
+    | 'discount_rate_desc'
+    | 'stock_asc'
+    | 'stock_desc';
 
 const ProductListContainer = styled.div`
+    max-width: 1240px; // 컨테이너 최대 너비를 설정하여 큰 화면에서도 적절한 크기를 유지
+    width: 90%; // 전체 너비의 90%를 사용
+    margin: 40px auto; // 상하 마진은 0, 좌우 마진은 자동으로 설정하여 중앙 정렬
     display: flex; // 수평 레이아웃을 위한 flex 설정
     padding: 40px;
     background: #f8f8f8;
@@ -23,11 +30,11 @@ const ProductListContainer = styled.div`
     }
 `;
 
-const Breadcrumb = styled.div`
-    font-size: 12px;
-    color: #666;
-    margin-top: 20px;
-    margin-left: 45px;
+const MainContent = styled.main`
+    width: 100%; // main 태그의 너비를 100%로 설정
+    display: flex; // flexbox 레이아웃 사용
+    flex-direction: column; // 자식 요소를 세로로 쌓음
+    align-items: center; // 가로축에서 중앙 정렬
 `;
 
 const ProductListTitle = styled.h2`
@@ -44,30 +51,6 @@ const ProductGrid = styled.div`
     @media (max-width: 1024px) {
         grid-template-columns: repeat(2, 1fr);
         margin-left: 0; // 모바일 뷰에서는 간격을 제거
-    }
-`;
-
-const Sidebar = styled.aside`
-    border: 1px solid #ddd;
-    padding: 20px;
-    width: 200px;
-    @media (max-width: 1024px) {
-        width: auto;
-        margin-bottom: 20px;
-    }
-`;
-
-const CategoryList = styled.ul`
-    list-style: none;
-    padding: 0;
-    margin: 0;
-`;
-
-const CategoryItem = styled.li`
-    margin-bottom: 10px;
-    cursor: pointer;
-    &:hover {
-        text-decoration: underline;
     }
 `;
 
@@ -95,104 +78,81 @@ const SortButton = styled.button`
     }
 `;
 
-// 예시 상품 데이터
-const products: Product[] = [
-    {
-        id: 1,
-        imageUrl: '/product1.jpg',
-        title: 'Product 1',
-        price: '$19.99',
-    },
-    {
-        id: 2,
-        imageUrl: '/product2.jpg',
-        title: 'Product 2',
-        price: '$29.99',
-    },
-    {
-        id: 3,
-        imageUrl: '/product3.jpg',
-        title: 'Product 3',
-        price: '$39.99',
-    },
-    {
-        id: 4,
-        imageUrl: '/product4.jpg',
-        title: 'Product 4',
-        price: '$49.99',
-    },
-    {
-        id: 1,
-        imageUrl: '/product1.jpg',
-        title: 'Product 1',
-        price: '$19.99',
-    },
-    {
-        id: 2,
-        imageUrl: '/product2.jpg',
-        title: 'Product 2',
-        price: '$29.99',
-    },
-    {
-        id: 3,
-        imageUrl: '/product3.jpg',
-        title: 'Product 3',
-        price: '$39.99',
-    },
-    {
-        id: 4,
-        imageUrl: '/product4.jpg',
-        title: 'Product 4',
-        price: '$49.99',
-    },
-];
-
 const ProductListPage: React.FC = () => {
-    // 정렬 상태를 위한 useState 훅
-    const [currentSort, setCurrentSort] = useState<SortOption>('newest');
+    const dispatch = useDispatch();
+    const { products, loading, error } = useSelector((state) => state.product);
+    const [currentSort, setCurrentSort] =
+        useState<SortOption>('created_at_asc');
+    const [page, setPage] = useState(1);
+    const observerRef = useRef<IntersectionObserver | null>(null);
 
-    // 정렬 방식 변경 핸들러
+    // 상품 데이터 불러오기
+    useEffect(() => {
+        dispatch(fetchProducts({ sort: currentSort, page }));
+    }, [dispatch, currentSort, page]);
+
+    // 인피니티 스크롤 구현
+    useEffect(() => {
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            },
+            { threshold: 0.5 }
+        );
+
+        const target = document.getElementById('page-end');
+        if (target) {
+            observerRef.current.observe(target);
+        }
+
+        return () => {
+            if (target && observerRef.current) {
+                observerRef.current.unobserve(target);
+            }
+        };
+    }, []);
+
+    // 정렬 변경 핸들러
     const handleSortChange = (sortOption: SortOption) => {
         setCurrentSort(sortOption);
-        // 상품 목록 정렬 로직을 여기에 추가...
+        setPage(1);
+        dispatch(fetchProducts({ sort: sortOption, page: 1 }));
     };
+
+    if (loading) {
+        return <LoadingModal />;
+    }
+
+    if (error) {
+        return (
+            <AlertConfirmModal title="오류" onClose={() => {}}>
+                {error}
+            </AlertConfirmModal>
+        );
+    }
 
     return (
         <ProductListContainer>
-            <Sidebar>
-                <h3>카테고리</h3>
-                <CategoryList>
-                    <CategoryItem>향수 전체 (63)</CategoryItem>
-                    {/* 여기에 추가 카테고리 항목을 넣을 수 있습니다. */}
-                </CategoryList>
-            </Sidebar>
-
-            <main>
-                <Breadcrumb>쇼핑몰 {'>'} 제품목록</Breadcrumb>
-
+            <MainContent>
                 {/* 정렬 옵션 바 */}
                 <SortingBar>
                     <SortButton
-                        className={currentSort === 'newest' ? 'active' : ''}
-                        onClick={() => handleSortChange('newest')}
+                        className={
+                            currentSort === 'created_at_asc' ? 'active' : ''
+                        }
+                        onClick={() => handleSortChange('created_at_asc')}
                     >
-                        신상품
+                        등록일 오름차순
                     </SortButton>
                     <SortButton
                         className={
-                            currentSort === 'price_low_high' ? 'active' : ''
+                            currentSort === 'created_at_desc' ? 'active' : ''
                         }
-                        onClick={() => handleSortChange('price_low_high')}
+                        onClick={() => handleSortChange('created_at_desc')}
                     >
-                        낮은 가격
-                    </SortButton>
-                    <SortButton
-                        className={
-                            currentSort === 'price_high_low' ? 'active' : ''
-                        }
-                        onClick={() => handleSortChange('price_high_low')}
-                    >
-                        높은 가격
+                        등록일 내림차순
                     </SortButton>
                 </SortingBar>
 
@@ -203,15 +163,16 @@ const ProductListPage: React.FC = () => {
                 <ProductGrid>
                     {products.map((product) => (
                         <ProductCard
-                            key={product.id}
+                            key={product.productId}
+                            productId={product.productId}
                             imageUrl={product.imageUrl}
-                            title={product.title}
-                            price={product.price}
+                            title={product.name}
+                            price={`${product.price}`}
                         />
                     ))}
                 </ProductGrid>
-            </main>
-            {/* 페이지네이션, 필터, 정렬 컴포넌트를 여기에 추가할 수 있습니다. */}
+            </MainContent>
+            <div id="page-end" /> {/* 인피니티 스크롤을 위한 페이지 끝 요소 */}
         </ProductListContainer>
     );
 };
