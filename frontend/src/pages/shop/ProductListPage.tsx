@@ -110,10 +110,38 @@ const ProductListPage: React.FC = () => {
 
     // 상품 데이터 불러오기
     useEffect(() => {
-        dispatch(
-            fetchProducts({ sort: currentSort, page, limit: itemsPerPage })
-        );
-    }, [dispatch, currentSort, page, itemsPerPage]);
+        // URL에서 쿼리 파라미터 분석
+        const searchParams = new URLSearchParams(location.search);
+        const filterParams = {
+            sort: currentSort,
+            page,
+            limit: itemsPerPage,
+        };
+
+        // URL 쿼리에 따른 필터링 파라미터 설정
+        const name = searchParams.get('name');
+        if (name) {
+            filterParams.name = name;
+        }
+
+        const category = searchParams.get('category');
+        if (category) {
+            filterParams.category = category;
+        }
+
+        const tags = searchParams.get('tags');
+        if (tags) {
+            filterParams.tags = tags;
+        }
+
+        const event = searchParams.get('event');
+        if (event) {
+            filterParams.event = event;
+        }
+
+        // 필터링된 상품 목록 불러오기
+        dispatch(fetchProducts(filterParams));
+    }, [location.search, currentSort, page, itemsPerPage, dispatch]);
 
     // 인피니티 스크롤 구현
     useEffect(() => {

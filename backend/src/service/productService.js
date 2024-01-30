@@ -24,8 +24,8 @@ const getProducts = async (queryParams) => {
       priceFrom,
       priceTo,
       category,
-      tags,
-      whatEvent,
+      tag,
+      event,
       sort,
       limit = 10,
       page = 1
@@ -67,13 +67,13 @@ const getProducts = async (queryParams) => {
             query += ' AND category = ?';
             queryParamsToEscape.push(category);
         }
-        if (tags) {
+        if (tag) {
             query += ' AND tags LIKE ?';
-            queryParamsToEscape.push(`%${tags}%`);
+            queryParamsToEscape.push(`%${tag}%`);
         }
-        if (whatEvent) {
+        if (event) {
             query += ' AND what_event = ?';
-            queryParamsToEscape.push(whatEvent);
+            queryParamsToEscape.push(event);
         }
 
         // 정렬 옵션. 사용자가 선택한 필드와 순서(오름차순/내림차순)에 따라 정렬
