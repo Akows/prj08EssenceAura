@@ -350,7 +350,7 @@ const UpperNavigation: React.FC = () => {
                             <DropdownButton>상품보기</DropdownButton>
                             <DropdownContent className="dropdown-content">
                                 <DropdownTitle>전체상품</DropdownTitle>
-                                <DropdownItem to="/shoplist">
+                                <DropdownItem to="/shoplist?title=전체상품">
                                     전체상품보기
                                 </DropdownItem>
                                 <DropdownTitle>카테고리</DropdownTitle>

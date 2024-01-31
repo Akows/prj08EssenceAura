@@ -1,23 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AlertConfirmModal from '../../components/common/AlertConfirmModal';
 import LoadingModal from '../../components/common/LoadingModal';
 import Pagination from '../../components/common/Pagination';
+import FilterSection from '../../components/shop/FilterSection';
 import ProductCard from '../../components/shop/ProductCard';
-import { fetchProducts } from '../../redux/product/productThunks';
-
-// 정렬 옵션 타입
-type SortOption =
-    | 'created_at_asc'
-    | 'created_at_desc'
-    | 'price_asc'
-    | 'price_desc'
-    | 'discount_rate_asc'
-    | 'discount_rate_desc'
-    | 'stock_asc'
-    | 'stock_desc';
+import SortingBar from '../../components/shop/SortingBar';
+import useProductFetch from '../../hooks/shop/useProductFetch';
+import { SortOption } from '../../type/shoptypes';
 
 const ProductListContainer = styled.div`
     max-width: 1240px; // 컨테이너 최대 너비를 설정하여 큰 화면에서도 적절한 크기를 유지
@@ -56,171 +47,31 @@ const ProductGrid = styled.div`
     }
 `;
 
-const SortingBar = styled.div`
-    display: flex;
-    justify-content: flex-end; // 정렬 옵션을 오른쪽에 붙임
-    margin-bottom: 20px;
-    width: 100%;
-`;
-
-const SortButton = styled.button`
-    padding: 5px 10px;
-    margin-left: 10px;
-    border: 1px solid #ddd;
-    background: transparent;
-    cursor: pointer;
-
-    &:hover {
-        background: #f0f0f0;
-    }
-
-    &.active {
-        border-color: #000;
-        font-weight: bold;
-    }
-`;
-
-const DropdownSelect = styled.select`
-    padding: 5px 10px;
-    margin-left: 10px;
-    border: 1px solid #ddd;
-    background: white;
-    cursor: pointer;
-
-    &:hover {
-        background: #f0f0f0;
-    }
-`;
-
-const FilterSection = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-`;
-
-const PriceInput = styled.input`
-    padding: 5px 10px;
-    margin: 0 10px;
-    border: 1px solid #ddd;
-`;
-
-const FilterButton = styled.button`
-    padding: 5px 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-
-    &:hover {
-        background: #0056b3;
-    }
-`;
-
 const ProductListPage: React.FC = () => {
-    const dispatch = useDispatch();
-    const location = useLocation();
-
+    // 상태 관리
     const { products, loading, error, totalPages } = useSelector((state) => ({
         ...state.product,
         totalPages: state.product.totalPages,
     }));
-
-    // const { products, loading, error } = useSelector((state) => state.product);
+    const [title, setTitle] = useState('전체상품');
     const [currentSort, setCurrentSort] =
         useState<SortOption>('created_at_asc');
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(20);
-    // const observerRef = useRef<IntersectionObserver | null>(null);
-
     const [priceFrom, setPriceFrom] = useState('');
     const [priceTo, setPriceTo] = useState('');
+    const [filterButtonClicked, setFilterButtonClicked] = useState(false);
 
+    // 가격 필터링 핸들러
     const handlePriceFilter = () => {
         setPage(1);
-        dispatch(
-            fetchProducts({
-                sort: currentSort,
-                page: 1,
-                limit: itemsPerPage,
-                priceFrom: priceFrom || 0,
-                priceTo: priceTo || 1000000,
-            })
-        );
+        setFilterButtonClicked(true); // 필터 버튼 클릭 상태 설정
     };
-
-    // 상품 데이터 불러오기
-    useEffect(() => {
-        // URL에서 쿼리 파라미터 분석
-        const searchParams = new URLSearchParams(location.search);
-        const filterParams = {
-            sort: currentSort,
-            page,
-            limit: itemsPerPage,
-            priceFrom: priceFrom || 0,
-            priceTo: priceTo || 1000000,
-        };
-
-        // URL 쿼리에 따른 필터링 파라미터 설정
-        const name = searchParams.get('name');
-        if (name) {
-            filterParams.name = name;
-        }
-
-        const category = searchParams.get('category');
-        if (category) {
-            filterParams.category = category;
-        }
-
-        const tag = searchParams.get('tag');
-        if (tag) {
-            filterParams.tag = tag;
-        }
-
-        const event = searchParams.get('event');
-        if (event) {
-            filterParams.event = event;
-        }
-
-        // 필터링된 상품 목록 불러오기
-        dispatch(fetchProducts(filterParams));
-    }, [location.search, currentSort, page, itemsPerPage, dispatch]);
-
-    // 인피니티 스크롤 구현
-    // useEffect(() => {
-    //     observerRef.current = new IntersectionObserver(
-    //         (entries) => {
-    //             if (entries[0].isIntersecting) {
-    //                 setPage((prevPage) => prevPage + 1);
-    //             }
-    //         },
-    //         { threshold: 0.5 }
-    //     );
-
-    //     const target = document.getElementById('page-end');
-    //     if (target) {
-    //         observerRef.current.observe(target);
-    //     }
-
-    //     return () => {
-    //         if (target && observerRef.current) {
-    //             observerRef.current.unobserve(target);
-    //         }
-    //     };
-    // }, []);
 
     // 정렬 변경 핸들러
     const handleSortChange = (sortOption: SortOption) => {
         setCurrentSort(sortOption);
-        setPage(1); // 페이지를 1로 설정
-        dispatch(
-            fetchProducts({
-                sort: sortOption,
-                page: 1,
-                limit: itemsPerPage,
-                priceFrom: priceFrom || 0,
-                priceTo: priceTo || 1000000,
-            })
-        ); // itemsPerPage 전달
+        setPage(1);
     };
 
     // 페이지당 상품 표시 개수 변경 핸들러
@@ -229,35 +80,33 @@ const ProductListPage: React.FC = () => {
     ) => {
         setItemsPerPage(Number(event.target.value));
         setPage(1);
-        dispatch(
-            fetchProducts({
-                sort: currentSort,
-                page: 1,
-                limit: Number(event.target.value),
-                priceFrom: priceFrom || 0,
-                priceTo: priceTo || 1000000,
-            })
-        );
     };
 
     // 페이지 번호 변경 핸들러
     const handlePageChange = (pageNumber: number) => {
         setPage(pageNumber);
-        dispatch(
-            fetchProducts({
-                sort: currentSort,
-                page: pageNumber,
-                limit: itemsPerPage,
-                priceFrom: priceFrom || 0,
-                priceTo: priceTo || 1000000,
-            })
-        );
     };
 
+    // 상품 데이터 불러오기 (커스텀 훅 사용)
+    useProductFetch({
+        setTitle,
+        currentSort,
+        page,
+        itemsPerPage,
+        priceFrom,
+        priceTo,
+        setPriceTo,
+        setPriceFrom,
+        filterButtonClicked,
+        setFilterButtonClicked,
+    });
+
+    // 로딩 상태에서는 로딩 모달을..
     if (loading) {
         return <LoadingModal />;
     }
 
+    // 에러 상태에서는 에러 모달이 출력되도록
     if (error) {
         return (
             <AlertConfirmModal title="오류" onClose={() => {}}>
@@ -270,96 +119,24 @@ const ProductListPage: React.FC = () => {
         <ProductListContainer>
             <MainContent>
                 {/* 정렬 옵션 바 */}
-                <SortingBar>
-                    <SortButton
-                        className={
-                            currentSort === 'created_at_asc' ? 'active' : ''
-                        }
-                        onClick={() => handleSortChange('created_at_asc')}
-                    >
-                        등록일 오름차순
-                    </SortButton>
-                    <SortButton
-                        className={
-                            currentSort === 'created_at_desc' ? 'active' : ''
-                        }
-                        onClick={() => handleSortChange('created_at_desc')}
-                    >
-                        등록일 내림차순
-                    </SortButton>
+                <SortingBar
+                    currentSort={currentSort}
+                    handleSortChange={handleSortChange}
+                    itemsPerPage={itemsPerPage}
+                    handleItemsPerPageChange={handleItemsPerPageChange}
+                />
 
-                    <SortButton
-                        className={currentSort === 'price_asc' ? 'active' : ''}
-                        onClick={() => handleSortChange('price_asc')}
-                    >
-                        가격 낮은순
-                    </SortButton>
-                    <SortButton
-                        className={currentSort === 'price_desc' ? 'active' : ''}
-                        onClick={() => handleSortChange('price_desc')}
-                    >
-                        가격 높은순
-                    </SortButton>
-                    <SortButton
-                        className={
-                            currentSort === 'discount_rate_asc' ? 'active' : ''
-                        }
-                        onClick={() => handleSortChange('discount_rate_asc')}
-                    >
-                        할인율 낮은순
-                    </SortButton>
-                    <SortButton
-                        className={
-                            currentSort === 'discount_rate_desc' ? 'active' : ''
-                        }
-                        onClick={() => handleSortChange('discount_rate_desc')}
-                    >
-                        할인율 높은순
-                    </SortButton>
-                    <SortButton
-                        className={currentSort === 'stock_asc' ? 'active' : ''}
-                        onClick={() => handleSortChange('stock_asc')}
-                    >
-                        재고 많은순
-                    </SortButton>
-                    <SortButton
-                        className={currentSort === 'stock_desc' ? 'active' : ''}
-                        onClick={() => handleSortChange('stock_desc')}
-                    >
-                        재고 적은순
-                    </SortButton>
-
-                    {/* 페이지당 상품 표시 개수 선택 드롭다운 */}
-                    <DropdownSelect
-                        value={itemsPerPage}
-                        onChange={handleItemsPerPageChange}
-                    >
-                        <option value="20">20개 표시</option>
-                        <option value="32">32개 표시</option>
-                        <option value="46">46개 표시</option>
-                    </DropdownSelect>
-
-                    <FilterSection>
-                        <PriceInput
-                            type="number"
-                            placeholder="최소 가격"
-                            value={priceFrom}
-                            onChange={(e) => setPriceFrom(e.target.value)}
-                        />
-                        <PriceInput
-                            type="number"
-                            placeholder="최대 가격"
-                            value={priceTo}
-                            onChange={(e) => setPriceTo(e.target.value)}
-                        />
-                        <FilterButton onClick={handlePriceFilter}>
-                            검색
-                        </FilterButton>
-                    </FilterSection>
-                </SortingBar>
+                {/* 가격 필터링 옵션 바 */}
+                <FilterSection
+                    priceFrom={priceFrom}
+                    setPriceFrom={setPriceFrom}
+                    priceTo={priceTo}
+                    setPriceTo={setPriceTo}
+                    handlePriceFilter={handlePriceFilter}
+                />
 
                 {/* 상품 리스트 제목 */}
-                <ProductListTitle>전체 상품</ProductListTitle>
+                <ProductListTitle>{title}</ProductListTitle>
 
                 {/* 상품 그리드 */}
                 <ProductGrid>
@@ -381,7 +158,6 @@ const ProductListPage: React.FC = () => {
                     onPageChange={handlePageChange}
                 />
             </MainContent>
-            {/* <div id="page-end" /> 인피니티 스크롤을 위한 페이지 끝 요소 */}
         </ProductListContainer>
     );
 };
