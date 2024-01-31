@@ -92,6 +92,30 @@ const DropdownSelect = styled.select`
     }
 `;
 
+const FilterSection = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+`;
+
+const PriceInput = styled.input`
+    padding: 5px 10px;
+    margin: 0 10px;
+    border: 1px solid #ddd;
+`;
+
+const FilterButton = styled.button`
+    padding: 5px 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+        background: #0056b3;
+    }
+`;
+
 const ProductListPage: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
@@ -106,7 +130,23 @@ const ProductListPage: React.FC = () => {
         useState<SortOption>('created_at_asc');
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(20);
-    const observerRef = useRef<IntersectionObserver | null>(null);
+    // const observerRef = useRef<IntersectionObserver | null>(null);
+
+    const [priceFrom, setPriceFrom] = useState('');
+    const [priceTo, setPriceTo] = useState('');
+
+    const handlePriceFilter = () => {
+        setPage(1);
+        dispatch(
+            fetchProducts({
+                sort: currentSort,
+                page: 1,
+                limit: itemsPerPage,
+                priceFrom: priceFrom || 0,
+                priceTo: priceTo || 1000000,
+            })
+        );
+    };
 
     // 상품 데이터 불러오기
     useEffect(() => {
@@ -116,6 +156,8 @@ const ProductListPage: React.FC = () => {
             sort: currentSort,
             page,
             limit: itemsPerPage,
+            priceFrom: priceFrom || 0,
+            priceTo: priceTo || 1000000,
         };
 
         // URL 쿼리에 따른 필터링 파라미터 설정
@@ -144,34 +186,40 @@ const ProductListPage: React.FC = () => {
     }, [location.search, currentSort, page, itemsPerPage, dispatch]);
 
     // 인피니티 스크롤 구현
-    useEffect(() => {
-        observerRef.current = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setPage((prevPage) => prevPage + 1);
-                }
-            },
-            { threshold: 0.5 }
-        );
+    // useEffect(() => {
+    //     observerRef.current = new IntersectionObserver(
+    //         (entries) => {
+    //             if (entries[0].isIntersecting) {
+    //                 setPage((prevPage) => prevPage + 1);
+    //             }
+    //         },
+    //         { threshold: 0.5 }
+    //     );
 
-        const target = document.getElementById('page-end');
-        if (target) {
-            observerRef.current.observe(target);
-        }
+    //     const target = document.getElementById('page-end');
+    //     if (target) {
+    //         observerRef.current.observe(target);
+    //     }
 
-        return () => {
-            if (target && observerRef.current) {
-                observerRef.current.unobserve(target);
-            }
-        };
-    }, []);
+    //     return () => {
+    //         if (target && observerRef.current) {
+    //             observerRef.current.unobserve(target);
+    //         }
+    //     };
+    // }, []);
 
     // 정렬 변경 핸들러
     const handleSortChange = (sortOption: SortOption) => {
         setCurrentSort(sortOption);
         setPage(1); // 페이지를 1로 설정
         dispatch(
-            fetchProducts({ sort: sortOption, page: 1, limit: itemsPerPage })
+            fetchProducts({
+                sort: sortOption,
+                page: 1,
+                limit: itemsPerPage,
+                priceFrom: priceFrom || 0,
+                priceTo: priceTo || 1000000,
+            })
         ); // itemsPerPage 전달
     };
 
@@ -186,6 +234,8 @@ const ProductListPage: React.FC = () => {
                 sort: currentSort,
                 page: 1,
                 limit: Number(event.target.value),
+                priceFrom: priceFrom || 0,
+                priceTo: priceTo || 1000000,
             })
         );
     };
@@ -198,6 +248,8 @@ const ProductListPage: React.FC = () => {
                 sort: currentSort,
                 page: pageNumber,
                 limit: itemsPerPage,
+                priceFrom: priceFrom || 0,
+                priceTo: priceTo || 1000000,
             })
         );
     };
@@ -286,6 +338,24 @@ const ProductListPage: React.FC = () => {
                         <option value="32">32개 표시</option>
                         <option value="46">46개 표시</option>
                     </DropdownSelect>
+
+                    <FilterSection>
+                        <PriceInput
+                            type="number"
+                            placeholder="최소 가격"
+                            value={priceFrom}
+                            onChange={(e) => setPriceFrom(e.target.value)}
+                        />
+                        <PriceInput
+                            type="number"
+                            placeholder="최대 가격"
+                            value={priceTo}
+                            onChange={(e) => setPriceTo(e.target.value)}
+                        />
+                        <FilterButton onClick={handlePriceFilter}>
+                            검색
+                        </FilterButton>
+                    </FilterSection>
                 </SortingBar>
 
                 {/* 상품 리스트 제목 */}
@@ -311,7 +381,7 @@ const ProductListPage: React.FC = () => {
                     onPageChange={handlePageChange}
                 />
             </MainContent>
-            <div id="page-end" /> {/* 인피니티 스크롤을 위한 페이지 끝 요소 */}
+            {/* <div id="page-end" /> 인피니티 스크롤을 위한 페이지 끝 요소 */}
         </ProductListContainer>
     );
 };

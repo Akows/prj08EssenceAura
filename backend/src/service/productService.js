@@ -93,35 +93,45 @@ const getProducts = async (queryParams) => {
       }
 };
 
-const getTotalProductsCount = async (filters) => {
+const getTotalProductsCount = async (queryParams) => {
+    const { name, priceFrom, priceTo, category, tag, event } = queryParams;
     const whereClauses = [];
-    const queryParams = [];
+    const queryParamsToEscape = [];
 
-    if (filters.name) {
-      whereClauses.push("name LIKE ?");
-      queryParams.push(`%${filters.name}%`);
+    if (name) {
+        whereClauses.push("name LIKE ?");
+        queryParamsToEscape.push(`%${name}%`);
     }
-    if (filters.category) {
-      whereClauses.push("category = ?");
-      queryParams.push(filters.category);
+    if (priceFrom) {
+        whereClauses.push("price >= ?");
+        queryParamsToEscape.push(priceFrom);
     }
-    if (filters.tag) {
-      whereClauses.push("tags = ?");
-      queryParams.push(filters.tag);
+    if (priceTo) {
+        whereClauses.push("price <= ?");
+        queryParamsToEscape.push(priceTo);
     }
-    if (filters.event) {
-      whereClauses.push("what_event = ?");
-      queryParams.push(filters.event);
+    if (category) {
+        whereClauses.push("category = ?");
+        queryParamsToEscape.push(category);
+    }
+    if (tag) {
+        whereClauses.push("tags LIKE ?");
+        queryParamsToEscape.push(`%${tag}%`);
+    }
+    if (event) {
+        whereClauses.push("what_event = ?");
+        queryParamsToEscape.push(event);
     }
 
     const whereClause = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
     try {
-      const [result] = await db.query(`SELECT COUNT(*) AS total FROM products ${whereClause}`, queryParams);
-      return result[0].total;
+        const [result] = await db.query(`SELECT COUNT(*) AS total FROM products ${whereClause}`, queryParamsToEscape);
+        return result[0].total;
     } catch (error) {
-      throw new DatabaseError(error.message);
+        throw new DatabaseError(error.message);
     }
 };
+
 
 const getSearchSuggestions = async (keyword) => {
     try {

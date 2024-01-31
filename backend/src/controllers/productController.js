@@ -52,14 +52,10 @@ const getProductsHandler = async (req, res) => {
   }
 };
 
-
 const getSearchSuggestionsHandler = async (req, res) => {
     try {
       // 쿼리 파라미터에서 검색 키워드를 추출합니다.
       const keyword = req.query.keyword;
-
-      console.log(keyword);
-
       if (!keyword) {
         return res.status(400).json({ message: '검색 키워드가 필요합니다.' });
       }
