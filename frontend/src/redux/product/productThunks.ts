@@ -93,8 +93,6 @@ export const fetchSearchSuggestions = createAsyncThunk(
                     combinedSuggestions.push({ type: 'tag', value: item })
                 );
 
-            console.log(combinedSuggestions);
-
             return combinedSuggestions;
         } catch (error) {
             // 오류 발생 시 처리

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ import {
 import useLogout from '../../hooks/auth/useLogout';
 import LoadingModal from './LoadingModal';
 import { fetchSearchSuggestions } from '../../redux/product/productThunks';
+import { debounce } from '../../utils/debounce';
 
 const mobileSize = '768px';
 
@@ -148,7 +149,8 @@ const SearchSuggestionsContainer = styled.div`
     background-color: white;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 0 0 4px 4px;
-    overflow: hidden;
+    overflow-y: auto; // 내용이 넘칠 경우 세로 스크롤바 생성
+    max-height: 300px; // 최대 높이 설정
     z-index: 10;
 
     @media (max-width: 768px) {
@@ -250,6 +252,7 @@ const UpperNavigation: React.FC = () => {
     const [suggestions, setSuggestions] = useState<
         Array<{ type: string; value: string }>
     >([]);
+    const [debouncedSearchKeyword, setDebouncedSearchKeyword] = useState('');
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const isAdmin = useSelector((state) => state.auth.userInfo?.isAdmin);
     const dispatch = useDispatch();
@@ -257,6 +260,11 @@ const UpperNavigation: React.FC = () => {
     const { isLoading, handleLogout } = useLogout(); // 로그아웃 훅 사용
 
     const handleSearch = () => {
+        if (!searchKeyword) {
+            alert('검색어를 입력해주세요.');
+            return;
+        }
+
         navigate(`/shoplist?name=${encodeURIComponent(searchKeyword)}`);
     };
 
@@ -285,10 +293,42 @@ const UpperNavigation: React.FC = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    // debounce를 적용한 검색 함수
+    const debouncedSearch = useCallback(
+        debounce((keyword) => {
+            setDebouncedSearchKeyword(keyword);
+        }, 2000), // 2000ms의 지연시간을 적용
+        [] // 이 함수는 컴포넌트의 라이프사이클에서 한 번만 생성됩니다.
+    );
+
+    const onBlurHandler = () => {
+        // 사용자가 제안을 클릭할 시간을 주기 위해 약간의 지연을 줍니다.
+        setTimeout(() => {
+            setShowSuggestions(false);
+        }, 200); // 200ms 지연
+    };
+
+    const keywordClearHandler = () => {
+        setSearchKeyword('');
+        setSuggestions([]);
+        setShowSuggestions(false);
+    };
+
+    useEffect(() => {
+        // 사용자가 입력 중이면 debounce 함수를 호출
+        if (searchKeyword) {
+            debouncedSearch(searchKeyword);
+        } else {
+            // 사용자가 입력을 모두 지웠으면 추천 검색어 목록을 초기화
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    }, [searchKeyword, debouncedSearch]);
+
     // 검색 제안을 가져오는 함수
     useEffect(() => {
-        if (searchKeyword) {
-            dispatch(fetchSearchSuggestions(searchKeyword))
+        if (debouncedSearchKeyword) {
+            dispatch(fetchSearchSuggestions(debouncedSearchKeyword))
                 .then((response) => {
                     setSuggestions(response.payload);
                     setShowSuggestions(true);
@@ -297,7 +337,7 @@ const UpperNavigation: React.FC = () => {
         } else {
             setShowSuggestions(false);
         }
-    }, [searchKeyword, dispatch]);
+    }, [debouncedSearchKeyword, dispatch]);
 
     return (
         <>
@@ -314,42 +354,42 @@ const UpperNavigation: React.FC = () => {
                                     전체상품보기
                                 </DropdownItem>
                                 <DropdownTitle>카테고리</DropdownTitle>
-                                <DropdownItem to="/shoplist?category=women">
+                                <DropdownItem to="/shoplist?category=여성향수">
                                     여성향수
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?category=men">
+                                <DropdownItem to="/shoplist?category=남성향수">
                                     남성향수
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?category=unisex">
+                                <DropdownItem to="/shoplist?category=남녀공용">
                                     남녀공용
                                 </DropdownItem>
                                 <DropdownTitle>태그</DropdownTitle>
-                                <DropdownItem to="/shoplist?tag=floral">
+                                <DropdownItem to="/shoplist?tag=플로랄">
                                     플로랄
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=citrus">
+                                <DropdownItem to="/shoplist?tag=시트러스">
                                     시트러스
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=woody">
+                                <DropdownItem to="/shoplist?tag=우디">
                                     우디
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=spicy">
+                                <DropdownItem to="/shoplist?tag=스파이시">
                                     스파이시
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=musk">
+                                <DropdownItem to="/shoplist?tag=머스크">
                                     머스크
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=fruity">
+                                <DropdownItem to="/shoplist?tag=프루티">
                                     프루티
                                 </DropdownItem>
                                 <DropdownTitle>이벤트</DropdownTitle>
-                                <DropdownItem to="/shoplist?event=spring_sale">
+                                <DropdownItem to="/shoplist?event=봄맞이할인">
                                     봄맞이할인
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?event=md_pick">
+                                <DropdownItem to="/shoplist?event=MD추천">
                                     MD추천
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?event=special_offer">
+                                <DropdownItem to="/shoplist?event=특별할인">
                                     특별할인
                                 </DropdownItem>
                             </DropdownContent>
@@ -361,15 +401,16 @@ const UpperNavigation: React.FC = () => {
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                             onFocus={() => setShowSuggestions(true)}
-                            onBlur={() => setShowSuggestions(false)}
+                            onBlur={onBlurHandler}
                             placeholder="검색어 입력"
                         />
-                        <ClearButton onClick={() => setSearchKeyword('')}>
+                        <ClearButton onClick={keywordClearHandler}>
                             X
                         </ClearButton>
                         <SearchButton onClick={handleSearch}>
                             <MdSearch />
                         </SearchButton>
+
                         <SearchSuggestionsContainer show={showSuggestions}>
                             {suggestions.map((suggestion, index) => (
                                 <SuggestionItem
@@ -442,7 +483,7 @@ const UpperNavigation: React.FC = () => {
                                         setSearchKeyword(e.target.value)
                                     }
                                     onFocus={() => setShowSuggestions(true)}
-                                    onBlur={() => setShowSuggestions(false)}
+                                    onBlur={onBlurHandler}
                                     placeholder="검색어 입력"
                                 />
                                 <ClearButton
@@ -458,12 +499,15 @@ const UpperNavigation: React.FC = () => {
                                 >
                                     {suggestions.map((suggestion, index) => (
                                         <SuggestionItem
-                                            key={index}
+                                            key={`${suggestion.type}-${index}`}
                                             onClick={() =>
-                                                onSuggestionClick(suggestion)
+                                                onSuggestionClick(
+                                                    suggestion.value,
+                                                    suggestion.type
+                                                )
                                             }
                                         >
-                                            {suggestion}
+                                            {suggestion.value}
                                         </SuggestionItem>
                                     ))}
                                 </SearchSuggestionsContainer>
