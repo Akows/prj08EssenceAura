@@ -20,6 +20,7 @@ interface Product {
 }
 
 interface SearchSuggestion {
+    name: string[];
     categories: string[];
     tags: string[];
     events: string[];
@@ -91,6 +92,7 @@ export const productSlice = createSlice({
             .addCase(fetchSearchSuggestions.pending, (state) => {
                 state.loading = true;
             })
+
             .addCase(
                 fetchSearchSuggestions.fulfilled,
                 (state, action: PayloadAction<SearchSuggestion>) => {
@@ -98,6 +100,7 @@ export const productSlice = createSlice({
                     state.searchSuggestions = action.payload;
                 }
             )
+
             .addCase(fetchSearchSuggestions.rejected, (state, action) => {
                 state.loading = false;
                 state.error =

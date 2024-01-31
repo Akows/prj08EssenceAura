@@ -1,14 +1,14 @@
 const express = require('express');
+const productController = require('../controllers/productController');
 const router = express.Router();
-const { getProductsHandler, getProductByIdHandler, getSearchSuggestionsHandler } = require('../controllers/productController');
 
 // 단일 제품 조회 라우트
-router.get('/:productId', getProductByIdHandler);
+router.get('/fetchProduct/:productId', productController.getProductByIdHandler);
 
 // 복수 제품 조회 라우트
-router.get('/', getProductsHandler);
+router.get('/fetchProducts', productController.getProductsHandler);
 
 // 검색 제안 라우트
-router.get('/suggestions', getSearchSuggestionsHandler);
+router.get('/suggestions', productController.getSearchSuggestionsHandler);
 
 module.exports = router;

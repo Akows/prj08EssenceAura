@@ -16,6 +16,12 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
+// 로깅 미들웨어
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} Request to ${req.originalUrl}`);
+    next();
+});
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());

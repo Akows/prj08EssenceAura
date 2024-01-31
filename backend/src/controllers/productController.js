@@ -1,5 +1,5 @@
 const { DatabaseError, NotFoundError } = require('../error/error');
-const { getProductById, getProducts, getTotalProductsCount } = require('../service/productService');
+const { getProductById, getProducts, getTotalProductsCount, getSearchSuggestions } = require('../service/productService');
 
 const getProductByIdHandler = async (req, res) => {
     try {
@@ -57,12 +57,15 @@ const getSearchSuggestionsHandler = async (req, res) => {
     try {
       // 쿼리 파라미터에서 검색 키워드를 추출합니다.
       const keyword = req.query.keyword;
+
+      console.log(keyword);
+
       if (!keyword) {
         return res.status(400).json({ message: '검색 키워드가 필요합니다.' });
       }
   
       // 검색 서비스를 호출하여 제안을 가져옵니다.
-      const suggestions = await searchService.getSearchSuggestions(keyword);
+      const suggestions = await getSearchSuggestions(keyword);
       res.json(suggestions);
     } catch (error) {
       if (error instanceof DatabaseError) {
@@ -71,7 +74,7 @@ const getSearchSuggestionsHandler = async (req, res) => {
         res.status(500).json({ message: '서버 오류가 발생했습니다.' });
       }
     }
-  };
+};
 
 
 module.exports = {

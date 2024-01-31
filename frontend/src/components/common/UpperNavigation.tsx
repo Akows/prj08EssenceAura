@@ -247,7 +247,9 @@ const UpperNavigation: React.FC = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState<
+        Array<{ type: string; value: string }>
+    >([]);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const isAdmin = useSelector((state) => state.auth.userInfo?.isAdmin);
     const dispatch = useDispatch();
@@ -258,8 +260,25 @@ const UpperNavigation: React.FC = () => {
         navigate(`/shoplist?name=${encodeURIComponent(searchKeyword)}`);
     };
 
-    const onSuggestionClick = (suggestion) => {
-        navigate(`/shoplist?name=${encodeURIComponent(suggestion)}`);
+    const onSuggestionClick = (suggestion, type) => {
+        let param;
+        switch (type) {
+            case 'name':
+                param = `name=${encodeURIComponent(suggestion)}`;
+                break;
+            case 'category':
+                param = `category=${encodeURIComponent(suggestion)}`;
+                break;
+            case 'tag':
+                param = `tag=${encodeURIComponent(suggestion)}`;
+                break;
+            case 'event':
+                param = `event=${encodeURIComponent(suggestion)}`;
+                break;
+            default:
+                param = `name=${encodeURIComponent(suggestion)}`;
+        }
+        navigate(`/shoplist?${param}`);
     };
 
     const toggleMobileMenu = () => {
@@ -267,18 +286,18 @@ const UpperNavigation: React.FC = () => {
     };
 
     // 검색 제안을 가져오는 함수
-    // useEffect(() => {
-    //     if (searchKeyword) {
-    //         dispatch(fetchSearchSuggestions(searchKeyword))
-    //             .then((response) => {
-    //                 setSuggestions(response.payload);
-    //                 setShowSuggestions(true);
-    //             })
-    //             .catch((error) => console.error(error));
-    //     } else {
-    //         setShowSuggestions(false);
-    //     }
-    // }, [searchKeyword, dispatch]);
+    useEffect(() => {
+        if (searchKeyword) {
+            dispatch(fetchSearchSuggestions(searchKeyword))
+                .then((response) => {
+                    setSuggestions(response.payload);
+                    setShowSuggestions(true);
+                })
+                .catch((error) => console.error(error));
+        } else {
+            setShowSuggestions(false);
+        }
+    }, [searchKeyword, dispatch]);
 
     return (
         <>
@@ -354,12 +373,15 @@ const UpperNavigation: React.FC = () => {
                         <SearchSuggestionsContainer show={showSuggestions}>
                             {suggestions.map((suggestion, index) => (
                                 <SuggestionItem
-                                    key={index}
+                                    key={`${suggestion.type}-${index}`}
                                     onClick={() =>
-                                        onSuggestionClick(suggestion)
+                                        onSuggestionClick(
+                                            suggestion.value,
+                                            suggestion.type
+                                        )
                                     }
                                 >
-                                    {suggestion}
+                                    {suggestion.value}
                                 </SuggestionItem>
                             ))}
                         </SearchSuggestionsContainer>

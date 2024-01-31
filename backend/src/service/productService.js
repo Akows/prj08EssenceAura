@@ -126,25 +126,37 @@ const getTotalProductsCount = async (filters) => {
 const getSearchSuggestions = async (keyword) => {
     try {
       const searchQuery = `%${keyword}%`;
-  
+
+      console.log(keyword);
+      console.log(searchQuery);
+
       // 카테고리, 태그, 이벤트명에 기반하여 검색
+      const name = await db.query('SELECT DISTINCT name FROM products WHERE name LIKE ?', [searchQuery]);
       const categories = await db.query('SELECT DISTINCT category FROM products WHERE category LIKE ?', [searchQuery]);
       const tags = await db.query('SELECT DISTINCT tags FROM products WHERE tags LIKE ?', [searchQuery]);
       const events = await db.query('SELECT DISTINCT what_event FROM products WHERE what_event LIKE ?', [searchQuery]);
   
+      console.log(name);
+      console.log(categories);
+      console.log(tags);
+      console.log(events);
+
       // 검색 결과를 하나의 객체로 합침
       const suggestions = {
+        name: name.map(row => row.name),
         categories: categories.map(row => row.category),
         tags: tags.map(row => row.tags),
         events: events.map(row => row.what_event)
       };
-  
+
+      console.log(suggestions);
+
       return suggestions;
     } catch (error) {
       // 에러 처리
       throw new DatabaseError(error.message);
     }
-  };
+};
 
 module.exports = {
     getProductById,
