@@ -31,17 +31,22 @@ const PromotionItem = styled.div`
 const promotions = [
     {
         id: 1,
-        title: 'Happy New Year Event',
+        title: 'New Spring Event',
         imageUrl: '/path/to/promotion1.jpg',
-        description: '새해맞이 할인 이벤트 진행 중!',
+        description: '봄맞이 할인 이벤트 진행 중!',
     },
     {
         id: 2,
-        title: 'Winter Event',
+        title: 'MD Choice',
         imageUrl: '/path/to/promotion1.jpg',
-        description: '연말 할인 이벤트 진행 중!',
+        description: 'MD 추천전 이벤트 진행 중!',
     },
-    // ... 여기에 다른 프로모션 항목 추가
+    {
+        id: 3,
+        title: 'Special DC Event',
+        imageUrl: '/path/to/promotion1.jpg',
+        description: '특별 할인 이벤트 진행 중!',
+    },
 ];
 
 const PromotionSection: React.FC = () => {
@@ -60,7 +65,6 @@ const PromotionSection: React.FC = () => {
                     <h3>{promo.title}</h3>
                     <p>{promo.description}</p>
                     <Link to="/shoplist">자세히 보기</Link>
-                    {/* 필요한 경우 여기에 버튼 추가 */}
                 </PromotionItem>
             ))}
         </PromotionContainer>
