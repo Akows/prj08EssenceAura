@@ -142,9 +142,9 @@ const ProductListPage: React.FC = () => {
                 <ProductGrid>
                     {products.map((product) => (
                         <ProductCard
-                            key={product.productId}
-                            productId={product.productId}
-                            imageUrl={product.imageUrl}
+                            key={product.product_Id}
+                            product_Id={product.product_id}
+                            image_Url={product.image_Url}
                             title={product.name}
                             price={`${product.price}`}
                         />

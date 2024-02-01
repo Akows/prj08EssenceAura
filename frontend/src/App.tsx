@@ -58,7 +58,10 @@ function App() {
                     <Route index element={<MainPage />} />
                     <Route path="shop" element={<ShopHomePage />} />
                     <Route path="shoplist" element={<ProductListPage />} />
-                    <Route path="shopdetail" element={<ProductDetailPage />} />
+                    <Route
+                        path="shopdetail/:product_Id"
+                        element={<ProductDetailPage />}
+                    />
                     <Route path="shopcart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage />} />
                     <Route

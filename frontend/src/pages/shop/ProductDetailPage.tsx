@@ -1,5 +1,10 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import AlertConfirmModal from '../../components/common/AlertConfirmModal';
+import LoadingModal from '../../components/common/LoadingModal';
+import { fetchProduct } from '../../redux/product/productThunks';
 
 // TabButton에 적용할 타입을 확장하여 isActive 속성을 포함시킵니다.
 interface TabButtonProps {
@@ -14,12 +19,6 @@ const PageContainer = styled.div`
     @media (max-width: 768px) {
         padding: 10px;
     }
-`;
-
-const Breadcrumb = styled.div`
-    font-size: 12px;
-    color: #666;
-    margin-top: 20px;
 `;
 
 const ProductSection = styled.section`
@@ -55,10 +54,6 @@ const Title = styled.h2`
     color: #333;
 `;
 
-const Description = styled.p`
-    color: #666;
-`;
-
 const PriceSection = styled.div`
     margin-top: 20px;
 `;
@@ -67,15 +62,6 @@ const Price = styled.span`
     font-size: 18px;
     color: #e44d26;
     font-weight: bold;
-`;
-
-const OptionsSection = styled.div`
-    margin-top: 20px;
-`;
-
-const Select = styled.select`
-    padding: 5px;
-    margin-right: 10px;
 `;
 
 const QuantitySelector = styled.div`
@@ -171,6 +157,13 @@ const ProductDetailPage: React.FC = () => {
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('details');
 
+    const dispatch = useDispatch();
+    const { product_Id } = useParams(); // URL로부터 상품 ID를 가져옵니다.
+
+    const { selectedProduct, loading, error } = useSelector((state) => ({
+        ...state.product,
+    }));
+
     const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
         setQuantity(Number(e.target.value));
     };
@@ -178,9 +171,7 @@ const ProductDetailPage: React.FC = () => {
     const renderContent = () => {
         switch (activeTab) {
             case 'details':
-                return <Section>상품 상세정보</Section>;
-            case 'reviews':
-                return <Section>구매후기</Section>;
+                return <Section>{selectedProduct[0].description}</Section>;
             case 'info':
                 return <Section>안내사항</Section>;
             default:
@@ -196,36 +187,40 @@ const ProductDetailPage: React.FC = () => {
         window.location.href = '/checkout';
     };
 
+    useEffect(() => {
+        if (product_Id) {
+            dispatch(fetchProduct(Number(product_Id))); // 상품 정보를 가져옵니다.
+        }
+    }, [dispatch, product_Id]);
+
+    // 로딩 상태에서는 로딩 모달을..
+    if (loading) {
+        return <LoadingModal />;
+    }
+
+    // 에러 상태에서는 에러 모달이 출력되도록
+    if (error) {
+        return (
+            <AlertConfirmModal title="오류" onClose={() => {}}>
+                {error}
+            </AlertConfirmModal>
+        );
+    }
+
     return (
         <PageContainer>
-            <Breadcrumb>쇼핑몰 {'>'} 상세제품</Breadcrumb>
-
             <ProductSection>
                 <ProductImage
-                    src="https://via.placeholder.com/300"
-                    alt="Product"
+                    src={selectedProduct[0].image_Url}
+                    alt={selectedProduct[0].name}
                 />
                 <ProductDetails>
-                    <Title>멋진 향수</Title>
-                    <Description>
-                        이 향수는 당신의 매력을 더해줄 멋진 향기를 가지고
-                        있습니다.
-                    </Description>
+                    <Title>{selectedProduct[0].name}</Title>
                 </ProductDetails>
             </ProductSection>
             <PriceSection>
-                <Price>₩35,000</Price>
+                <Price>₩{selectedProduct[0].price}</Price>
             </PriceSection>
-            <OptionsSection>
-                <Select>
-                    <option>50ml</option>
-                    <option>100ml</option>
-                </Select>
-                <Select>
-                    <option>Red</option>
-                    <option>Blue</option>
-                </Select>
-            </OptionsSection>
             <QuantitySelector>
                 <QuantityInput
                     type="number"
@@ -245,12 +240,6 @@ const ProductDetailPage: React.FC = () => {
                     onClick={() => setActiveTab('details')}
                 >
                     제품 상세정보
-                </TabButton>
-                <TabButton
-                    isActive={activeTab === 'reviews'}
-                    onClick={() => setActiveTab('reviews')}
-                >
-                    구매후기
                 </TabButton>
                 <TabButton
                     isActive={activeTab === 'info'}
