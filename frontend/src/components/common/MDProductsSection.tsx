@@ -9,6 +9,12 @@ interface Product {
     price: string;
 }
 
+const SectionTitle = styled.h2`
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 20px;
+`;
+
 const ProductsGrid = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -54,16 +60,20 @@ const MDProductsSection: React.FC = () => {
     }, []);
 
     return (
-        <ProductsGrid>
-            {mdProducts.map((product) => (
-                <ProductCard
-                    key={product.id}
-                    imageUrl={product.imageUrl}
-                    title={product.title}
-                    price={product.price}
-                />
-            ))}
-        </ProductsGrid>
+        <>
+            <SectionTitle>MD’S CHOICE</SectionTitle>
+
+            <ProductsGrid>
+                {mdProducts.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        imageUrl={product.imageUrl}
+                        title={product.title}
+                        price={product.price}
+                    />
+                ))}
+            </ProductsGrid>
+        </>
     );
 };
 

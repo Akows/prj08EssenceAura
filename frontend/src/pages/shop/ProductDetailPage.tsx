@@ -169,9 +169,15 @@ const ProductDetailPage: React.FC = () => {
     };
 
     const renderContent = () => {
+        const products = selectedProduct || [];
+
+        if (products.length === 0) {
+            return <Section>상품 정보를 불러오는 중...</Section>;
+        }
+
         switch (activeTab) {
             case 'details':
-                return <Section>{selectedProduct[0].description}</Section>;
+                return <Section>{selectedProduct[0]?.description}</Section>;
             case 'info':
                 return <Section>안내사항</Section>;
             default:
@@ -209,18 +215,27 @@ const ProductDetailPage: React.FC = () => {
 
     return (
         <PageContainer>
-            <ProductSection>
-                <ProductImage
-                    src={selectedProduct[0].image_Url}
-                    alt={selectedProduct[0].name}
-                />
-                <ProductDetails>
-                    <Title>{selectedProduct[0].name}</Title>
-                </ProductDetails>
-            </ProductSection>
-            <PriceSection>
-                <Price>₩{selectedProduct[0].price}</Price>
-            </PriceSection>
+            {selectedProduct?.length > 0 ? (
+                <>
+                    <ProductSection>
+                        {/* 선택적 체이닝을 사용하여 selectedProduct[0]이 없을 때 오류 방지 */}
+                        <ProductImage
+                            src={selectedProduct[0]?.image_Url}
+                            alt={selectedProduct[0]?.name}
+                        />
+                        <ProductDetails>
+                            <Title>{selectedProduct[0]?.name}</Title>
+                        </ProductDetails>
+                    </ProductSection>
+                    <PriceSection>
+                        <Price>₩{selectedProduct[0]?.price}</Price>
+                    </PriceSection>
+                </>
+            ) : (
+                // selectedProduct가 비어있을 때 표시할 내용
+                <Section>상품 정보를 불러오는 중...</Section>
+            )}
+
             <QuantitySelector>
                 <QuantityInput
                     type="number"

@@ -19,6 +19,12 @@ interface TabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isActive: boolean;
 }
 
+const SectionTitle = styled.h2`
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 20px;
+`;
+
 const TabList = styled.div`
     display: flex;
     justify-content: center;
@@ -118,6 +124,8 @@ const BestProductsSection: React.FC = () => {
 
     return (
         <>
+            <SectionTitle>BEST ITEM</SectionTitle>
+
             <TabList>
                 {Object.keys(bestProducts).map((category) => (
                     <Tab

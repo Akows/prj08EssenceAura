@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import AllProductsSection from '../components/common/AllProductsSection';
 import BestProductsSection from '../components/common/BestProductsSection';
 import MDProductsSection from '../components/common/MDProductsSection';
 import Slider from '../components/common/Slider';
-import ProductCard from '../components/shop/ProductCard';
 import PromotionSection from '../components/shop/PromotionSection';
 
 const PageContainer = styled.div`
@@ -24,23 +22,8 @@ const PageContainer = styled.div`
     }
 `;
 
-// 상품 리스트를 위한 스타일 컴포넌트
-const ProductsSection = styled.section`
-    padding: 40px 0; // 상하 패딩
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around; // 항목들이 균등하게 분포되도록 설정
-    gap: 20px; // 항목들 사이의 간격
-`;
-
 const Section = styled.section`
     margin: 50px 0;
-`;
-
-const SectionTitle = styled.h2`
-    font-size: 1.5em;
-    text-align: center;
-    margin-bottom: 20px;
 `;
 
 const ShopHomePage: React.FC = () => {
@@ -54,19 +37,16 @@ const ShopHomePage: React.FC = () => {
 
             {/* MD’S CHOICE 섹션 */}
             <Section>
-                <SectionTitle>MD’S CHOICE</SectionTitle>
                 <MDProductsSection />
             </Section>
 
             {/* BEST ITEM 섹션 */}
             <Section>
-                <SectionTitle>BEST ITEM</SectionTitle>
                 <BestProductsSection />
             </Section>
 
             {/* 전체 상품 섹션 */}
             <Section>
-                <SectionTitle>ALL ITEM</SectionTitle>
                 <AllProductsSection />
             </Section>
         </PageContainer>
