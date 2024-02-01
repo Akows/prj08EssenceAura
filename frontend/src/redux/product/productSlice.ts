@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+    fetchMainPageProducts,
     fetchProduct,
     fetchProducts,
     fetchSearchSuggestions,
@@ -60,6 +61,7 @@ interface ProductsResponse {
 
 const initialState: ProductState = {
     products: [],
+    mainPageProducts: [], // 메인 페이지 전용 상태 추가
     selectedProduct: null,
     searchSuggestions: { categories: [], tags: [], events: [] },
     loading: false,
@@ -101,6 +103,27 @@ export const productSlice = createSlice({
                 }
             )
             .addCase(fetchProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error =
+                    action.error.message ||
+                    '제품 데이터를 불러오는 과정에서 오류가 발생하였습니다.';
+            })
+            .addCase(fetchMainPageProducts.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(
+                fetchMainPageProducts.fulfilled,
+                (state, action: PayloadAction<ProductsResponse>) => {
+                    state.loading = false;
+                    state.mainPageProducts = [
+                        ...state.mainPageProducts,
+                        ...action.payload.products[0],
+                    ]; // 새로운 상태에 데이터 누적
+                    state.totalPages = action.payload.totalPages;
+                    state.currentPage = action.payload.page;
+                }
+            )
+            .addCase(fetchMainPageProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error =
                     action.error.message ||

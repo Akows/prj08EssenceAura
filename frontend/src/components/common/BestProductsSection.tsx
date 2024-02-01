@@ -36,9 +36,11 @@ const Tab = styled.button<TabProps>`
 `;
 
 const ProductsGrid = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(200px, 1fr)
+    ); /* 이것은 각 상품 카드의 최소 너비를 200px로 설정하고, 사용 가능한 공간에 따라 카드의 수를 채웁니다. */
     gap: 20px;
 `;
 
@@ -94,7 +96,8 @@ const BestProductsSection: React.FC = () => {
                 {filteredProducts.map((product) => (
                     <ProductCard
                         key={product.product_id}
-                        imageUrl={product.image_url}
+                        product_Id={product.product_id}
+                        image_url={product.image_url}
                         title={product.name}
                         price={`$${Number(product.price).toFixed(2)}`}
                     />

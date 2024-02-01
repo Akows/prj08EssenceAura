@@ -1,67 +1,105 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
+import { fetchMainPageProducts } from '../../redux/product/productThunks';
 import ProductCard from '../shop/ProductCard';
 
+const SectionTitle = styled.h2`
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 20px;
+`;
+
 const ProductsGrid = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(200px, 1fr)
+    ); /* 이것은 각 상품 카드의 최소 너비를 200px로 설정하고, 사용 가능한 공간에 따라 카드의 수를 채웁니다. */
     gap: 20px;
 `;
 
-// 상품 데이터의 예시 - 실제로는 API에서 가져올 것입니다.
-const products: Product[] = [
-    {
-        id: 1,
-        imageUrl: '/product1.jpg',
-        title: 'Product 1',
-        price: '$19.99',
-    },
-    {
-        id: 2,
-        imageUrl: '/product2.jpg',
-        title: 'Product 2',
-        price: '$29.99',
-    },
-    {
-        id: 3,
-        imageUrl: '/product3.jpg',
-        title: 'Product 3',
-        price: '$39.99',
-    },
-    {
-        id: 4,
-        imageUrl: '/product4.jpg',
-        title: 'Product 4',
-        price: '$49.99',
-    },
-    // ... MD'S CHOICE 제품 데이터
-];
-
 const AllProductsSection: React.FC = () => {
-    useEffect(() => {
-        // 초기 상품 데이터 로드
-        fetchProducts();
-    }, []);
+    const dispatch = useDispatch();
+    const { mainPageProducts, totalPages, currentPage } = useSelector(
+        (state) => state.product
+    );
+    const [loading, setLoading] = useState(false);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastProductElementRef = useRef();
 
-    const fetchProducts = () => {
-        // 서버에서 상품 데이터를 추가로 가져오는 로직
-        // 예시: const newProducts = fetchMoreProducts();
-        // setProducts([...products, ...newProducts]);
+    // 인터섹션 옵저버 콜백
+    const lastProductCallback = (entries) => {
+        if (entries[0].isIntersecting && currentPage < totalPages && !loading) {
+            setLoading(true);
+            dispatch(fetchMainPageProducts({ page: currentPage + 1 })).then(
+                () => setLoading(false)
+            );
+        }
     };
+
+    useEffect(() => {
+        // 페이지 마운트 시 초기 데이터 로드
+        if (mainPageProducts.length === 0 && !loading) {
+            setLoading(true);
+            dispatch(fetchMainPageProducts({ page: 1 })).then(() =>
+                setLoading(false)
+            );
+        }
+    }, [dispatch, mainPageProducts.length, loading]);
+
+    // 인터섹션 옵저버 설정
+    useEffect(() => {
+        if (loading) {
+            return;
+        }
+
+        if (observer.current) {
+            observer.current.disconnect();
+        }
+
+        observer.current = new IntersectionObserver(lastProductCallback);
+        if (lastProductElementRef.current) {
+            observer.current.observe(lastProductElementRef.current);
+        }
+
+        return () => {
+            if (observer.current) {
+                observer.current.disconnect();
+            }
+        };
+    }, [loading]);
 
     return (
         <>
+            <SectionTitle>BEST ITEM</SectionTitle>
+
             <ProductsGrid>
-                {products.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        imageUrl={product.imageUrl}
-                        title={product.title}
-                        price={product.price}
-                    />
-                ))}
+                {mainPageProducts.map((product, index) => {
+                    if (mainPageProducts.length === index + 1) {
+                        return (
+                            <ProductCard
+                                ref={lastProductElementRef}
+                                key={product.productId}
+                                product_Id={product.product_id}
+                                image_Url={product.image_Url}
+                                title={product.name}
+                                price={product.price}
+                            />
+                        );
+                    } else {
+                        return (
+                            <ProductCard
+                                key={product.productId}
+                                product_Id={product.product_id}
+                                image_Url={product.image_Url}
+                                title={product.name}
+                                price={product.price}
+                            />
+                        );
+                    }
+                })}
+                {loading && <p>Loading more products...</p>}
             </ProductsGrid>
         </>
     );

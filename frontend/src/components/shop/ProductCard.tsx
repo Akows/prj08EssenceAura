@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -44,27 +44,46 @@ interface ProductCardProps {
     price: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-    product_Id,
-    image_Url,
-    title,
-    price,
-}) => {
-    const navigate = useNavigate();
+const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
+    ({ product_Id, image_Url, title, price }, ref) => {
+        const navigate = useNavigate();
 
-    const handleItemClick = () => {
-        navigate(`/shopdetail/${product_Id}`); // 제품 ID를 URL에 포함
-    };
+        const handleItemClick = () => {
+            navigate(`/shopdetail/${product_Id}`);
+        };
+        return (
+            <Card onClick={handleItemClick} ref={ref}>
+                <CardImage src={image_Url} alt={title} />
+                <CardBody>
+                    <CardTitle>{title}</CardTitle>
+                    <CardPrice>{price}</CardPrice>
+                </CardBody>
+            </Card>
+        );
+    }
+);
 
-    return (
-        <Card onClick={handleItemClick}>
-            <CardImage src={image_Url} alt={title} />
-            <CardBody>
-                <CardTitle>{title}</CardTitle>
-                <CardPrice>{price}</CardPrice>
-            </CardBody>
-        </Card>
-    );
-};
+// const ProductCard: React.FC<ProductCardProps> = ({
+//     product_Id,
+//     image_Url,
+//     title,
+//     price,
+// }) => {
+//     const navigate = useNavigate();
+
+//     const handleItemClick = () => {
+//         navigate(`/shopdetail/${product_Id}`); // 제품 ID를 URL에 포함
+//     };
+
+//     return (
+//         <Card onClick={handleItemClick}>
+//             <CardImage src={image_Url} alt={title} />
+//             <CardBody>
+//                 <CardTitle>{title}</CardTitle>
+//                 <CardPrice>{price}</CardPrice>
+//             </CardBody>
+//         </Card>
+//     );
+// };
 
 export default ProductCard;

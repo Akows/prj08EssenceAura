@@ -1,5 +1,3 @@
-// productThunks.ts
-
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 
@@ -40,6 +38,24 @@ export const fetchProduct = createAsyncThunk(
 // 복수 제품을 조회하는 비동기 thunk
 export const fetchProducts = createAsyncThunk(
     `product/fetchProducts`,
+    async (params: ProductParams, { rejectWithValue }) => {
+        try {
+            // API로부터 조건에 맞는 제품 목록을 조회
+            // 이때, 이름, 카테고리, 태그, 이벤트, 정렬 기준, 페이지네이션 등의 파라미터 사용
+            const response = await axios.get(`${API_BASE_URL}/fetchProducts`, {
+                params,
+            });
+            return response.data;
+        } catch (error) {
+            // 오류 발생 시 처리
+            const axiosError = error as AxiosError;
+            return rejectWithValue(axiosError.response?.data);
+        }
+    }
+);
+
+export const fetchMainPageProducts = createAsyncThunk(
+    'product/fetchMainPageProducts',
     async (params: ProductParams, { rejectWithValue }) => {
         try {
             // API로부터 조건에 맞는 제품 목록을 조회
