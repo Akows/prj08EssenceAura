@@ -3,6 +3,7 @@ import {
     fetchProduct,
     fetchProducts,
     fetchSearchSuggestions,
+    fetchTopSellingProductsByCategory,
 } from './productThunks';
 
 interface Product {
@@ -19,6 +20,20 @@ interface Product {
     discountRate: number | null;
 }
 
+interface TopSellingProduct {
+    product_id: number;
+    name: string;
+    description: string;
+    price: number;
+    category: string;
+    tags: string;
+    stock: number;
+    image_url: string;
+    created_at: string;
+    what_event: string;
+    discount_rate: number | null;
+}
+
 interface SearchSuggestion {
     name: string[];
     categories: string[];
@@ -27,6 +42,7 @@ interface SearchSuggestion {
 }
 
 interface ProductState {
+    topSellingProductsByCategory: TopSellingProduct[];
     products: Product[];
     selectedProduct: Product | null;
     searchSuggestions: SearchSuggestion;
@@ -35,6 +51,7 @@ interface ProductState {
 }
 
 interface ProductsResponse {
+    topSellingProductsByCategory: [];
     totalProducts: number;
     products: Product[];
     page: number;
@@ -92,7 +109,6 @@ export const productSlice = createSlice({
             .addCase(fetchSearchSuggestions.pending, (state) => {
                 state.loading = true;
             })
-
             .addCase(
                 fetchSearchSuggestions.fulfilled,
                 (state, action: PayloadAction<SearchSuggestion>) => {
@@ -100,13 +116,32 @@ export const productSlice = createSlice({
                     state.searchSuggestions = action.payload;
                 }
             )
-
             .addCase(fetchSearchSuggestions.rejected, (state, action) => {
                 state.loading = false;
                 state.error =
                     action.error.message ||
                     '제품 추천 데이터를 불러오는 과정에서 오류가 발생하였습니다.';
-            });
+            })
+            .addCase(fetchTopSellingProductsByCategory.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(
+                fetchTopSellingProductsByCategory.fulfilled,
+                (state, action: PayloadAction<TopSellingProduct[]>) => {
+                    state.topSellingProductsByCategory = action.payload;
+                    state.loading = false;
+                }
+            )
+            .addCase(
+                fetchTopSellingProductsByCategory.rejected,
+                (state, action) => {
+                    state.loading = false;
+                    state.error =
+                        action.error.message ||
+                        '최고 판매량 데이터를 불러오는 과정에서 오류가 발생하였습니다.';
+                }
+            );
     },
 });
 

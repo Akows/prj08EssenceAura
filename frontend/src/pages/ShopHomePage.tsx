@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import AllProductsSection from '../components/common/AllProductsSection';
 import BestProductsSection from '../components/common/BestProductsSection';
-import MDProductsSection from '../components/common/MDProductsSection';
 import Slider from '../components/common/Slider';
 import PromotionSection from '../components/shop/PromotionSection';
 
@@ -34,11 +33,6 @@ const ShopHomePage: React.FC = () => {
 
             {/* 프로모션 섹션 렌더링 */}
             <PromotionSection />
-
-            {/* MD’S CHOICE 섹션 */}
-            <Section>
-                <MDProductsSection />
-            </Section>
 
             {/* BEST ITEM 섹션 */}
             <Section>

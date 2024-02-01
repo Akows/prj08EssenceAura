@@ -1,5 +1,5 @@
 const { DatabaseError, NotFoundError } = require('../error/error');
-const { getProductById, getProducts, getTotalProductsCount, getSearchSuggestions } = require('../service/productService');
+const { getProductById, getProducts, getTotalProductsCount, getSearchSuggestions, getTopSellingProductsByCategory } = require('../service/productService');
 
 const getProductByIdHandler = async (req, res) => {
     try {
@@ -72,9 +72,22 @@ const getSearchSuggestionsHandler = async (req, res) => {
     }
 };
 
+const getTopSellingProductsByCategoryHandler = async (req, res) => {
+  try {
+    // 서비스 함수를 호출하여 각 카테고리별로 상위 8개의 상품을 가져옵니다.
+    const topSellingProductsByCategory = await getTopSellingProductsByCategory();
+    
+    // 클라이언트에 결과를 반환합니다.
+    res.json(topSellingProductsByCategory);
+  } catch (error) {
+    // 에러 처리
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
     getProductByIdHandler,
     getProductsHandler,
     getSearchSuggestionsHandler,
+    getTopSellingProductsByCategoryHandler,
 };

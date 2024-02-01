@@ -158,9 +158,30 @@ const getSearchSuggestions = async (keyword) => {
     }
 };
 
+const getTopSellingProductsByCategory = async () => {
+    try {
+        // 각 카테고리별로 재고가 가장 적은 상품 조회
+        const query = `
+            SELECT *
+            FROM (
+                SELECT 
+                    products.*,
+                    ROW_NUMBER() OVER (PARTITION BY category ORDER BY stock ASC) as rn
+                FROM products
+            ) AS ranked_products
+            WHERE rn <= 8;
+        `;
+        const [rows] = await db.query(query);
+        return rows;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 module.exports = {
     getProductById,
     getProducts,
     getTotalProductsCount,
     getSearchSuggestions,
+    getTopSellingProductsByCategory,
 };

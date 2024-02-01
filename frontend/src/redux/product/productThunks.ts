@@ -101,3 +101,19 @@ export const fetchSearchSuggestions = createAsyncThunk(
         }
     }
 );
+
+// 카테고리별 최대 판매량 상품 조회 Thunk
+export const fetchTopSellingProductsByCategory = createAsyncThunk(
+    'product/fetchTopSellingProductsByCategory',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/topSellingByCategory`
+            );
+            return response.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(axiosError.response?.data);
+        }
+    }
+);

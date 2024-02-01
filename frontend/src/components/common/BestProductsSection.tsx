@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { fetchTopSellingProductsByCategory } from '../../redux/product/productThunks';
 import ProductCard from '../shop/ProductCard';
-
-interface Product {
-    id: number;
-    imageUrl: string;
-    title: string;
-    price: string;
-}
-
-interface BestProducts {
-    'WOMAN BEST': Product[];
-    'MAN BEST': Product[];
-}
 
 // Tab 컴포넌트 정의
 interface TabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -52,100 +42,61 @@ const ProductsGrid = styled.div`
     gap: 20px;
 `;
 
-const bestProducts: BestProducts = {
-    'WOMAN BEST': [
-        // 여성 베스트 제품 데이터
-        {
-            id: 1,
-            imageUrl: '/product1.jpg',
-            title: 'Product 1',
-            price: '$19.99',
-        },
-        {
-            id: 2,
-            imageUrl: '/product2.jpg',
-            title: 'Product 2',
-            price: '$29.99',
-        },
-        {
-            id: 3,
-            imageUrl: '/product3.jpg',
-            title: 'Product 3',
-            price: '$39.99',
-        },
-        {
-            id: 4,
-            imageUrl: '/product4.jpg',
-            title: 'Product 4',
-            price: '$49.99',
-        },
-    ],
-    'MAN BEST': [
-        // 남성 베스트 제품 데이터
-        {
-            id: 1,
-            imageUrl: '/product1.jpg',
-            title: 'Product 1',
-            price: '$19.99',
-        },
-        {
-            id: 2,
-            imageUrl: '/product2.jpg',
-            title: 'Product 2',
-            price: '$29.99',
-        },
-        {
-            id: 3,
-            imageUrl: '/product3.jpg',
-            title: 'Product 3',
-            price: '$39.99',
-        },
-        {
-            id: 4,
-            imageUrl: '/product4.jpg',
-            title: 'Product 4',
-            price: '$49.99',
-        },
-    ],
-    // ... 기타 카테고리
-};
-
 const BestProductsSection: React.FC = () => {
-    const [products, setProducts] = useState(bestProducts);
+    const dispatch = useDispatch();
+    // Redux Store에서 상품 데이터를 가져옵니다.
+    const topSellingProducts =
+        useSelector((state) => state.product.topSellingProductsByCategory) ||
+        [];
+
+    const [activeTab, setActiveTab] = useState<
+        '여성향수' | '남성향수' | '남녀공용'
+    >('여성향수');
 
     useEffect(() => {
-        // 서버에서 MD 추천상품 데이터를 가져오는 로직
-        // 예시: setProducts(fetchMDProducts());
-    }, []);
+        // topSellingProducts가 비어있을 경우에만 데이터를 가져옵니다.
+        if (topSellingProducts.length === 0) {
+            dispatch(fetchTopSellingProductsByCategory());
+        }
+    }, [dispatch, topSellingProducts.length]);
 
-    // 'keyof BestProducts' 타입을 'activeTab' 상태에 적용
-    const [activeTab, setActiveTab] =
-        useState<keyof BestProducts>('WOMAN BEST');
+    // 선택된 탭에 따라 상품을 필터링합니다.
+    const filteredProducts = topSellingProducts
+        .filter((product) => product.category === activeTab)
+        .slice(0, 8);
 
     return (
         <>
             <SectionTitle>BEST ITEM</SectionTitle>
 
             <TabList>
-                {Object.keys(bestProducts).map((category) => (
-                    <Tab
-                        key={category}
-                        isActive={activeTab === category}
-                        onClick={() =>
-                            setActiveTab(category as keyof BestProducts)
-                        }
-                    >
-                        {category}
-                    </Tab>
-                ))}
+                <Tab
+                    isActive={activeTab === '여성향수'}
+                    onClick={() => setActiveTab('여성향수')}
+                >
+                    여성향수
+                </Tab>
+                <Tab
+                    isActive={activeTab === '남성향수'}
+                    onClick={() => setActiveTab('남성향수')}
+                >
+                    남성향수
+                </Tab>
+                <Tab
+                    isActive={activeTab === '남녀공용'}
+                    onClick={() => setActiveTab('남녀공용')}
+                >
+                    남녀공용
+                </Tab>
             </TabList>
+
             <ProductsGrid>
-                {bestProducts[activeTab].map((product) => (
+                {filteredProducts.map((product) => (
                     <ProductCard
-                        key={product.id}
-                        imageUrl={product.imageUrl}
-                        title={product.title}
-                        price={product.price}
+                        key={product.product_id}
+                        imageUrl={product.image_url}
+                        title={product.name}
+                        price={`$${Number(product.price).toFixed(2)}`}
                     />
                 ))}
             </ProductsGrid>
