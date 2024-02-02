@@ -56,7 +56,8 @@ const RegistrationPage: React.FC = () => {
                     checked={termsAgreed}
                 />
                 <div>
-                    이용약관에 동의합니다. <a href="/terms">전문보기</a>
+                    이용약관에 동의합니다.{' '}
+                    <a href="/termsofservice">전문보기</a>
                 </div>
             </CheckboxLabel>
             <CheckboxLabel>
@@ -66,7 +67,10 @@ const RegistrationPage: React.FC = () => {
                     onChange={handleAgreementChange}
                     checked={privacyAgreed}
                 />
-                <div>개인정보 수집 및 이용에 동의합니다.</div>
+                <div>
+                    개인정보 수집 및 이용에 동의합니다.{' '}
+                    <a href="/privacypolicy">전문보기</a>
+                </div>
             </CheckboxLabel>
 
             {/* 회원정보 입력 폼 */}

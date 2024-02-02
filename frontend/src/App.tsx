@@ -22,6 +22,9 @@ import useCheckAuth from './hooks/auth/useCheckAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import './App.css';
+import TermsOfService from './components/policies/TermsOfService';
+import PrivacyPolicy from './components/policies/PrivacyPolicy';
+import Sitemap from './components/policies/Sitemap';
 
 // 사용자 상태에 따라 특정 라우터에는 접근하지 못하도록 하는 기능
 // 로그인하지 않은 사용자만 접근 가능한 라우트
@@ -58,12 +61,15 @@ function App() {
                     <Route index element={<MainPage />} />
                     <Route path="shop" element={<ShopHomePage />} />
                     <Route path="shoplist" element={<ProductListPage />} />
+
+                    <Route path="shopcart" element={<CartPage />} />
+                    <Route path="checkout" element={<CheckoutPage />} />
+
                     <Route
                         path="shopdetail/:product_Id"
                         element={<ProductDetailPage />}
                     />
-                    <Route path="shopcart" element={<CartPage />} />
-                    <Route path="checkout" element={<CheckoutPage />} />
+
                     <Route
                         path="confirm"
                         element={<PaymentConfirmationPage />}
@@ -108,6 +114,10 @@ function App() {
                             </AdminRoute>
                         }
                     />
+
+                    <Route path="sitemap" element={<Sitemap />} />
+                    <Route path="termsofservice" element={<TermsOfService />} />
+                    <Route path="privacypolicy" element={<PrivacyPolicy />} />
                 </Route>
             </Routes>
         </BrowserRouter>

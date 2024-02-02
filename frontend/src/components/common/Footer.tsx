@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const FooterContainer = styled.footer`
@@ -33,12 +34,20 @@ const FooterBottom = styled.div`
 `;
 
 const Footer: React.FC = () => {
+    const navigate = useNavigate();
+
     return (
         <FooterContainer>
             <FooterTop>
-                <FooterLink href="#">사이트맵</FooterLink>
-                <FooterLink href="#">개인정보 처리방침</FooterLink>
-                <FooterLink href="#">이용 약관</FooterLink>
+                <FooterLink onClick={() => navigate('/sitemap')}>
+                    사이트맵
+                </FooterLink>
+                <FooterLink onClick={() => navigate('/privacypolicy')}>
+                    개인정보 처리방침
+                </FooterLink>
+                <FooterLink onClick={() => navigate('/termsofservice')}>
+                    이용 약관
+                </FooterLink>
                 <FooterLink href="#">연락처</FooterLink>
             </FooterTop>
             <FooterBottom>
