@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import AllProductsSection from '../components/common/AllProductsSection';
-import BestProductsSection from '../components/common/BestProductsSection';
-import Slider from '../components/common/Slider';
-import PromotionSection from '../components/shop/PromotionSection';
+import AllProductsSection from '../../components/common/AllProductsSection';
+import BestProductsSection from '../../components/common/BestProductsSection';
+import Slider from '../../components/common/Slider';
+import PromotionSection from '../../components/shop/PromotionSection';
 
 const PageContainer = styled.div`
     max-width: 1200px; // 최대 너비를 설정하여 너무 넓은 화면에서 콘텐츠가 흩어지지 않도록 합니다.

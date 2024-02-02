@@ -56,6 +56,8 @@ const ExploreButton = styled.button`
 `;
 
 const EnterButton = styled(ExploreButton)`
+    width: 100%;
+    height: 100%;
     font-family: 'Black Han Sans', sans-serif;
     color: white; // 텍스트 색상을 흰색으로 변경
     font-size: 4em; // 적당한 크기로 설정
@@ -72,8 +74,8 @@ const EssenceAuraText = styled.div<INewImageTextProps>`
     position: absolute; // 절대 위치
     top: 50%; // 위에서 50% 위치
     left: 50%; // 왼쪽에서 50% 위치
+    font-family: 'Black Han Sans', sans-serif;
     transform: translate(-50%, -50%); // 정확한 중앙 위치를 위한 변환
-    font-family: 'Oswald', sans-serif;
     color: white; // 텍스트 색상을 흰색으로 변경
     font-size: 4em; // 적당한 크기로 설정
     transition: opacity 1s; // 투명도 전환 효과
@@ -84,20 +86,47 @@ const EssenceAuraText = styled.div<INewImageTextProps>`
 `;
 
 const WelcomeText = styled(EssenceAuraText)`
-    border: 2px solid white; // 흰색 테두리
-    border-radius: 50%; // 원형 모양
-    width: 300px; // 원의 크기를 늘림
-    height: 300px;
-    line-height: 300px; // 텍스트를 원형 안 가운데로 위치
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 3em; // 텍스트 크기 조정
+    border: 2px solid white; // 흰색 테두리 유지
+    border-radius: 0; // 원형에서 사각형으로 변경
+    width: 100%; // 영역을 화면 너비에 맞춤
+    height: auto; // 높이를 내용에 맞춤
+    padding: 20px; // 내용과 테두리 사이에 여백 추가
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5em; // 텍스트 크기 조정
     text-align: center; // 텍스트 가운데 정렬
-    padding: 0; // 패딩 제거
+    display: block; // 블록 레벨 요소로 변경
+    margin: auto; // 자동 마진으로 가운데 정렬
+    white-space: pre-wrap; // 줄바꿈 및 여러 공백 인식
+    overflow: hidden; // 내용이 넘칠 경우 숨김 처리
 
-    &:hover {
-        transform: translate(-50%, -50%) rotate(720deg); // 720도 회전
-        transition: transform 0.5s ease-in-out; // 부드러운 전환을 위한 지연시간 적용
+    // 텍스트 애니메이션
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
+
+    // 애니메이션 적용
+    p {
+        font-size: 1.2em;
+        opacity: 0;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    // 각 조각의 애니메이션 지연 적용
+    p:nth-child(1) {
+        animation-delay: 0.5s;
+    }
+    p:nth-child(2) {
+        animation-delay: 1s;
+    }
+    p:nth-child(3) {
+        animation-delay: 1.5s;
+    }
+    // 필요한 만큼 nth-child를 추가하세요.
 `;
 
 const MainPage: React.FC = () => {
@@ -177,19 +206,20 @@ const MainPage: React.FC = () => {
         <Container>
             <Page expand={expand}>
                 {!expand && (
-                    <EnterButton onClick={handleEnter}>안녕하세요</EnterButton>
+                    <EnterButton onClick={handleEnter}>어서오세요!</EnterButton>
                 )}
                 {showEssenceAura && !showWelcome && (
                     <EssenceAuraText showNewContent={showEssenceAura}>
-                        ESSENCEAURA
+                        향이 이끄는 곳으로
                     </EssenceAuraText>
                 )}
                 {showWelcome && (
-                    <WelcomeText
-                        showNewContent={showWelcome}
-                        onClick={handleWelcomeClick}
-                    >
-                        환영합니다!
+                    <WelcomeText onClick={handleWelcomeClick}>
+                        <p>ESSENCEAURA</p>
+                        <p>
+                            당신의 특별한 순간을 더욱 빛나게 할 향수를
+                            만나보세요.
+                        </p>
                     </WelcomeText>
                 )}
             </Page>

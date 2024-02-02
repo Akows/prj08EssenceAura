@@ -6,8 +6,8 @@ import {
     RouteProps,
 } from 'react-router-dom';
 import Layout from './layout/Layout';
-import MainPage from './pages/MainPage';
-import ShopHomePage from './pages/ShopHomePage';
+import MainPage from './pages/main/MainPage';
+import ShopHomePage from './pages/shop/ShopHomePage';
 import ProductListPage from './pages/shop/ProductListPage';
 import ProductDetailPage from './pages/shop/ProductDetailPage';
 import CartPage from './pages/shop/CartPage';
