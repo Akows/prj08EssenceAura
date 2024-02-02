@@ -42,8 +42,8 @@ const Footer: React.FC = () => {
                 <FooterLink href="#">연락처</FooterLink>
             </FooterTop>
             <FooterBottom>
-                &copy; {new Date().getFullYear()} EssenceAura. All rights
-                reserved.
+                Created by EssenceAura, {new Date().getFullYear()}. Shared with
+                the community.
             </FooterBottom>
         </FooterContainer>
     );
