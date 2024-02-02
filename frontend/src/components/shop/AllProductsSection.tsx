@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { fetchMainPageProducts } from '../../redux/product/productThunks';
-import ProductCard from '../shop/ProductCard';
+import ProductCard from './ProductCard';
 
 const SectionTitle = styled.h2`
     font-size: 1.5em;
@@ -108,7 +108,7 @@ const AllProductsSection: React.FC = () => {
                                 ref={lastProductElementRef}
                                 key={product.productId}
                                 product_Id={product.product_id}
-                                image_Url={product.image_Url}
+                                image_url={product.image_url}
                                 title={product.name}
                                 price={product.price}
                             />
@@ -118,7 +118,7 @@ const AllProductsSection: React.FC = () => {
                             <ProductCard
                                 key={product.productId}
                                 product_Id={product.product_id}
-                                image_Url={product.image_Url}
+                                image_url={product.image_url}
                                 title={product.name}
                                 price={product.price}
                             />

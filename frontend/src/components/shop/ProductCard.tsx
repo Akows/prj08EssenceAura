@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -39,13 +39,13 @@ const CardPrice = styled.p`
 // 제품 카드 컴포넌트의 props 타입 정의
 interface ProductCardProps {
     product_Id: number;
-    image_Url: string;
+    image_url: string;
     title: string;
     price: string;
 }
 
 const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
-    ({ product_Id, image_Url, title, price }, ref) => {
+    ({ product_Id, image_url, title, price }, ref) => {
         const navigate = useNavigate();
 
         const handleItemClick = () => {
@@ -53,7 +53,8 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
         };
         return (
             <Card onClick={handleItemClick} ref={ref}>
-                <CardImage src={image_Url} alt={title} />
+                <CardImage src={image_url} alt={title} />
+
                 <CardBody>
                     <CardTitle>{title}</CardTitle>
                     <CardPrice>{price}</CardPrice>
@@ -63,27 +64,9 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     }
 );
 
-// const ProductCard: React.FC<ProductCardProps> = ({
-//     product_Id,
-//     image_Url,
-//     title,
-//     price,
-// }) => {
-//     const navigate = useNavigate();
-
-//     const handleItemClick = () => {
-//         navigate(`/shopdetail/${product_Id}`); // 제품 ID를 URL에 포함
-//     };
-
-//     return (
-//         <Card onClick={handleItemClick}>
-//             <CardImage src={image_Url} alt={title} />
-//             <CardBody>
-//                 <CardTitle>{title}</CardTitle>
-//                 <CardPrice>{price}</CardPrice>
-//             </CardBody>
-//         </Card>
-//     );
-// };
+// Component definition is missing display name 타입 에러 해결 방법.
+// Display name은 React 개발자 도구에서 컴포넌트를 더 쉽게 식별할 수 있도록 도와주는 이름.
+// forwardRef 사용시 컴포넌트에 명시적으로 이름을 할당하여 타입 에러를 해결할 수 있다.
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;

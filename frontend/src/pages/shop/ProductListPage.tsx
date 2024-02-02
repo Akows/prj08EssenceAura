@@ -144,7 +144,7 @@ const ProductListPage: React.FC = () => {
                         <ProductCard
                             key={product.product_Id}
                             product_Id={product.product_id}
-                            image_Url={product.image_Url}
+                            image_url={product.image_url}
                             title={product.name}
                             price={`${product.price}`}
                         />

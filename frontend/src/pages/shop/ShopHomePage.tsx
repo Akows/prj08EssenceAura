@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import AllProductsSection from '../../components/common/AllProductsSection';
-import BestProductsSection from '../../components/common/BestProductsSection';
+import AllProductsSection from '../../components/shop/AllProductsSection';
+import BestProductsSection from '../../components/shop/BestProductsSection';
 import Slider from '../../components/common/Slider';
 import PromotionSection from '../../components/shop/PromotionSection';
 

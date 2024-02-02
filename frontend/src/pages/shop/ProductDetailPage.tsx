@@ -220,7 +220,7 @@ const ProductDetailPage: React.FC = () => {
                     <ProductSection>
                         {/* 선택적 체이닝을 사용하여 selectedProduct[0]이 없을 때 오류 방지 */}
                         <ProductImage
-                            src={selectedProduct[0]?.image_Url}
+                            src={selectedProduct[0]?.image_url}
                             alt={selectedProduct[0]?.name}
                         />
                         <ProductDetails>
