@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import AlertConfirmModal from '../../components/common/AlertConfirmModal';
 import LoadingModal from '../../components/common/LoadingModal';
+import PerfumeTips from '../../components/shop/PerfumeTips';
+import ProductDetail from '../../components/shop/ProductDetail';
 import { fetchProduct } from '../../redux/product/productThunks';
 
 // TabButton에 적용할 타입을 확장하여 isActive 속성을 포함시킵니다.
@@ -177,9 +179,16 @@ const ProductDetailPage: React.FC = () => {
 
         switch (activeTab) {
             case 'details':
-                return <Section>{selectedProduct[0]?.description}</Section>;
+                return (
+                    <ProductDetail
+                        imageUrl={selectedProduct[0]?.image_url}
+                        productName={selectedProduct[0]?.name}
+                        productDescription={selectedProduct[0]?.description}
+                        perfumeType={selectedProduct[0]?.category}
+                    />
+                );
             case 'info':
-                return <Section>안내사항</Section>;
+                return <PerfumeTips />;
             default:
                 return <Section>선택된 탭에 해당하는 정보가 없습니다.</Section>;
         }
@@ -225,6 +234,7 @@ const ProductDetailPage: React.FC = () => {
                         />
                         <ProductDetails>
                             <Title>{selectedProduct[0]?.name}</Title>
+                            {selectedProduct[0]?.description}
                         </ProductDetails>
                     </ProductSection>
                     <PriceSection>
