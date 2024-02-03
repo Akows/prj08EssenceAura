@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import springSaleBanner from '../../assets/springsalebanner.webp';
+import specialDiscountBanner from '../../assets/specialdiscountbanner.webp';
+import MDsRecommendationBanner from '../../assets/MDsrecommendationbanner.webp';
 
 const PromotionContainer = styled.section`
     display: flex;
@@ -32,35 +35,40 @@ const promotions = [
     {
         id: 1,
         title: 'New Spring Event',
-        imageUrl: '/path/to/promotion1.jpg',
+        imageUrl: springSaleBanner,
         description: '봄맞이 할인 이벤트 진행 중!',
+        to: '봄맞이할인',
     },
     {
         id: 2,
         title: 'MD Choice',
-        imageUrl: '/path/to/promotion1.jpg',
+        imageUrl: MDsRecommendationBanner,
         description: 'MD 추천전 이벤트 진행 중!',
+        to: 'MD추천',
     },
     {
         id: 3,
         title: 'Special DC Event',
-        imageUrl: '/path/to/promotion1.jpg',
+        imageUrl: specialDiscountBanner,
         description: '특별 할인 이벤트 진행 중!',
+        to: '특별할인',
     },
 ];
 
 const PromotionSection: React.FC = () => {
     const navigate = useNavigate();
 
-    const handlePromotionClick = () => {
-        // 'shoplist' 경로로 이동합니다.
-        navigate('/shoplist');
+    const handlePromotionClick = (url) => () => {
+        navigate(`/shoplist?event=${encodeURIComponent(url)}`);
     };
 
     return (
         <PromotionContainer>
             {promotions.map((promo) => (
-                <PromotionItem key={promo.id} onClick={handlePromotionClick}>
+                <PromotionItem
+                    key={promo.id}
+                    onClick={handlePromotionClick(promo.to)}
+                >
                     <img src={promo.imageUrl} alt={promo.title} />
                     <h3>{promo.title}</h3>
                     <p>{promo.description}</p>
