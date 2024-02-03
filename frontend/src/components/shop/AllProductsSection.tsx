@@ -111,6 +111,8 @@ const AllProductsSection: React.FC = () => {
                                 image_url={product.image_url}
                                 title={product.name}
                                 price={product.price}
+                                discount_rate={product.discount_rate}
+                                final_price={product.final_price}
                             />
                         );
                     } else {
@@ -121,6 +123,8 @@ const AllProductsSection: React.FC = () => {
                                 image_url={product.image_url}
                                 title={product.name}
                                 price={product.price}
+                                discount_rate={product.discount_rate}
+                                final_price={product.final_price}
                             />
                         );
                     }

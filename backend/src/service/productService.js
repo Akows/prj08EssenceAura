@@ -50,13 +50,13 @@ const getProducts = async (queryParams) => {
 
         // 가격 필터링. BETWEEN을 사용하여 주어진 가격 범위 내의 상품을 찾는다
         if (priceFrom && priceTo) {
-            query += ' AND price BETWEEN ? AND ?';
+            query += ' AND final_price BETWEEN ? AND ?';
             queryParamsToEscape.push(priceFrom, priceTo);
         } else if (priceFrom) {
-            query += ' AND price >= ?';
+            query += ' AND final_price >= ?';
             queryParamsToEscape.push(priceFrom);
         } else if (priceTo) {
-            query += ' AND price <= ?';
+            query += ' AND final_price <= ?';
             queryParamsToEscape.push(priceTo);
         }
 
@@ -103,11 +103,11 @@ const getTotalProductsCount = async (queryParams) => {
         queryParamsToEscape.push(`%${name}%`);
     }
     if (priceFrom) {
-        whereClauses.push("price >= ?");
+        whereClauses.push("final_price >= ?");
         queryParamsToEscape.push(priceFrom);
     }
     if (priceTo) {
-        whereClauses.push("price <= ?");
+        whereClauses.push("final_price <= ?");
         queryParamsToEscape.push(priceTo);
     }
     if (category) {

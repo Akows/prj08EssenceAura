@@ -71,14 +71,14 @@ const SortingBar: React.FC<SortingBarProps> = ({
             </SortButton>
 
             <SortButton
-                className={currentSort === 'price_asc' ? 'active' : ''}
-                onClick={() => handleSortChange('price_asc')}
+                className={currentSort === 'final_price_asc' ? 'active' : ''}
+                onClick={() => handleSortChange('final_price_asc')}
             >
                 가격 낮은순
             </SortButton>
             <SortButton
-                className={currentSort === 'price_desc' ? 'active' : ''}
-                onClick={() => handleSortChange('price_desc')}
+                className={currentSort === 'final_price_desc' ? 'active' : ''}
+                onClick={() => handleSortChange('final_price_desc')}
             >
                 가격 높은순
             </SortButton>

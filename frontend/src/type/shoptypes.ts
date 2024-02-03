@@ -2,8 +2,8 @@
 export type SortOption =
     | 'created_at_asc'
     | 'created_at_desc'
-    | 'price_asc'
-    | 'price_desc'
+    | 'final_price_asc'
+    | 'final_price_desc'
     | 'discount_rate_asc'
     | 'discount_rate_desc'
     | 'stock_asc'

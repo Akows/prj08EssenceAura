@@ -99,7 +99,9 @@ const BestProductsSection: React.FC = () => {
                         product_Id={product.product_id}
                         image_url={product.image_url}
                         title={product.name}
-                        price={`$${Number(product.price).toFixed(2)}`}
+                        price={product.price}
+                        discount_rate={product.discount_rate}
+                        final_price={product.final_price}
                     />
                 ))}
             </ProductsGrid>

@@ -2,6 +2,16 @@ import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+// 제품 카드 컴포넌트의 props 타입 정의
+interface ProductCardProps {
+    product_Id: number;
+    image_url: string;
+    title: string;
+    price: string;
+    discount_rate: string;
+    final_price: string;
+}
+
 // 제품 카드를 위한 스타일 컴포넌트
 const Card = styled.div`
     border: 1px solid #ddd; // 경계선 스타일
@@ -33,31 +43,65 @@ const CardTitle = styled.h3`
 `;
 
 const CardPrice = styled.p`
-    color: #666; // 가격 색상
+    color: #666; // 기존 가격 색상
+    text-decoration: line-through; // 가격 위에 줄
+    opacity: 0.6; // 투명도 조절
+    margin-bottom: 0; // 아래 가격과의 마진
 `;
 
-// 제품 카드 컴포넌트의 props 타입 정의
-interface ProductCardProps {
-    product_Id: number;
-    image_url: string;
-    title: string;
-    price: string;
-}
+const CardDiscountedPrice = styled.p`
+    color: #333; // 할인된 가격 색상
+    font-size: 1.2em; // 할인된 가격 크기
+    font-weight: bold; // 글자 두께
+    margin-top: 0; // 위 가격과의 마진
+`;
+
+const CardDiscountRate = styled.span`
+    color: #ff6b6b; // 옅은 붉은 색
+    font-size: 0.9em; // 글자 크기 축소
+`;
+
+const CardPriceWrapper = styled.div`
+    position: relative; // 위치 조정을 위해 relative 설정
+    height: 60px; // 할인률이 없을 때도 높이를 유지하기 위해 설정
+    display: flex;
+    flex-direction: column;
+    justify-content: center; // 가격을 중앙에 위치시킵니다.
+`;
 
 const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
-    ({ product_Id, image_url, title, price }, ref) => {
+    (
+        { product_Id, image_url, title, price, discount_rate, final_price },
+        ref
+    ) => {
         const navigate = useNavigate();
 
         const handleItemClick = () => {
             navigate(`/shopdetail/${product_Id}`);
         };
+
+        const discountRate = parseFloat(discount_rate);
+        const displayDiscountRate = discountRate.toFixed(0); // 소수점 없는 할인률
+
         return (
             <Card onClick={handleItemClick} ref={ref}>
                 <CardImage src={image_url} alt={title} />
-
                 <CardBody>
                     <CardTitle>{title}</CardTitle>
-                    <CardPrice>{price}</CardPrice>
+                    <CardPriceWrapper>
+                        {discountRate > 0 && ( // 할인율이 0보다 클 때만 기존 가격 표시
+                            <CardPrice>{Math.round(Number(price))}원</CardPrice>
+                        )}
+                        <CardDiscountedPrice>
+                            {Math.round(Number(final_price))}원
+                            {discountRate > 0 && ( // 할인율이 0보다 클 때만 할인률 표시
+                                <CardDiscountRate>
+                                    {' '}
+                                    -{displayDiscountRate}%
+                                </CardDiscountRate>
+                            )}
+                        </CardDiscountedPrice>
+                    </CardPriceWrapper>
                 </CardBody>
             </Card>
         );
