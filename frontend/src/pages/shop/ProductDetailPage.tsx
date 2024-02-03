@@ -52,16 +52,48 @@ const ProductDetails = styled.div`
 `;
 
 const Title = styled.h2`
-    font-size: 20px;
+    font-size: 24px; // 기존 20px에서 크기를 늘림
     color: #333;
+    margin-bottom: 16px; // 여백 추가
+`;
+
+const Description = styled.p`
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6; // 줄 간격 조정
 `;
 
 const PriceSection = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between; // 가격 정보를 가로로 나열하기 위해 변경
+    background: #f8f8f8; // 배경색을 부드러운 회색으로 설정
+    padding: 10px;
+    border-radius: 8px; // 모서리 둥글게 처리
     margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // 그림자 추가
 `;
 
-const Price = styled.span`
-    font-size: 18px;
+const PriceTag = styled.div`
+    display: flex;
+    align-items: baseline; // 글자 기준선에 맞춰 정렬
+`;
+
+const OriginalPrice = styled.span`
+    font-size: 14px; // 글자 크기 수정
+    text-decoration: line-through; // 취소선
+    color: #999;
+    margin-right: 5px; // 오른쪽 여백 추가
+`;
+
+const DiscountRate = styled.span`
+    font-size: 14px; // 글자 크기 수정
+    color: #ff6b6b; // 할인률의 색상 변경
+    margin-right: 5px; // 오른쪽 여백 추가
+`;
+
+const FinalPrice = styled.span`
+    font-size: 16px; // 최종 가격의 글자 크기를 더 크게 설정
     color: #e44d26;
     font-weight: bold;
 `;
@@ -181,7 +213,7 @@ const ProductDetailPage: React.FC = () => {
             case 'details':
                 return (
                     <ProductDetail
-                        imageUrl={selectedProduct[0]?.image_url}
+                        imageUrl={selectedProduct[0]?.descimage_url}
                         productName={selectedProduct[0]?.name}
                         productDescription={selectedProduct[0]?.description}
                         perfumeType={selectedProduct[0]?.category}
@@ -234,11 +266,46 @@ const ProductDetailPage: React.FC = () => {
                         />
                         <ProductDetails>
                             <Title>{selectedProduct[0]?.name}</Title>
-                            {selectedProduct[0]?.description}
+                            <Description>
+                                {selectedProduct[0]?.description}
+                            </Description>
                         </ProductDetails>
                     </ProductSection>
                     <PriceSection>
-                        <Price>₩{selectedProduct[0]?.price}</Price>
+                        <PriceTag>
+                            {selectedProduct[0]?.discount_rate > 0 && (
+                                <>
+                                    <OriginalPrice>
+                                        {new Intl.NumberFormat().format(
+                                            Math.round(
+                                                Number(
+                                                    selectedProduct[0]?.price
+                                                )
+                                            )
+                                        )}
+                                        원
+                                    </OriginalPrice>
+                                    <DiscountRate>
+                                        -
+                                        {Math.round(
+                                            Number(
+                                                selectedProduct[0]
+                                                    ?.discount_rate
+                                            )
+                                        )}
+                                        %
+                                    </DiscountRate>
+                                </>
+                            )}
+                        </PriceTag>
+                        <FinalPrice>
+                            {new Intl.NumberFormat().format(
+                                Math.round(
+                                    Number(selectedProduct[0]?.final_price)
+                                )
+                            )}
+                            원
+                        </FinalPrice>
                     </PriceSection>
                 </>
             ) : (

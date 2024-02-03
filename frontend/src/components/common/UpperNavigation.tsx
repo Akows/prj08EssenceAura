@@ -367,20 +367,20 @@ const UpperNavigation: React.FC = () => {
                                 <DropdownItem to="/shoplist?tag=플로랄">
                                     플로랄
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=시트러스">
-                                    시트러스
+                                <DropdownItem to="/shoplist?tag=프레시 & 프루티">
+                                    프레시 & 프루티
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=우디">
-                                    우디
+                                <DropdownItem to="/shoplist?tag=네이처 & 어스">
+                                    네이처 & 어스
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=스파이시">
-                                    스파이시
+                                <DropdownItem to="/shoplist?tag=익조틱 & 센슈얼">
+                                    익조틱 & 센슈얼
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=머스크">
-                                    머스크
+                                <DropdownItem to="/shoplist?tag=아쿠아틱">
+                                    아쿠아틱
                                 </DropdownItem>
-                                <DropdownItem to="/shoplist?tag=프루티">
-                                    프루티
+                                <DropdownItem to="/shoplist?tag=파우더리">
+                                    파우더리
                                 </DropdownItem>
                                 <DropdownTitle>이벤트</DropdownTitle>
                                 <DropdownItem to="/shoplist?event=봄맞이할인">
