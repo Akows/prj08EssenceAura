@@ -29,7 +29,7 @@ const authSlice = createSlice({
     reducers: {
         loginSuccess: (state, action) => {
             state.userInfo = action.payload;
-            state.accessToken = action.payload.accessToken; // 액세스 토큰 저장
+            // state.accessToken = action.payload.accessToken;
             state.isLoggedIn = true;
         },
         loginFailure: (state, action) => {

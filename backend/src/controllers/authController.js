@@ -198,7 +198,7 @@ const checkAuthHandler = async (req, res) => {
 
         return res.json({
             userInfo: {
-                id: user.id,
+                user_id: user.user_id,
                 email: user.email,
                 username: user.username,
                 isAdmin: isAdmin
