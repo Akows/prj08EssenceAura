@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
+import springSaleBanner from '../../assets/springsalebanner.webp';
+import specialDiscountBanner from '../../assets/specialdiscountbanner.webp';
+import MDsRecommendationBanner from '../../assets/MDsrecommendationbanner.webp';
+
 // isActive 속성을 받기 위한 인터페이스 정의
 interface DotProps {
     isActive: boolean;
@@ -10,10 +14,12 @@ interface DotProps {
 const SliderContainer = styled.div`
     position: relative;
     height: 500px; // 슬라이더 높이 설정
+    display: flex;
     overflow: hidden;
 `;
 
 const Slide = styled.div`
+    flex-shrink: 0;
     width: 100%;
     height: 100%;
     transition: all 0.5s ease-in-out;
@@ -40,8 +46,8 @@ const ControlButton = styled.button`
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px; // 아이콘의 크기 조정
-    color: black; // 아이콘의 색상
+    color: gray;
+    font-size: 64px; // 아이콘의 크기 조정
     transition: background-color 0.3s;
 
     &:hover {
@@ -54,6 +60,8 @@ const PlayPauseButton = styled(ControlButton)`
     width: 30px;
     height: 30px;
     position: absolute;
+    font-size: 20px;
+    color: white;
     bottom: 16.5px;
     right: 10px;
 `;
@@ -87,12 +95,10 @@ const Dot = styled.button<DotProps>`
     }
 `;
 
-// 배너 예시
 const banners = [
-    '/banner1.jpg',
-    '/banner2.jpg',
-    '/banner3.jpg',
-    // ... 더 많은 배너 이미지
+    { img: springSaleBanner, event: '봄맞이할인' },
+    { img: specialDiscountBanner, event: '특별할인' },
+    { img: MDsRecommendationBanner, event: 'MD추천' },
 ];
 
 const Slider: React.FC = () => {
@@ -105,7 +111,7 @@ const Slider: React.FC = () => {
         if (index < 0) {
             // 첫 번째 슬라이드 이전으로 가려고 할 때 마지막 슬라이드로 설정
             setActiveIndex(banners.length - 1);
-        } else if (index > banners.length - 1) {
+        } else if (index >= banners.length) {
             // 마지막 슬라이드를 넘어서려고 할 때 첫 번째 슬라이드로 설정
             setActiveIndex(0);
         } else {
@@ -113,39 +119,44 @@ const Slider: React.FC = () => {
             setActiveIndex(index);
         }
     };
+
     // 자동 이동 함수
     const togglePlayPause = () => {
         setIsPlaying(!isPlaying);
     };
 
+    const handleImageClick = (event: string) => {
+        navigate(`/shoplist?event=${event}`);
+    };
+
     // 슬라이드 자동 이동
     useEffect(() => {
-        let interval: number | undefined; // interval의 타입을 number로 지정
+        let interval: number | undefined;
         if (isPlaying) {
             interval = window.setInterval(() => {
-                // window를 명시하여 브라우저의 setInterval을 사용한다는 것을 분명히 함
                 setActiveIndex((current) =>
                     current === banners.length - 1 ? 0 : current + 1
                 );
-            }, 3000);
+            }, 4000);
         }
         return () => {
             if (interval) {
                 clearInterval(interval);
             }
         };
-    }, [isPlaying, banners.length]);
+    }, [isPlaying, banners.length, activeIndex]);
 
     return (
         <SliderContainer>
             {banners.map((banner, index) => (
                 <Slide
                     key={index}
+                    onClick={() => handleImageClick(banner.event)}
                     style={{
                         transform: `translateX(-${activeIndex * 100}%)`,
                     }}
                 >
-                    <img src={banner} alt={`Banner ${index + 1}`} />
+                    <img src={banner.img} alt={`Banner ${index + 1}`} />
                 </Slide>
             ))}
             <SliderControls>
