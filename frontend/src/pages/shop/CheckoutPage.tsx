@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { createOrder } from '../../redux/order/orderThunk';
 
 const CheckoutContainer = styled.div`
     background: #fff;
@@ -76,19 +77,36 @@ const CheckoutPage: React.FC = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
+    const handleSubmit = () => {
         if (window.confirm('제품을 주문하시겠습니까?')) {
-            navigate('');
+            const orderData = {
+                user_id: userInfo.user_id,
+                username: userInfo.username,
+                email: userInfo.email,
+                delivery_address: '임시주소',
+                items: cartItems.map((item) => ({
+                    product_id: item.product_id,
+                    product_name: item.name,
+                    quantity: item.quantity,
+                    price: item.final_price,
+                })),
+                total_price: totalPrice,
+            };
+
+            dispatch(createOrder(orderData));
+            navigate('/confirm', {
+                state: {
+                    status: '주문 생성',
+                    message: '주문이 성공적으로 완료되었습니다.',
+                },
+            });
         } else {
             return;
         }
-
-        // 결제 처리 로직
     };
 
     useEffect(() => {
@@ -116,15 +134,12 @@ const CheckoutPage: React.FC = () => {
             setCartItems(cartFromLocalStorage);
             setTotalPrice(totalFromLocalStorage);
         }
-
-        console.log(cartItems);
-        console.log(totalPrice);
     }, [location]);
 
     return (
         <CheckoutContainer>
             <SectionTitle>결제 정보</SectionTitle>
-            <Form onSubmit={handleSubmit}>
+            <Form>
                 <Input placeholder="이름" value={userInfo.username} readOnly />
                 <Input
                     placeholder="이메일 주소"
@@ -147,7 +162,7 @@ const CheckoutPage: React.FC = () => {
                 ))}
                 <TotalPrice>총합: {totalPrice.toLocaleString()}원</TotalPrice>
             </SummaryContainer>
-            <ConfirmButton type="submit">결제 확인</ConfirmButton>
+            <ConfirmButton onClick={handleSubmit}>결제 확인</ConfirmButton>
         </CheckoutContainer>
     );
 };

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ConfirmationContainer = styled.div`
     margin: 30px;
@@ -46,14 +46,20 @@ const ConfirmationButton = styled.button`
 
 const PaymentConfirmationPage: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // 주문하기 버튼 클릭 핸들러
     const handleConfirmOrder = () => {
-        // 주문 로직 처리
-        // 예시로 alert을 띄우고 페이지 이동
-        alert('주문이 완료되었습니다.');
         navigate('/user?tab=orders');
     };
+
+    useEffect(() => {
+        const isStatus = location.state?.status;
+
+        if (!isStatus) {
+            alert('잘못된 접근입니다.');
+            navigate('/shop');
+        }
+    }, [location]);
 
     return (
         <ConfirmationContainer>

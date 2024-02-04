@@ -246,7 +246,7 @@ const sendVerificationEmailHandler = async (req, res) => {
             subject: '이메일 인증',
             html: `<h1>이메일 인증 코드입니다: ${result}</h1> 
             <p>앱에서 이 코드를 입력하여 이메일 인증을 완료해주세요.</p> 
-            `});
+        `});
 
         res.status(200).json({ message: '인증 이메일을 발송했습니다.' });
     } catch (error) {

@@ -1,25 +1,22 @@
 const db = require('../config/database');
 
-const createOrder = async (userId, items, totalAmount, deliveryAddress) => {
-    // 주문 데이터를 데이터베이스에 저장하는 로직
+const createOrder = async (data) => {
     try {
+        const user_id = data.user_id;
+        const total_price = data.total_price; // 전체 주문 금액
+        const discount_amount = data.discount_amount || 0; // 할인 금액, 없으면 0
+        const delivery_address = data.delivery_address; // 배송 주소
+        const order_items = JSON.stringify(data.items); // 주문 상품 정보를 JSON으로 변환
+
         const orderResult = await db.query(
-            'INSERT INTO orders (user_id, total_price, delivery_address, status, created_at) VALUES (?, ?, ?, "PENDING", NOW())',
-            [userId, totalAmount, deliveryAddress]
+            'INSERT INTO orders (user_id, total_price, discount_amount, delivery_address, order_items, status, created_at) VALUES (?, ?, ?, ?, ?, "PENDING", NOW())',
+            [user_id, total_price, discount_amount, delivery_address, order_items]
         );
 
-        const orderId = orderResult.insertId;
-
-        // order_details 테이블에 각 항목을 저장
-        for (const item of items) {
-            await db.query(
-                'INSERT INTO order_details (order_id, product_id, price, quantity) VALUES (?, ?, ?, ?)',
-                [orderId, item.productId, item.price, item.quantity]
-            );
-        }
-
+        const orderId = orderResult[0].insertId;
         return orderId;
     } catch (error) {
+        console.log(error);
         throw new Error('주문 생성 중 데이터베이스 오류가 발생했습니다.');
     }
 };
