@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import AlertConfirmModal from '../../components/common/AlertConfirmModal';
 import LoadingModal from '../../components/common/LoadingModal';
@@ -192,6 +192,7 @@ const ProductDetailPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('details');
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { product_Id } = useParams(); // URL로부터 상품 ID를 가져옵니다.
 
     const { selectedProduct, loading, error } = useSelector((state) => ({
@@ -199,7 +200,8 @@ const ProductDetailPage: React.FC = () => {
     }));
 
     const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setQuantity(Number(e.target.value));
+        const newQuantity = Math.max(1, Number(e.target.value));
+        setQuantity(newQuantity);
     };
 
     const renderContent = () => {
@@ -227,11 +229,53 @@ const ProductDetailPage: React.FC = () => {
     };
 
     const handlePlaceCart = () => {
-        window.location.href = '/shopcart';
+        if (window.confirm('장바구니에서 제품을 추가하시겠습니까?')) {
+            if (quantity > 0) {
+                // 로컬 스토리지에서 현재 장바구니 아이템을 불러옵니다.
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+                // 선택된 상품이 장바구니에 이미 있는지 확인합니다.
+                const existingItemIndex = cart.findIndex(
+                    (item) => item.product_id === selectedProduct[0]?.product_id
+                );
+
+                if (existingItemIndex !== -1) {
+                    // 상품이 이미 있으면, 수량만 업데이트합니다.
+                    cart[existingItemIndex].quantity = quantity;
+                } else {
+                    // 새로운 상품을 장바구니에 추가합니다.
+                    const newItem = {
+                        product_id: selectedProduct[0]?.product_id,
+                        image_url: selectedProduct[0]?.image_url,
+                        name: selectedProduct[0]?.name,
+                        final_price: selectedProduct[0]?.final_price,
+                        quantity: quantity, // 수량
+                        // selectedProduct에서 필요한 다른 필드를 추가하세요.
+                    };
+                    cart.push(newItem);
+                }
+
+                // 장바구니를 로컬 스토리지에 저장합니다.
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                // 사용자를 장바구니 페이지로 이동시킵니다.
+                navigate('/shopcart');
+            } else {
+                alert('수량을 선택해주세요.');
+            }
+        } else {
+            return;
+        }
     };
 
     const handleCheckOrder = () => {
-        window.location.href = '/checkout';
+        if (quantity === 0) {
+            alert('수량을 선택해주세요.');
+            return;
+        }
+        navigate('/checkout', {
+            state: { product: selectedProduct, quantity },
+        });
     };
 
     useEffect(() => {
@@ -318,6 +362,7 @@ const ProductDetailPage: React.FC = () => {
                     type="number"
                     value={quantity}
                     onChange={handleQuantityChange}
+                    min="1" // 최소값 설정
                 />
             </QuantitySelector>
             <PurchaseSection>

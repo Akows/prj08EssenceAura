@@ -1,76 +1,139 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ItemRow = styled.tr``;
+const ItemContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+    align-items: center;
 
-const ItemImage = styled.img`
-    width: 50px; // 이미지 크기는 디자인에 맞게 조정
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 `;
 
-const ItemDescription = styled.td`
-    padding: 8px;
+const Image = styled.img`
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+
+    @media (max-width: 768px) {
+        margin-right: 0;
+        margin-bottom: 10px;
+        width: 100%;
+        height: 50%;
+    }
+`;
+
+const Title = styled.h3`
+    flex: 1;
+
+    @media (max-width: 768px) {
+        margin-bottom: 10px;
+        font-size: 24px;
+        width: 100%;
+    }
+`;
+
+const PriceQuantityContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+`;
+
+const Price = styled.div`
+    padding: 0 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+
+    @media (max-width: 768px) {
+        padding: 0;
+        padding-bottom: 10px;
+        margin-right: 5px;
+    }
 `;
 
 const QuantityInput = styled.input`
-    width: 40px; // 수량 입력란의 너비
-`;
+    width: 50px;
 
-const Price = styled.td`
-    // 가격을 표시할 스타일
+    @media (max-width: 768px) {
+        margin-bottom: 10px;
+    }
 `;
 
 const RemoveButton = styled.button`
     background: none;
     border: none;
-    color: red;
+    font-size: 16px;
+    font-weight: bolder;
+    color: #f44336;
     cursor: pointer;
+
+    @media (max-width: 768px) {
+        font-size: 22px;
+        font-weight: bolder;
+        order: 3;
+    }
 `;
 
-// CartItem 컴포넌트의 props 타입 정의
 interface CartItemProps {
-    item: {
-        id: number;
-        imageUrl: string;
-        title: string;
-        price: number;
-        quantity: number;
-    };
-    onUpdateQuantity: (id: number, quantity: number) => void;
-    onRemove: (id: number) => void;
+    product_id: number;
+    image_url: string;
+    name: string;
+    final_price: number;
+    quantity: number;
 }
 
-const CartItem: React.FC<CartItemProps> = ({
+interface CartItemComponentProps {
+    item: CartItemProps;
+    onQuantityChange: (product_id: number, quantity: number) => void;
+    onRemove: (product_id: number) => void;
+}
+
+const CartItem: React.FC<CartItemComponentProps> = ({
     item,
-    onUpdateQuantity,
+    onQuantityChange,
     onRemove,
 }) => {
-    const { id, imageUrl, title, price, quantity } = item;
-
-    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // 입력 값에 따라 수량을 업데이트하는 로직
-        const newQuantity = parseInt(e.target.value, 10);
-        onUpdateQuantity(id, newQuantity);
-    };
+    // 가격을 정수로 표현하기 위해 parseInt를 사용
+    const formattedPrice = parseInt(item.final_price).toLocaleString();
 
     return (
-        <ItemRow>
-            <ItemDescription>
-                <ItemImage src={imageUrl} alt={title} />
-                {title}
-            </ItemDescription>
-            <ItemDescription>
+        <ItemContainer>
+            <Image src={item.image_url} alt={item.name} />
+            <Title>{item.name}</Title>
+
+            <PriceQuantityContainer>
+                <Price>{formattedPrice}원</Price>
+
                 <QuantityInput
                     type="number"
-                    value={quantity}
-                    onChange={handleQuantityChange}
+                    value={item.quantity}
+                    onChange={(e) =>
+                        onQuantityChange(
+                            item.product_id,
+                            parseInt(e.target.value)
+                        )
+                    }
+                    min="1"
                 />
-            </ItemDescription>
-            <Price>{`${price.toLocaleString()}원`}</Price>
-            {/* 배송비 등 다른 정보 필요한 경우 추가 */}
-            <ItemDescription>
-                <RemoveButton onClick={() => onRemove(id)}>삭제</RemoveButton>
-            </ItemDescription>
-        </ItemRow>
+            </PriceQuantityContainer>
+
+            <RemoveButton onClick={() => onRemove(item.product_id)}>
+                삭제
+            </RemoveButton>
+        </ItemContainer>
     );
 };
 
