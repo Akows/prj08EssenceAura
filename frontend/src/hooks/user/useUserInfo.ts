@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import {
     getUserInfoInformation,
+    getUserOrders,
     updateUserInfoInformation,
 } from '../../services/userService';
 import { UserInfo, UserUpdateInfo } from '../../type/usertypes';
@@ -19,10 +20,12 @@ export const useUserInfo = () => {
         createdAt: '',
         isVerified: false,
     });
-    const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+    const [isLoading, setIsLoading] = useState(false); // 로딩 상태
     const accessToken = useSelector(
         (state: RootState) => state.auth.accessToken
     );
+
+    const [userOrders, setUserOrders] = useState([]); // 사용자 주문 내역 상태
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -37,7 +40,20 @@ export const useUserInfo = () => {
             }
         };
 
+        const fetchUserOrders = async () => {
+            setIsLoading(true); // 데이터 로드 시작
+            try {
+                const orders = await getUserOrders(accessToken);
+                setUserOrders(orders[0]);
+            } catch (error) {
+                // 오류 처리
+            } finally {
+                setIsLoading(false); // 로드 완료
+            }
+        };
+
         fetchUserInfo();
+        fetchUserOrders();
     }, [accessToken]); // accessToken을 의존성 배열에 추가
 
     const updateUserInfo = async (newUserInfo: UserUpdateInfo) => {
@@ -51,5 +67,5 @@ export const useUserInfo = () => {
         }
     };
 
-    return { userInfo, setUserInfo, updateUserInfo, isLoading };
+    return { userInfo, setUserInfo, updateUserInfo, isLoading, userOrders };
 };

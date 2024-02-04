@@ -10,7 +10,24 @@ const updateUserInfo = async (userId, updateData) => {
     // 업데이트된 정보를 반환하지 않고, 성공 메시지만 반환합니다.
 };
 
+const getOrdersByUserId = async (userId) => {
+    try {
+        console.log(userId);
+
+
+        const orders = await db.query(
+            'SELECT * FROM orders WHERE user_id = ?',
+            [userId]
+        );
+        return orders;
+    } catch (error) {
+        console.log(error);
+        throw new Error('주문 내역 조회 중 데이터베이스 오류가 발생했습니다.');
+    }
+};
+
 module.exports = {
     getUserInfo,
     updateUserInfo,
+    getOrdersByUserId,
 };

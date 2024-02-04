@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import UserInfoForm from '../../components/user/UserInfoForm';
+import UserOrdersForm from '../../components/user/UserOrdersForm';
 
 interface TabProps {
     active: boolean;
@@ -109,20 +110,7 @@ const UserProfilePage: React.FC = () => {
 
             {activeTab === 'userInfo' && <UserInfoForm />}
 
-            {activeTab === 'orders' && (
-                <OrderList>
-                    <SectionTitle>구매내역</SectionTitle>
-                    <OrderList>
-                        {dummyOrders.map((order) => (
-                            <OrderItem key={order.id}>
-                                <div>제품명: {order.product}</div>
-                                <div>주문날짜: {order.date}</div>
-                                <div>주문상태: {order.status}</div>
-                            </OrderItem>
-                        ))}
-                    </OrderList>
-                </OrderList>
-            )}
+            {activeTab === 'orders' && <UserOrdersForm />}
         </Container>
     );
 };

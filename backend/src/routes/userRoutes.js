@@ -9,4 +9,7 @@ router.get('/get-userinfo', authenticateAccessToken, userController.getUserInfoH
 // 유저 정보 수정
 router.put('/update-userinfo', authenticateAccessToken, userController.updateUserInfoHandler);
 
+// 주문 정보 조회.
+router.get('/get-orderinfo', authenticateAccessToken, userController.getOrdersByUserIdHandler);
+
 module.exports = router;
