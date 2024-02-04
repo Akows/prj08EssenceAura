@@ -1,320 +1,153 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const CheckoutContainer = styled.div`
-    width: 80%;
-    max-width: 1200px;
-    margin-top: 60px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 30px;
+    font-family: 'Open Sans', sans-serif;
 `;
 
-const Breadcrumb = styled.div`
-    font-size: 12px;
-    color: #666;
-    margin-top: 20px;
+const SectionTitle = styled.h2`
+    color: #333;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 `;
 
-const ProductList = styled.div`
-    margin-top: 20px;
-`;
-
-const ProductItem = styled.div`
+const Form = styled.form`
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-`;
-
-const ProductImage = styled.img`
-    width: 60px;
-    height: 60px;
-    margin-right: 10px;
-`;
-
-const ProductName = styled.span`
-    flex: 1;
-`;
-
-const ProductQuantity = styled.span`
-    margin-right: 10px;
-`;
-
-const ProductPrice = styled.span``;
-
-const UserInfo = styled.div`
-    margin-top: 20px;
+    flex-direction: column;
+    gap: 10px;
 `;
 
 const Input = styled.input`
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-`;
-
-const Checkbox = styled.input`
-    margin-right: 5px;
-`;
-
-const OrderSummary = styled.div`
-    margin-top: 20px;
-`;
-
-const PaymentMethod = styled.div`
-    margin-top: 20px;
-`;
-
-const RadioGroup = styled.div`
+    padding: 10px;
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
     margin-bottom: 10px;
 `;
 
-const ButtonGroup = styled.div`
+const SummaryContainer = styled.div`
     margin-top: 20px;
+`;
+
+const ProductSummary = styled.div`
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
 `;
 
-const Button = styled.button`
-    padding: 10px 20px;
-    border: none;
+const ProductName = styled.span`
+    font-weight: bold;
+`;
+
+const ProductPrice = styled.span`
+    color: #e44d26;
+    font-weight: bold;
+`;
+
+const TotalPrice = styled.div`
+    font-size: 18px;
+    text-align: right;
+    margin-top: 20px;
+`;
+
+const ConfirmButton = styled.button`
     background-color: #e44d26;
     color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
 
     &:hover {
         background-color: #f55f3b;
     }
 `;
 
-const Label = styled.label`
-    display: block;
-    margin-bottom: 5px;
-`;
-
-const CheckboxLabel = styled.label`
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-`;
-
-const RadioLabel = styled.label`
-    display: flex;
-    align-items: center;
-`;
-
-const SummaryRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-`;
-
-const AgreementSection = styled.div`
-    margin-top: 20px;
-`;
-
-const AgreementCheckbox = styled.input`
-    margin-right: 5px;
-`;
-
-const AgreementText = styled.span`
-    font-size: 14px;
-`;
-
 const CheckoutPage: React.FC = () => {
-    // 예시 데이터.
-    const [products] = useState([
-        { id: 1, name: '향수 A', quantity: 1, price: 35000 },
-        // 다른 제품들...
-    ]);
+    const { userInfo } = useSelector((state) => state.auth);
 
-    // 예시 주문 요약 정보
-    const [orderSummary] = useState({
-        total: 70000,
-        shipping: 2500,
-        discount: 0,
-        totalDue: 72500,
-    });
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [cartItems, setCartItems] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
-    // 결제 방법 선택을 위한 상태
-    const [paymentMethod, setPaymentMethod] = useState('transfer');
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-    // 주문자 동의 여부 상태
-    const [agreement, setAgreement] = useState(false);
+        if (window.confirm('제품을 주문하시겠습니까?')) {
+            navigate('');
+        } else {
+            return;
+        }
 
-    // 주문하기 버튼 클릭 핸들러
-    const handlePlaceOrder = () => {
-        // 주문 로직 처리
-        // 예시로 alert을 띄우고 페이지 이동
-        alert('주문이 완료되었습니다.');
-        window.location.href = '/confirm';
+        // 결제 처리 로직
     };
 
-    // 주문 취소 버튼 클릭 핸들러
-    const handleCancelOrder = () => {
-        // 주문 취소 로직 처리
-        // 예시로 홈페이지로 이동
-        window.location.href = '/shop';
-    };
+    useEffect(() => {
+        // 상품 상세 페이지에서 넘어온 데이터가 있는지 확인
+        const productFromDetailPage = location.state?.product;
+        const quantityFromDetailPage = location.state?.quantity;
+
+        if (productFromDetailPage && quantityFromDetailPage) {
+            // 상품 상세 페이지에서 넘어온 데이터를 기반으로 결제 항목 설정
+            setCartItems([
+                { ...productFromDetailPage, quantity: quantityFromDetailPage },
+            ]);
+            setTotalPrice(
+                productFromDetailPage.final_price * quantityFromDetailPage
+            );
+        } else {
+            // 장바구니 페이지에서 넘어온 데이터를 로컬 스토리지에서 불러옴
+            const cartFromLocalStorage = JSON.parse(
+                localStorage.getItem('cart') || '[]'
+            );
+            const totalFromLocalStorage = JSON.parse(
+                localStorage.getItem('totalPrice') || '0'
+            );
+
+            setCartItems(cartFromLocalStorage);
+            setTotalPrice(totalFromLocalStorage);
+        }
+
+        console.log(cartItems);
+        console.log(totalPrice);
+    }, [location]);
 
     return (
         <CheckoutContainer>
-            <Breadcrumb>쇼핑몰 {'>'} 구매확인</Breadcrumb>
-
-            <ProductList>
-                {products.map((product) => (
-                    <ProductItem key={product.id}>
-                        <ProductImage
-                            src={`https://via.placeholder.com/60`}
-                            alt={product.name}
-                        />
-                        <ProductName>{product.name}</ProductName>
-                        <ProductQuantity>{product.quantity}개</ProductQuantity>
-                        <ProductPrice>{product.price}원</ProductPrice>
-                    </ProductItem>
+            <SectionTitle>결제 정보</SectionTitle>
+            <Form onSubmit={handleSubmit}>
+                <Input placeholder="이름" value={userInfo.username} readOnly />
+                <Input
+                    placeholder="이메일 주소"
+                    value={userInfo.email}
+                    readOnly
+                />
+                {/* 추가 필요한 필드 */}
+                {/* 결제 방법 및 기타 정보 입력 필드 */}
+            </Form>
+            <SummaryContainer>
+                <SectionTitle>주문 요약</SectionTitle>
+                {cartItems.map((item) => (
+                    <ProductSummary key={item.product_id}>
+                        <ProductName>{item.name}</ProductName>
+                        <ProductPrice>
+                            {parseFloat(item.final_price.toLocaleString())}원 x{' '}
+                            {item.quantity}
+                        </ProductPrice>
+                    </ProductSummary>
                 ))}
-            </ProductList>
-
-            <UserInfo>
-                {/* 주문자 정보 입력 UI */}
-                <Label htmlFor="name">이름</Label>
-                <Input id="name" type="text" placeholder="이름을 입력하세요" />
-
-                <Label htmlFor="email">이메일</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    placeholder="이메일을 입력하세요"
-                />
-
-                <Label htmlFor="phone">연락처</Label>
-                <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="연락처를 입력하세요"
-                />
-            </UserInfo>
-
-            <UserInfo>
-                {/* 배송 정보 입력 UI */}
-                <CheckboxLabel>
-                    <Checkbox type="checkbox" />
-                    주문자 정보와 동일
-                </CheckboxLabel>
-
-                <Label htmlFor="shippingName">이름</Label>
-                <Input
-                    id="shippingName"
-                    type="text"
-                    placeholder="이름을 입력하세요"
-                />
-
-                <Label htmlFor="shippingPhone">연락처</Label>
-                <Input
-                    id="shippingPhone"
-                    type="tel"
-                    placeholder="연락처를 입력하세요"
-                />
-
-                <Label htmlFor="address">주소</Label>
-                <Input
-                    id="address"
-                    type="text"
-                    placeholder="배송 주소를 입력하세요"
-                />
-
-                <Label htmlFor="orderNote">주문 메시지</Label>
-                <Input
-                    id="orderNote"
-                    type="text"
-                    placeholder="주문과 관련된 메시지가 있다면 입력하세요"
-                />
-            </UserInfo>
-
-            <OrderSummary>
-                {/* 주문 요약 정보 출력 */}
-                <SummaryRow>
-                    <span>제품 합계</span>
-                    <span>{orderSummary.total}원</span>
-                </SummaryRow>
-                <SummaryRow>
-                    <span>배송료</span>
-                    <span>{orderSummary.shipping}원</span>
-                </SummaryRow>
-                <SummaryRow>
-                    <span>할인 금액</span>
-                    <span>-{orderSummary.discount}원</span>
-                </SummaryRow>
-                <SummaryRow>
-                    <strong>총 결제예정액</strong>
-                    <strong>{orderSummary.totalDue}원</strong>
-                </SummaryRow>
-            </OrderSummary>
-
-            <PaymentMethod>
-                {/* 결제 방법 선택 UI */}
-                <RadioGroup>
-                    <RadioLabel>
-                        <Input
-                            type="radio"
-                            name="paymentMethod"
-                            value="transfer"
-                            checked={paymentMethod === 'transfer'}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setPaymentMethod(e.target.value)
-                            }
-                        />
-                        무통장 입금
-                    </RadioLabel>
-                </RadioGroup>
-                <RadioGroup>
-                    <RadioLabel>
-                        <Input
-                            type="radio"
-                            name="paymentMethod"
-                            value="card"
-                            checked={paymentMethod === 'card'}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setPaymentMethod(e.target.value)
-                            }
-                        />
-                        카드 결제
-                    </RadioLabel>
-                </RadioGroup>
-                <RadioGroup>
-                    <RadioLabel>
-                        <Input
-                            type="radio"
-                            name="paymentMethod"
-                            value="accountTransfer"
-                            checked={paymentMethod === 'accountTransfer'}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setPaymentMethod(e.target.value)
-                            }
-                        />
-                        계좌 이체
-                    </RadioLabel>
-                </RadioGroup>
-            </PaymentMethod>
-
-            <AgreementSection>
-                {/* 주문자 동의 항목 */}
-                <CheckboxLabel>
-                    <AgreementCheckbox
-                        type="checkbox"
-                        checked={agreement}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            setAgreement(e.target.checked)
-                        }
-                    />
-                    <AgreementText>
-                        구매 진행에 필요한 약관 및 개인정보 수집 이용에
-                        동의합니다.
-                    </AgreementText>
-                </CheckboxLabel>
-            </AgreementSection>
-
-            <ButtonGroup>
-                <Button onClick={handlePlaceOrder}>주문하기</Button>
-                <Button onClick={handleCancelOrder}>주문 취소</Button>
-            </ButtonGroup>
+                <TotalPrice>총합: {totalPrice.toLocaleString()}원</TotalPrice>
+            </SummaryContainer>
+            <ConfirmButton type="submit">결제 확인</ConfirmButton>
         </CheckoutContainer>
     );
 };

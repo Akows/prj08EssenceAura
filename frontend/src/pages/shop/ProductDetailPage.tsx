@@ -269,13 +269,22 @@ const ProductDetailPage: React.FC = () => {
     };
 
     const handleCheckOrder = () => {
-        if (quantity === 0) {
-            alert('수량을 선택해주세요.');
+        if (window.confirm('제품을 구매하시겠습니까?')) {
+            if (quantity === 0) {
+                alert('수량을 선택해주세요.');
+                return;
+            }
+
+            // navigate 함수를 통해 결제 페이지로 상품 정보와 수량을 전달합니다.
+            navigate('/checkout', {
+                state: {
+                    product: selectedProduct[0], // 현재 선택된 상품의 정보
+                    quantity: quantity, // 선택된 수량
+                },
+            });
+        } else {
             return;
         }
-        navigate('/checkout', {
-            state: { product: selectedProduct, quantity },
-        });
     };
 
     useEffect(() => {
