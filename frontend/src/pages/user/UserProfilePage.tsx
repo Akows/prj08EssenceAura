@@ -10,7 +10,7 @@ interface TabProps {
 }
 
 const Container = styled.div`
-    width: 100%;
+    width: 90%;
     max-width: 1200px;
     padding: 20px;
     border: 1px solid #ddd;
@@ -21,22 +21,6 @@ const Container = styled.div`
 const Title = styled.h1`
     text-align: center;
     margin-top: 20px;
-`;
-
-const SectionTitle = styled.h2`
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
-    margin-top: 20px;
-`;
-
-const OrderList = styled.ul`
-    list-style-type: none;
-    padding: 0;
-`;
-
-const OrderItem = styled.li`
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
 `;
 
 const Tabs = styled.div`
@@ -58,13 +42,6 @@ const Tab = styled.button<TabProps>`
     font-weight: bold;
   `}
 `;
-
-// 가상의 데이터
-const dummyOrders = [
-    { id: 1, product: '제품 A', date: '2023-01-01', status: '배송 완료' },
-    { id: 2, product: '제품 B', date: '2023-01-05', status: '배송 중' },
-    // ...더 많은 주문...
-];
 
 // 회원 정보 페이지 컴포넌트
 const UserProfilePage: React.FC = () => {

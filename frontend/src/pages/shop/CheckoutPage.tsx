@@ -4,7 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { createOrder } from '../../redux/order/orderThunk';
 
+const mobileSize = '768px';
+
 const CheckoutContainer = styled.div`
+    width: 90%;
     background: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -26,6 +29,13 @@ const Form = styled.form`
     gap: 10px;
 `;
 
+const InputTitle = styled.span`
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block; // 타이틀을 블록 요소로 만듦
+`;
+
 const Input = styled.input`
     padding: 10px;
     border: 1px solid #eaeaea;
@@ -39,8 +49,12 @@ const SummaryContainer = styled.div`
 
 const ProductSummary = styled.div`
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     margin-bottom: 10px;
+    @media (max-width: ${mobileSize}) {
+        flex-direction: column; // 모바일 환경에서는 위아래로 쌓임
+    }
 `;
 
 const ProductName = styled.span`
@@ -53,25 +67,28 @@ const ProductPrice = styled.span`
 `;
 
 const TotalPrice = styled.div`
-    font-size: 18px;
+    font-size: 28px;
     text-align: right;
     margin-top: 20px;
+    font-weight: bold; // 글씨를 두껍게
+    color: #e44d26; // 색상 변경
 `;
 
 const ConfirmButton = styled.button`
     background-color: #e44d26;
     color: white;
-    padding: 10px 15px;
+    padding: 15px 0; // 상하 패딩을 늘림
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-
+    width: 100%; // 버튼의 너비를 부모 컨테이너의 100%로 설정
+    margin-top: 30px; // 버튼과 요약 영역 사이의 거리를 늘림
+    transition: background-color 0.3s ease; // 호버 효과 추가
     &:hover {
         background-color: #f55f3b;
     }
 `;
-
 const CheckoutPage: React.FC = () => {
     const { userInfo } = useSelector((state) => state.auth);
 
@@ -146,12 +163,10 @@ const CheckoutPage: React.FC = () => {
         <CheckoutContainer>
             <SectionTitle>결제 정보</SectionTitle>
             <Form>
-                <Input placeholder="이름" value={userInfo.username} readOnly />
-                <Input
-                    placeholder="이메일 주소"
-                    value={userInfo.email}
-                    readOnly
-                />
+                <InputTitle>이름</InputTitle>
+                <Input value={userInfo.username} readOnly />
+                <InputTitle>이메일 주소</InputTitle>
+                <Input value={userInfo.email} readOnly />
                 {/* 추가 필요한 필드 */}
                 {/* 결제 방법 및 기타 정보 입력 필드 */}
             </Form>
@@ -162,7 +177,7 @@ const CheckoutPage: React.FC = () => {
                         <ProductName>{item.name}</ProductName>
                         <ProductPrice>
                             {parseFloat(item.final_price.toLocaleString())}원 x{' '}
-                            {item.quantity}
+                            {item.quantity}개
                         </ProductPrice>
                     </ProductSummary>
                 ))}

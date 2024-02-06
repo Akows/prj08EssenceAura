@@ -11,7 +11,23 @@ const Form = styled.form`
 `;
 
 const Label = styled.label`
+    font-weight: bold;
+    color: #333;
     margin-top: 15px;
+    display: block; // 레이블을 블록 요소로 만듦
+`;
+
+const UserInfoDisplay = styled.div`
+    padding: 8px;
+    margin-top: 5px;
+    background: #f7f7f7;
+    border-radius: 4px;
+    border: 1px solid #eaeaea;
+`;
+
+const UserInfoText = styled.span`
+    color: #333;
+    margin-right: 5px;
 `;
 
 const Input = styled.input`
@@ -20,6 +36,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
+    width: 100%;
     padding: 10px 15px;
     margin-top: 20px;
     background-color: #e44d26;
@@ -124,11 +141,26 @@ const UserInfoForm: React.FC = () => {
                     </>
                 ) : (
                     <>
-                        <div>이름: {userInfo.username}</div>
-                        <div>이메일: {userInfo.email}</div>
-                        <div>주소: {userInfo.address}</div>
-                        <div>건물명: {userInfo.building_name}</div>
-                        <div>전화번호: {userInfo.phone_number}</div>
+                        <UserInfoDisplay>
+                            <UserInfoText>이름:</UserInfoText>{' '}
+                            {userInfo.username}
+                        </UserInfoDisplay>
+                        <UserInfoDisplay>
+                            <UserInfoText>이메일:</UserInfoText>{' '}
+                            {userInfo.email}
+                        </UserInfoDisplay>
+                        <UserInfoDisplay>
+                            <UserInfoText>주소:</UserInfoText>{' '}
+                            {userInfo.address}
+                        </UserInfoDisplay>
+                        <UserInfoDisplay>
+                            <UserInfoText>건물명:</UserInfoText>{' '}
+                            {userInfo.building_name}
+                        </UserInfoDisplay>
+                        <UserInfoDisplay>
+                            <UserInfoText>전화번호:</UserInfoText>{' '}
+                            {userInfo.phone_number}
+                        </UserInfoDisplay>
 
                         <EditButton type="button" onClick={handleEditClick}>
                             수정하기
