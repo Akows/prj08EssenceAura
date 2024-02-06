@@ -18,6 +18,10 @@ const FooterTop = styled.div`
     display: flex;
     justify-content: space-evenly; // 항목들을 균등하게 분포
     margin-bottom: 20px; // 하단 텍스트와의 여백
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 `;
 
 const FooterLink = styled.a`
@@ -26,6 +30,10 @@ const FooterLink = styled.a`
 
     &:hover {
         text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        margin-bottom: 5px;
     }
 `;
 

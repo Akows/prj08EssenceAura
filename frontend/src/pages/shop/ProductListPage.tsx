@@ -44,7 +44,7 @@ const ProductGrid = styled.div`
     gap: 20px;
     margin-left: 40px; // Sidebar와의 간격 추가
     @media (max-width: 1024px) {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(1, 1fr);
         margin-left: 0; // 모바일 뷰에서는 간격을 제거
     }
 `;

@@ -67,7 +67,7 @@ const DropdownButton = styled.button`
 `;
 
 const DropdownContent = styled.div`
-    display: none;
+    display: ${(props) => (props.isOpen ? 'block' : 'none')};
     position: absolute;
     background-color: white; // 배경색 변경
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); // 그림자 효과 수정
@@ -76,9 +76,9 @@ const DropdownContent = styled.div`
     border-radius: 4px; // 둥근 모서리
     overflow: hidden; // 내부 요소가 넘치지 않도록 설정
 
-    ${Dropdown}:hover & {
+    /* ${Dropdown}:hover & {
         display: block; // 드롭다운 보이기
-    }
+    } */
 `;
 
 const DropdownTitle = styled.div`
@@ -247,6 +247,7 @@ const UserButtonContainer = styled.div`
 
 const UpperNavigation: React.FC = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState<
@@ -289,8 +290,22 @@ const UpperNavigation: React.FC = () => {
         navigate(`/shoplist?${param}`);
     };
 
+    const toggleDropdown = () => {
+        setIsMobileMenuOpen(false);
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     const toggleMobileMenu = () => {
+        setIsDropdownOpen(false);
         setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeDropdown = () => {
+        setIsDropdownOpen(false);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
     };
 
     // debounce를 적용한 검색 함수
@@ -347,8 +362,13 @@ const UpperNavigation: React.FC = () => {
                         <LogoButton to="/shop">EssenceAura</LogoButton>
 
                         <Dropdown>
-                            <DropdownButton>상품보기</DropdownButton>
-                            <DropdownContent className="dropdown-content">
+                            <DropdownButton onClick={toggleDropdown}>
+                                상품보기
+                            </DropdownButton>
+                            <DropdownContent
+                                isOpen={isDropdownOpen}
+                                onClick={closeDropdown}
+                            >
                                 <DropdownTitle>전체상품</DropdownTitle>
                                 <DropdownItem to="/shoplist?title=전체상품">
                                     전체상품보기
@@ -519,13 +539,17 @@ const UpperNavigation: React.FC = () => {
                                     </DropdownLink>
                                     <DropdownLink
                                         to={isAdmin ? '/admin' : '/user'}
+                                        onClick={closeMobileMenu}
                                     >
                                         <MdPerson /> 사용자 프로필
                                     </DropdownLink>
                                 </UserButtonContainer>
                             ) : (
                                 <UserButtonContainer>
-                                    <DropdownLink to="/login">
+                                    <DropdownLink
+                                        to="/login"
+                                        onClick={closeMobileMenu}
+                                    >
                                         <MdPerson /> 로그인
                                     </DropdownLink>
                                 </UserButtonContainer>
