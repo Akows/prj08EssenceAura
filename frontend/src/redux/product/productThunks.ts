@@ -1,9 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 
-// API의 기본 URL 설정
-const API_BASE_URL = 'http://localhost:3001/product';
-
 // 제품 조회에 사용될 파라미터 인터페이스 정의
 interface ProductParams {
     productId?: number;
@@ -24,7 +21,9 @@ export const fetchProduct = createAsyncThunk(
         try {
             // API로부터 단일 제품 정보를 조회
             const response = await axios.get(
-                `${API_BASE_URL}/fetchProduct/${productId}`
+                `${
+                    import.meta.env.VITE_API_URL
+                }/product/fetchProduct/${productId}`
             );
             return response.data;
         } catch (error) {
@@ -42,9 +41,12 @@ export const fetchProducts = createAsyncThunk(
         try {
             // API로부터 조건에 맞는 제품 목록을 조회
             // 이때, 이름, 카테고리, 태그, 이벤트, 정렬 기준, 페이지네이션 등의 파라미터 사용
-            const response = await axios.get(`${API_BASE_URL}/fetchProducts`, {
-                params,
-            });
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/product/fetchProducts`,
+                {
+                    params,
+                }
+            );
             return response.data;
         } catch (error) {
             // 오류 발생 시 처리
@@ -60,9 +62,12 @@ export const fetchMainPageProducts = createAsyncThunk(
         try {
             // API로부터 조건에 맞는 제품 목록을 조회
             // 이때, 이름, 카테고리, 태그, 이벤트, 정렬 기준, 페이지네이션 등의 파라미터 사용
-            const response = await axios.get(`${API_BASE_URL}/fetchProducts`, {
-                params,
-            });
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/product/fetchProducts`,
+                {
+                    params,
+                }
+            );
             return response.data;
         } catch (error) {
             // 오류 발생 시 처리
@@ -78,7 +83,9 @@ export const fetchSearchSuggestions = createAsyncThunk(
     async (keyword: string, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `${API_BASE_URL}/suggestions?keyword=${keyword}`
+                `${
+                    import.meta.env.VITE_API_URL
+                }/product/suggestions?keyword=${keyword}`
             );
 
             // API로부터 받은 데이터를 가공합니다.
@@ -124,7 +131,7 @@ export const fetchTopSellingProductsByCategory = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `${API_BASE_URL}/topSellingByCategory`
+                `${import.meta.env.VITE_API_URL}/product/topSellingByCategory`
             );
             return response.data;
         } catch (error) {

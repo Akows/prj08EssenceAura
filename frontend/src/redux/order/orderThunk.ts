@@ -7,9 +7,6 @@ import {
     PaymentResponse,
 } from '../../type/orderTypes';
 
-// API의 기본 URL 설정
-const API_BASE_URL = 'http://localhost:3001/order';
-
 export const createOrder = createAsyncThunk<
     OrderResponse,
     Order,
@@ -17,7 +14,7 @@ export const createOrder = createAsyncThunk<
 >('order/createOrder', async (orderData, { rejectWithValue }) => {
     try {
         const response = await axios.post<OrderResponse>(
-            `${API_BASE_URL}/createOrder`,
+            `${import.meta.env.VITE_API_URL}/order/createOrder`,
             orderData
         );
         return response.data;
@@ -36,7 +33,7 @@ export const processPayment = createAsyncThunk<
 >('order/processPayment', async (paymentData, { rejectWithValue }) => {
     try {
         const response = await axios.post<PaymentResponse>(
-            `${API_BASE_URL}/processPayment`,
+            `${import.meta.env.VITE_API_URL}/order/processPayment`,
             paymentData
         );
         return response.data;

@@ -1,7 +1,5 @@
 import { Admin, User } from '../type/admintypes';
 
-const API_BASE_URL = 'http://localhost:3001/admin';
-
 // fetch 요청을 위한 공통 설정
 const fetchOptions: RequestInit = {
     credentials: 'include', // HttpOnly 쿠키 포함
@@ -40,7 +38,9 @@ const handleResponse = async (response: Response) => {
 // 유저 검색 (이메일로 검색)
 export const searchUserByEmail = async (emailKeyword: string) => {
     const response = await fetch(
-        `${API_BASE_URL}/searchUser/search?email=${emailKeyword}`,
+        `${
+            import.meta.env.VITE_API_URL
+        }/admin/searchUser/search?email=${emailKeyword}`,
         {
             ...fetchOptions,
             method: 'GET',
@@ -51,27 +51,33 @@ export const searchUserByEmail = async (emailKeyword: string) => {
 
 // 전체 유저 목록 조회
 export const getAllUsers = async () => {
-    const response = await fetch(`${API_BASE_URL}/getusers`, {
-        ...fetchOptions,
-        method: 'GET',
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/getusers`,
+        {
+            ...fetchOptions,
+            method: 'GET',
+        }
+    );
     return await handleResponse(response);
 };
 
 // 유저 정보 업데이트
 export const updateUser = async (userId: number, userData: User) => {
-    const response = await fetch(`${API_BASE_URL}/putusers/${userId}`, {
-        ...fetchOptions,
-        method: 'PUT',
-        body: JSON.stringify(userData),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/putusers/${userId}`,
+        {
+            ...fetchOptions,
+            method: 'PUT',
+            body: JSON.stringify(userData),
+        }
+    );
     return await handleResponse(response);
 };
 
 // 유저 비활성화
 export const deactivateUser = async (userId: number) => {
     const response = await fetch(
-        `${API_BASE_URL}/patchusers/${userId}/deactivate`,
+        `${import.meta.env.VITE_API_URL}/admin/patchusers/${userId}/deactivate`,
         {
             ...fetchOptions,
             method: 'PATCH',
@@ -82,38 +88,50 @@ export const deactivateUser = async (userId: number) => {
 
 // 전체 관리자 목록 조회
 export const getAllAdmins = async () => {
-    const response = await fetch(`${API_BASE_URL}/getadmins`, {
-        ...fetchOptions,
-        method: 'GET',
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/getadmins`,
+        {
+            ...fetchOptions,
+            method: 'GET',
+        }
+    );
     return await handleResponse(response);
 };
 
 // 관리자 정보 추가
 export const createAdmin = async (adminData: Admin) => {
-    const response = await fetch(`${API_BASE_URL}/postadmins`, {
-        ...fetchOptions,
-        method: 'POST',
-        body: JSON.stringify(adminData),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/postadmins`,
+        {
+            ...fetchOptions,
+            method: 'POST',
+            body: JSON.stringify(adminData),
+        }
+    );
     return await handleResponse(response);
 };
 
 // 관리자 정보 업데이트
 export const updateAdmin = async (adminId: number, adminData: Admin) => {
-    const response = await fetch(`${API_BASE_URL}/putadmins/${adminId}`, {
-        ...fetchOptions,
-        method: 'PUT',
-        body: JSON.stringify(adminData),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/putadmins/${adminId}`,
+        {
+            ...fetchOptions,
+            method: 'PUT',
+            body: JSON.stringify(adminData),
+        }
+    );
     return await handleResponse(response);
 };
 
 // 관리자 삭제
 export const deleteAdmin = async (adminId: number) => {
-    const response = await fetch(`${API_BASE_URL}/deleteadmins/${adminId}`, {
-        ...fetchOptions,
-        method: 'DELETE',
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/deleteadmins/${adminId}`,
+        {
+            ...fetchOptions,
+            method: 'DELETE',
+        }
+    );
     return await handleResponse(response);
 };

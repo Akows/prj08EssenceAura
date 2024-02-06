@@ -1,20 +1,21 @@
 import { UserInfo, UserUpdateInfo } from '../type/usertypes';
 import { fetchNewAccessToken } from './authService';
 
-const API_BASE_URL = 'http://localhost:3001/user';
-
 // 현재 로그인한 사용자의 정보를 가져오는 함수
 export const getUserInfoInformation = async (
     accessToken: string | null
 ): Promise<UserInfo> => {
-    const response = await fetch(`${API_BASE_URL}/get-userinfo`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-        },
-        credentials: 'include',
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/get-userinfo`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            credentials: 'include',
+        }
+    );
 
     // 401 또는 403 오류 처리
     if (response.status === 401 || response.status === 403) {
@@ -36,15 +37,18 @@ export const updateUserInfoInformation = async (
     userInfo: UserUpdateInfo,
     accessToken: string | null
 ): Promise<UserInfo> => {
-    const response = await fetch(`${API_BASE_URL}/update-userinfo`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify(userInfo),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/update-userinfo`,
+        {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            credentials: 'include',
+            body: JSON.stringify(userInfo),
+        }
+    );
 
     // 401 또는 403 오류 처리
     if (response.status === 401 || response.status === 403) {
@@ -66,14 +70,17 @@ export const getUserOrders = async (
     accessToken: string | null
 ): Promise<any> => {
     // 주문 정보 타입을 정확히 알 수 없으므로 any 타입을 사용하였습니다. 실제 타입이 정해지면 수정이 필요합니다.
-    const response = await fetch(`${API_BASE_URL}/get-orderinfo`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-        },
-        credentials: 'include',
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/get-orderinfo`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+            credentials: 'include',
+        }
+    );
 
     if (response.status === 401 || response.status === 403) {
         const newAccessToken = await fetchNewAccessToken();

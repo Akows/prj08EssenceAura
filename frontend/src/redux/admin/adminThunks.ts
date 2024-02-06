@@ -1,8 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/admin';
-
 export type Product = {
     product_id?: number; // 상품 ID
     name: string; // 상품 이름
@@ -51,7 +49,7 @@ export const fetchProducts = createAsyncThunk<ApiResponse<Product[]>>(
         try {
             // API에서 상품 목록을 GET 요청으로 가져온다.
             const response = await axios.get<ApiResponse<Product[]>>(
-                `${API_BASE_URL}/fetchProducts`
+                `${import.meta.env.VITE_API_URL}/admin/fetchProducts`
             );
             // 요청이 성공하면 응답 데이터를 반환한다.
             return response.data;
@@ -75,7 +73,7 @@ export const addProduct = createAsyncThunk<ApiResponse<Product>, Product>(
         try {
             // API에 새 상품 데이터를 POST 요청으로 전송.
             const response = await axios.post<ApiResponse<Product>>(
-                `${API_BASE_URL}/addProduct`,
+                `${import.meta.env.VITE_API_URL}/admin/addProduct`,
                 productData
             );
             return response.data;
@@ -99,7 +97,7 @@ export const updateProduct = createAsyncThunk<
     try {
         // API에 상품 ID를 사용하여 해당 상품을 PUT 요청으로 수정.
         const response = await axios.put<ApiResponse<Product>>(
-            `${API_BASE_URL}/updateProduct/${id}`,
+            `${import.meta.env.VITE_API_URL}/admin/updateProduct/${id}`,
             productData
         );
         return response.data;
@@ -121,7 +119,7 @@ export const deleteProduct = createAsyncThunk<ApiResponse<Product>, number>(
         try {
             // API에 상품 ID를 사용하여 해당 상품을 DELETE 요청으로 삭제.
             const response = await axios.delete<ApiResponse<Product>>(
-                `${API_BASE_URL}/deleteProduct/${id}`
+                `${import.meta.env.VITE_API_URL}/admin/deleteProduct/${id}`
             );
             return response.data;
         } catch (error) {

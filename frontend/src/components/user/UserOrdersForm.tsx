@@ -75,6 +75,11 @@ const ItemLabel = styled.span`
 const UserOrdersForm: React.FC = () => {
     const { userOrders, isLoading } = useUserInfo();
 
+    // 숫자를 포맷팅하는 함수
+    const formatPrice = (price) => {
+        return Math.floor(price).toLocaleString('ko-KR');
+    };
+
     return (
         <OrderListContainer>
             {isLoading ? (
@@ -92,10 +97,7 @@ const UserOrdersForm: React.FC = () => {
                                         </OrderId>
                                         <TotalPrice>
                                             총 가격:{' '}
-                                            {parseFloat(
-                                                order.total_price.toLocaleString()
-                                            )}
-                                            원
+                                            {formatPrice(order.total_price)}원
                                         </TotalPrice>
                                     </OrderDetailHeader>
                                     <ItemList>
@@ -113,10 +115,7 @@ const UserOrdersForm: React.FC = () => {
                                                 </div>
                                                 <div>
                                                     <ItemLabel>가격:</ItemLabel>{' '}
-                                                    {parseFloat(
-                                                        item.price.toLocaleString()
-                                                    )}
-                                                    원
+                                                    {formatPrice(item.price)}원
                                                 </div>
                                             </ItemDetail>
                                         ))}

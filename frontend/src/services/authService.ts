@@ -8,19 +8,20 @@ import {
     VerificationCancelResponse,
 } from '../type/authtypes';
 
-const API_BASE_URL = 'http://localhost:3001/auth';
-
 // 이메일 인증 코드 요청 함수
 export const sendVerificationRequest = async (
     email: string
 ): Promise<EmailVerificationResponse> => {
-    const response = await fetch(`${API_BASE_URL}/verify-email`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/verify-email`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        }
+    );
 
     if (!response.ok) {
         const errorData = await response.json();
@@ -35,13 +36,16 @@ export const verifyEmailCode = async (
     email: string,
     code: string
 ): Promise<EmailVerificationResponse> => {
-    const response = await fetch(`${API_BASE_URL}/verify-code`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, code }),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/verify-code`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, code }),
+        }
+    );
 
     if (!response.ok) {
         if (response.status === 400) {
@@ -58,13 +62,16 @@ export const cancelSignUp = async (
     email: string
 ): Promise<VerificationCancelResponse> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/cancel-signup`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/cancel-signup`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
         const data = await response.json();
         return data;
     } catch (error) {
@@ -78,13 +85,16 @@ export const requestPasswordResetEmail = async (
     email: string
 ): Promise<PasswordResetRequestResponse> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/password-reset/request`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/password-reset/request`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
 
         if (!response.ok) {
             if (response.status === 429) {
@@ -110,13 +120,16 @@ export const resetPassword = async (
     newPassword: string
 ): Promise<PasswordResetVerificationResponse> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/password-reset/verify`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, code, newPassword }),
-        });
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/password-reset/verify`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, code, newPassword }),
+            }
+        );
 
         if (!response.ok) {
             throw new Error('비밀번호 재설정 실패');
@@ -134,13 +147,16 @@ export const cancelPasswordReset = async (
     email: string
 ): Promise<PasswordResetCancelResponse> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/cancel-passwordreset`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/cancel-passwordreset`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
         const data = await response.json();
         return data;
     } catch (error) {
@@ -152,10 +168,13 @@ export const cancelPasswordReset = async (
 // 새로운 액세스 토큰을 재발급 받는 함수
 export const fetchNewAccessToken = async () => {
     // 서버에 리프래시 토큰을 사용해 새로운 액세스 토큰을 요청
-    const response = await fetch(`${API_BASE_URL}/refresh-token`, {
-        method: 'GET',
-        credentials: 'include', // 쿠키에 저장된 리프래시 토큰을 포함
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
+        {
+            method: 'GET',
+            credentials: 'include', // 쿠키에 저장된 리프래시 토큰을 포함
+        }
+    );
     const data = await response.json();
 
     // 서버로부터 새로운 액세스 토큰을 정상적으로 받았다면 반환
@@ -169,26 +188,32 @@ export const fetchNewAccessToken = async () => {
 
 // 사용자 인증 상태 검증 함수
 export const fetchCheckAuth = async (accessToken: string | null) => {
-    const response = await fetch(`${API_BASE_URL}/check-auth`, {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${accessToken}`, // 헤더에 액세스 토큰 포함
-        },
-        credentials: 'include', // 쿠키 포함 설정
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/check-auth`,
+        {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${accessToken}`, // 헤더에 액세스 토큰 포함
+            },
+            credentials: 'include', // 쿠키 포함 설정
+        }
+    );
 
     return response;
 };
 
 // 이메일 찾기 함수
 export const fetchFindEmail = async (name: string, phone: string) => {
-    const response = await fetch(`${API_BASE_URL}/find-email`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, phone }),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/find-email`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, phone }),
+        }
+    );
 
     return response;
 };
@@ -197,20 +222,23 @@ export const fetchFindEmail = async (name: string, phone: string) => {
 export const fetchRegistration = async (
     signUpformData: RegistrationFormData
 ) => {
-    const response = await fetch(`${API_BASE_URL}/signup`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signUpformData),
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/signup`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(signUpformData),
+        }
+    );
 
     return response;
 };
 
 // 로그인 함수
 export const fetchLogin = async (formData: LoginFormData) => {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -228,10 +256,13 @@ export const fetchLogin = async (formData: LoginFormData) => {
 
 // 로그아웃 함수
 export const fetchLogout = async () => {
-    const response = await fetch(`${API_BASE_URL}/logout`, {
-        method: 'POST',
-        credentials: 'include', // 쿠키를 포함시키기 위한 설정
-    });
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/logout`,
+        {
+            method: 'POST',
+            credentials: 'include', // 쿠키를 포함시키기 위한 설정
+        }
+    );
 
     return response;
 };
@@ -241,7 +272,7 @@ export const fetchLogout = async () => {
 
 // // API를 요청하는 공통 함수
 // const fetchWithSettings = async (url: string, settings: RequestInit) => {
-//     const response = await fetch(`${API_BASE_URL}${url}`, {
+//     const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
 //         headers: { 'Content-Type': 'application/json' },
 //         ...settings,
 //     });
