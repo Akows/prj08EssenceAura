@@ -81,8 +81,18 @@ const CheckoutPage: React.FC = () => {
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
+    // 상품 상세 페이지에서 넘어온 데이터가 있는지 확인
+    const productFromDetailPage = location.state?.product;
+    const quantityFromDetailPage = location.state?.quantity;
+
     const handleSubmit = () => {
         if (window.confirm('제품을 주문하시겠습니까?')) {
+            // 장바구니를 통한 결제인 경우, 결제가 동작하는 시점에 장바구니 데이터를 삭제
+            if (!productFromDetailPage && !quantityFromDetailPage) {
+                localStorage.removeItem('cart');
+                localStorage.removeItem('totalPrice');
+            }
+
             const orderData = {
                 user_id: userInfo.user_id,
                 username: userInfo.username,
@@ -110,10 +120,6 @@ const CheckoutPage: React.FC = () => {
     };
 
     useEffect(() => {
-        // 상품 상세 페이지에서 넘어온 데이터가 있는지 확인
-        const productFromDetailPage = location.state?.product;
-        const quantityFromDetailPage = location.state?.quantity;
-
         if (productFromDetailPage && quantityFromDetailPage) {
             // 상품 상세 페이지에서 넘어온 데이터를 기반으로 결제 항목 설정
             setCartItems([
