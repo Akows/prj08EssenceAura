@@ -11,20 +11,27 @@ interface SortingBarProps {
     ) => void;
 }
 
-// 스타일 컴포넌트 정의
 const SortingBarContainer = styled.div`
     display: flex;
-    justify-content: flex-end; // 정렬 옵션을 오른쪽에 붙임
+    flex-wrap: wrap; // 컨테이너가 충분한 너비를 갖지 못할 때 아이템을 다음 줄로 넘김
+    justify-content: center; // 버튼들을 컨테이너 중앙에 배치
+    align-items: center; // 버튼들을 세로축 중앙에 배치
     margin-bottom: 20px;
     width: 100%;
+
+    @media (max-width: 768px) {
+        justify-content: center;
+    }
 `;
 
 const SortButton = styled.button`
-    padding: 5px 10px;
-    margin-left: 10px;
+    padding: 8px 12px; // 버튼 패딩을 늘려 클릭 영역을 크게 함
+    margin: 5px; // 버튼 사이의 간격을 설정
     border: 1px solid #ddd;
     background: transparent;
     cursor: pointer;
+    flex: 1 1 auto; // 모든 버튼이 유연하게 너비를 차지하도록 함
+    text-align: center; // 버튼 내 텍스트 중앙 정렬
 
     &:hover {
         background: #f0f0f0;
@@ -34,17 +41,27 @@ const SortButton = styled.button`
         border-color: #000;
         font-weight: bold;
     }
+
+    @media (max-width: 768px) {
+        flex-basis: calc(
+            50% - 10px
+        ); // 버튼 기본 너비를 조정하여 반응형으로 만듦
+        margin: 5px; // 모바일에서도 버튼 간 간격을 유지
+        padding: 10px 0; // 상하 패딩을 늘려 클릭 가능 영역을 더 크게 함
+        font-size: 0.8rem; // 모바일 화면에서 글자 크기를 조정
+    }
 `;
 
 const DropdownSelect = styled.select`
-    padding: 5px 10px;
-    margin-left: 10px;
+    padding: 8px 12px;
+    margin: 5px;
     border: 1px solid #ddd;
     background: white;
     cursor: pointer;
 
-    &:hover {
-        background: #f0f0f0;
+    @media (max-width: 768px) {
+        flex-basis: 100%; // 드롭다운이 모바일에서 전체 너비를 차지하도록 함
+        margin: 5px 0; // 드롭다운 위아래에 마진 추가
     }
 `;
 

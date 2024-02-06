@@ -18,7 +18,9 @@ const ProductListContainer = styled.div`
     padding: 40px;
     background: #f8f8f8;
     justify-content: space-between; // 컨테이너 내의 아이템 간격을 균등하게 분배
+
     @media (max-width: 1024px) {
+        width: 80%;
         flex-direction: column; // 모바일 뷰에서는 컬럼 방향으로 변경
     }
 `;
