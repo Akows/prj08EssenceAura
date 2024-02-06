@@ -12,9 +12,6 @@ const updateUserInfo = async (userId, updateData) => {
 
 const getOrdersByUserId = async (userId) => {
     try {
-        console.log(userId);
-
-
         const orders = await db.query(
             'SELECT * FROM orders WHERE user_id = ?',
             [userId]

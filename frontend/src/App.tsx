@@ -25,6 +25,7 @@ import './App.css';
 import TermsOfService from './components/policies/TermsOfService';
 import PrivacyPolicy from './components/policies/PrivacyPolicy';
 import Sitemap from './components/policies/Sitemap';
+import ScrollToTop from './utils/ScrollToTop';
 
 // 사용자 상태에 따라 특정 라우터에는 접근하지 못하도록 하는 기능
 // 로그인하지 않은 사용자만 접근 가능한 라우트
@@ -56,6 +57,7 @@ function App() {
 
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<MainPage />} />
