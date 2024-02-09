@@ -159,6 +159,10 @@ const CheckoutPage: React.FC = () => {
         }
     }, [location]);
 
+    if (!userInfo) {
+        return <>비정상적인 접근이 감지되었습니다.</>;
+    }
+
     return (
         <CheckoutContainer>
             <SectionTitle>결제 정보</SectionTitle>

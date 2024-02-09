@@ -199,6 +199,10 @@ const ProductDetailPage: React.FC = () => {
         ...state.product,
     }));
 
+    const { isLoggedIn } = useSelector((state) => ({
+        ...state.auth,
+    }));
+
     const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newQuantity = Math.max(1, Number(e.target.value));
         setQuantity(newQuantity);
@@ -270,6 +274,12 @@ const ProductDetailPage: React.FC = () => {
 
     const handleCheckOrder = () => {
         if (window.confirm('제품을 구매하시겠습니까?')) {
+            if (!isLoggedIn) {
+                alert('로그인한 사용자만 구매가 가능합니다.');
+                navigate('/login');
+                return;
+            }
+
             if (quantity === 0) {
                 alert('수량을 선택해주세요.');
                 return;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CartItemList from '../../components/shop/CartItemList';
 import CartSummary from '../../components/shop/CartSummary';
+import { useSelector } from 'react-redux';
 
 const CartContainer = styled.div`
     max-width: 1200px;
@@ -32,7 +33,13 @@ const Button = styled(Link)`
 `;
 
 const CartPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const [cartItems, setCartItems] = useState([]);
+
+    const { isLoggedIn } = useSelector((state) => ({
+        ...state.auth,
+    }));
 
     // 총 가격 계산 및 로컬 스토리지에 저장
     const calculateAndSaveTotalPrice = (cartItems) => {
@@ -47,6 +54,20 @@ const CartPage: React.FC = () => {
     const handleCartChange = (updatedCartItems) => {
         setCartItems(updatedCartItems);
         calculateAndSaveTotalPrice(updatedCartItems);
+    };
+
+    const handleCheckOrder = () => {
+        if (window.confirm('제품을 구매하시겠습니까?')) {
+            if (!isLoggedIn) {
+                alert('로그인한 사용자만 구매가 가능합니다.');
+                navigate('/login');
+                return;
+            }
+
+            navigate('/checkout');
+        } else {
+            return;
+        }
     };
 
     useEffect(() => {
@@ -66,7 +87,7 @@ const CartPage: React.FC = () => {
             <CartSummary cartItems={cartItems} />
             <ActionSection>
                 <Button to="/shop">계속 쇼핑하기</Button>
-                <Button to="/checkout">제품 결제하기</Button>
+                <Button onClick={handleCheckOrder}>제품 결제하기</Button>
             </ActionSection>
         </CartContainer>
     );
