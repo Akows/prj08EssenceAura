@@ -17,7 +17,7 @@ const ActionSection = styled.div`
     margin-top: 20px;
 `;
 
-const Button = styled(Link)`
+const Button = styled.button`
     display: inline-block;
     padding: 10px 20px;
     background-color: #e44d26;
@@ -56,6 +56,10 @@ const CartPage: React.FC = () => {
         calculateAndSaveTotalPrice(updatedCartItems);
     };
 
+    const handleToShop = () => {
+        navigate('/shop');
+    };
+
     const handleCheckOrder = () => {
         if (window.confirm('제품을 구매하시겠습니까?')) {
             if (!isLoggedIn) {
@@ -63,6 +67,8 @@ const CartPage: React.FC = () => {
                 navigate('/login');
                 return;
             }
+
+            console.log(isLoggedIn);
 
             navigate('/checkout');
         } else {
@@ -86,7 +92,7 @@ const CartPage: React.FC = () => {
             />
             <CartSummary cartItems={cartItems} />
             <ActionSection>
-                <Button to="/shop">계속 쇼핑하기</Button>
+                <Button onClick={handleToShop}>계속 쇼핑하기</Button>
                 <Button onClick={handleCheckOrder}>제품 결제하기</Button>
             </ActionSection>
         </CartContainer>
