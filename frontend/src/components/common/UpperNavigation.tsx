@@ -253,6 +253,7 @@ const UpperNavigation: React.FC = () => {
     const [suggestions, setSuggestions] = useState<
         Array<{ type: string; value: string }>
     >([]);
+    const [hasSuggestions, setHasSuggestions] = useState(false);
     const [debouncedSearchKeyword, setDebouncedSearchKeyword] = useState('');
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const isAdmin = useSelector((state) => state.auth.userInfo?.isAdmin);
@@ -345,12 +346,23 @@ const UpperNavigation: React.FC = () => {
         if (debouncedSearchKeyword) {
             dispatch(fetchSearchSuggestions(debouncedSearchKeyword))
                 .then((response) => {
-                    setSuggestions(response.payload);
+                    if (response.payload.length > 0) {
+                        setSuggestions(response.payload);
+                        setHasSuggestions(true);
+                    } else {
+                        setSuggestions([]);
+                        setHasSuggestions(false);
+                    }
                     setShowSuggestions(true);
                 })
-                .catch((error) => console.error(error));
+                .catch((error) => {
+                    console.error(error);
+                    setHasSuggestions(false);
+                });
         } else {
+            setSuggestions([]);
             setShowSuggestions(false);
+            setHasSuggestions(false);
         }
     }, [debouncedSearchKeyword, dispatch]);
 
@@ -423,6 +435,11 @@ const UpperNavigation: React.FC = () => {
                             onFocus={() => setShowSuggestions(true)}
                             onBlur={onBlurHandler}
                             placeholder="검색어 입력"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSearch();
+                                }
+                            }}
                         />
                         <ClearButton onClick={keywordClearHandler}>
                             X
@@ -432,19 +449,25 @@ const UpperNavigation: React.FC = () => {
                         </SearchButton>
 
                         <SearchSuggestionsContainer show={showSuggestions}>
-                            {suggestions.map((suggestion, index) => (
-                                <SuggestionItem
-                                    key={`${suggestion.type}-${index}`}
-                                    onClick={() =>
-                                        onSuggestionClick(
-                                            suggestion.value,
-                                            suggestion.type
-                                        )
-                                    }
-                                >
-                                    {suggestion.value}
-                                </SuggestionItem>
-                            ))}
+                            {hasSuggestions
+                                ? suggestions.map((suggestion, index) => (
+                                    <SuggestionItem
+                                        key={`${suggestion.type}-${index}`}
+                                        onClick={() =>
+                                            onSuggestionClick(
+                                                suggestion.value,
+                                                suggestion.type
+                                            )
+                                        }
+                                    >
+                                        {suggestion.value}
+                                    </SuggestionItem>
+                                ))
+                                : showSuggestions && (
+                                    <SuggestionItem>
+                                          검색 결과가 존재하지 않습니다.
+                                    </SuggestionItem>
+                                  )}
                         </SearchSuggestionsContainer>
                     </SearchBarContainer>
 
@@ -505,6 +528,11 @@ const UpperNavigation: React.FC = () => {
                                     onFocus={() => setShowSuggestions(true)}
                                     onBlur={onBlurHandler}
                                     placeholder="검색어 입력"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleSearch();
+                                        }
+                                    }}
                                 />
                                 <ClearButton
                                     onClick={() => setSearchKeyword('')}
@@ -517,19 +545,27 @@ const UpperNavigation: React.FC = () => {
                                 <SearchSuggestionsContainer
                                     show={showSuggestions}
                                 >
-                                    {suggestions.map((suggestion, index) => (
-                                        <SuggestionItem
-                                            key={`${suggestion.type}-${index}`}
-                                            onClick={() =>
-                                                onSuggestionClick(
-                                                    suggestion.value,
-                                                    suggestion.type
-                                                )
-                                            }
-                                        >
-                                            {suggestion.value}
-                                        </SuggestionItem>
-                                    ))}
+                                    {hasSuggestions
+                                        ? suggestions.map(
+                                            (suggestion, index) => (
+                                                <SuggestionItem
+                                                    key={`${suggestion.type}-${index}`}
+                                                    onClick={() =>
+                                                          onSuggestionClick(
+                                                              suggestion.value,
+                                                            suggestion.type
+                                                        )
+                                                      }
+                                                  >
+                                                    {suggestion.value}
+                                                  </SuggestionItem>
+                                            )
+                                          )
+                                        : showSuggestions && (
+                                            <SuggestionItem>
+                                                  검색 결과가 존재하지 않습니다.
+                                              </SuggestionItem>
+                                        )}
                                 </SearchSuggestionsContainer>
                             </MobileSearchBarContainer>
                             {isLoggedIn ? (

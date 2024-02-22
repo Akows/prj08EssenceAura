@@ -7,13 +7,17 @@ import { createOrder } from '../../redux/order/orderThunk';
 const mobileSize = '768px';
 
 const CheckoutContainer = styled.div`
-    width: 90%;
+    width: 50%;
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 30px;
     font-family: 'Open Sans', sans-serif;
+
+    @media (max-width: ${mobileSize}) {
+        width: 90%;
+    }
 `;
 
 const SectionTitle = styled.h2`

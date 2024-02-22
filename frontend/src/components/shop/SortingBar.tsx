@@ -100,18 +100,18 @@ const SortingBar: React.FC<SortingBarProps> = ({
                 가격 높은순
             </SortButton>
             <SortButton
-                className={currentSort === 'discount_rate_asc' ? 'active' : ''}
-                onClick={() => handleSortChange('discount_rate_asc')}
-            >
-                할인율 낮은순
-            </SortButton>
-            <SortButton
                 className={currentSort === 'discount_rate_desc' ? 'active' : ''}
                 onClick={() => handleSortChange('discount_rate_desc')}
             >
                 할인율 높은순
             </SortButton>
             <SortButton
+                className={currentSort === 'discount_rate_asc' ? 'active' : ''}
+                onClick={() => handleSortChange('discount_rate_asc')}
+            >
+                할인율 낮은순
+            </SortButton>
+            {/* <SortButton
                 className={currentSort === 'stock_asc' ? 'active' : ''}
                 onClick={() => handleSortChange('stock_asc')}
             >
@@ -122,7 +122,7 @@ const SortingBar: React.FC<SortingBarProps> = ({
                 onClick={() => handleSortChange('stock_desc')}
             >
                 재고 적은순
-            </SortButton>
+            </SortButton> */}
 
             {/* 페이지당 상품 표시 개수 선택 드롭다운 */}
             <DropdownSelect
