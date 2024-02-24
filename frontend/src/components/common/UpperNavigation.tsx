@@ -2,13 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    MdSearch,
-    MdPerson,
-    MdSettings,
-    MdMenu,
-    MdExitToApp,
-} from 'react-icons/md';
+import { MdSearch, MdPerson, MdMenu, MdExitToApp } from 'react-icons/md';
+import { FaShoppingCart } from 'react-icons/fa';
 import useLogout from '../../hooks/auth/useLogout';
 import LoadingModal from './LoadingModal';
 import { fetchSearchSuggestions } from '../../redux/product/productThunks';
@@ -494,10 +489,10 @@ const UpperNavigation: React.FC = () => {
                         )}
 
                         <Dropdown>
-                            <IconButton>
-                                <MdSettings />
+                            <IconButton onClick={() => navigate('/shopcart')}>
+                                <FaShoppingCart />
                             </IconButton>
-                            <DropdownContentRight>
+                            {/* <DropdownContentRight>
                                 <DropdownSectionTitle>
                                     언어 설정
                                 </DropdownSectionTitle>
@@ -508,7 +503,7 @@ const UpperNavigation: React.FC = () => {
                                 </DropdownSectionTitle>
                                 <DropdownItem to="#">화이트</DropdownItem>
                                 <DropdownItem to="#">블랙</DropdownItem>
-                            </DropdownContentRight>
+                            </DropdownContentRight> */}
                         </Dropdown>
                     </RightContainer>
 
@@ -590,16 +585,13 @@ const UpperNavigation: React.FC = () => {
                                     </DropdownLink>
                                 </UserButtonContainer>
                             )}
-                            <DropdownSectionTitle>
-                                언어 설정
-                            </DropdownSectionTitle>
-                            <DropdownLink to="#">English</DropdownLink>
-                            <DropdownLink to="#">한국어</DropdownLink>
-                            <DropdownSectionTitle>
+                            <DropdownSectionTitle>기타</DropdownSectionTitle>
+                            <DropdownLink to="/shopcart">장바구니</DropdownLink>
+                            {/* <DropdownSectionTitle>
                                 테마 설정
                             </DropdownSectionTitle>
                             <DropdownLink to="#">화이트</DropdownLink>
-                            <DropdownLink to="#">블랙</DropdownLink>
+                            <DropdownLink to="#">블랙</DropdownLink> */}
                         </MobileDropdownContent>
                     )}
                 </NavBar>
