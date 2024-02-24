@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     cancelSignUp,
+    checkEmailRequest,
     fetchRegistration,
     sendVerificationRequest,
     verifyEmailCode,
@@ -67,19 +68,9 @@ const useRegistration = (): UseRegistrationReturn => {
         }
 
         try {
-            const response = await fetch(
-                'http://localhost:3001/auth/check-email',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email: signUpformData.email }),
-                }
-            );
-            const data = await response.json();
+            const data = await checkEmailRequest(signUpformData.email);
 
-            if (response.ok && data.isAvailable) {
+            if (data.isAvailable) {
                 setEmailChecked(true); // 이메일 중복 검사 완료
                 alert(
                     '사용 가능한 이메일입니다. 계속해서 회원가입을 진행해주세요.'

@@ -39,6 +39,12 @@ export interface UseRegistrationReturn {
     handleCancelSignUp: () => void; // 추가됨
 }
 
+export interface EmailCheckResponse {
+    success: boolean;
+    message: string;
+    isAvailable: boolean;
+}
+
 // 로그인 데이터
 export interface LoginFormData {
     email: string;

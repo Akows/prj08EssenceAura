@@ -1,4 +1,5 @@
 import {
+    EmailCheckResponse,
     EmailVerificationResponse,
     LoginFormData,
     PasswordResetCancelResponse,
@@ -7,6 +8,29 @@ import {
     RegistrationFormData,
     VerificationCancelResponse,
 } from '../type/authtypes';
+
+// 회원가입 함수
+export const checkEmailRequest = async (
+    email: string
+): Promise<EmailCheckResponse> => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/check-email`, // 환경 변수를 사용하여 API URL 설정
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        }
+    );
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '이메일 확인에 실패했습니다.');
+    }
+
+    return response.json();
+};
 
 // 이메일 인증 코드 요청 함수
 export const sendVerificationRequest = async (
@@ -166,13 +190,17 @@ export const cancelPasswordReset = async (
 };
 
 // 새로운 액세스 토큰을 재발급 받는 함수
-export const fetchNewAccessToken = async () => {
+export const fetchNewAccessToken = async (refreshToken: string | null) => {
     // 서버에 리프래시 토큰을 사용해 새로운 액세스 토큰을 요청
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
         {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             credentials: 'include', // 쿠키에 저장된 리프래시 토큰을 포함
+            body: JSON.stringify({ refreshToken }),
         }
     );
     const data = await response.json();
@@ -187,15 +215,20 @@ export const fetchNewAccessToken = async () => {
 };
 
 // 사용자 인증 상태 검증 함수
-export const fetchCheckAuth = async (accessToken: string | null) => {
+export const fetchCheckAuth = async (
+    accessToken: string | null,
+    refreshToken: string | null
+) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/check-auth`,
         {
-            method: 'GET',
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${accessToken}`, // 헤더에 액세스 토큰 포함
             },
             credentials: 'include', // 쿠키 포함 설정
+            body: JSON.stringify({ refreshToken }),
         }
     );
 
@@ -255,12 +288,16 @@ export const fetchLogin = async (formData: LoginFormData) => {
 };
 
 // 로그아웃 함수
-export const fetchLogout = async () => {
+export const fetchLogout = async (refreshToken: string | null) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/logout`,
         {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             credentials: 'include', // 쿠키를 포함시키기 위한 설정
+            body: JSON.stringify({ refreshToken }),
         }
     );
 
