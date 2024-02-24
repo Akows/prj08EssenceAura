@@ -126,7 +126,31 @@ const WelcomeText = styled(EssenceAuraText)`
     p:nth-child(3) {
         animation-delay: 1.5s;
     }
-    // 필요한 만큼 nth-child를 추가하세요.
+`;
+
+const ScrollDownText = styled.div`
+    position: absolute;
+    bottom: 10%; // 화면 하단에 위치
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Black Han Sans', sans-serif;
+    color: white;
+    font-size: 1.8em;
+    text-align: center;
+    cursor: pointer;
+
+    // 페이드 인/아웃 애니메이션
+    animation: fadeInOut 2s ease-in-out infinite;
+
+    @keyframes fadeInOut {
+        0%,
+        100% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
 `;
 
 const MainPage: React.FC = () => {
@@ -148,6 +172,9 @@ const MainPage: React.FC = () => {
 
     // 스크롤 이벤트 관리를 위한 useEffect 훅
     useEffect(() => {
+        // 페이지가 로드되면 스크롤을 최상단으로 이동
+        window.scrollTo(0, 0);
+
         // 스크롤을 방지하기 위한 함수입니다. expand 상태가 false일 때 (즉, EnterButton이 아직 클릭되지 않았을 때)
         // 스크롤을 시도하는 모든 행위를 방지합니다.
         const preventScroll = (e: WheelEvent) => {
@@ -209,9 +236,14 @@ const MainPage: React.FC = () => {
                     <EnterButton onClick={handleEnter}>어서오세요!</EnterButton>
                 )}
                 {showEssenceAura && !showWelcome && (
-                    <EssenceAuraText showNewContent={showEssenceAura}>
-                        향이 이끄는 곳으로
-                    </EssenceAuraText>
+                    <>
+                        <EssenceAuraText showNewContent={showEssenceAura}>
+                            향이 이끄는 곳으로
+                        </EssenceAuraText>
+                        <ScrollDownText>
+                            페이지를 아래로 스크롤/드래그 해주세요
+                        </ScrollDownText>
+                    </>
                 )}
                 {showWelcome && (
                     <WelcomeText onClick={handleWelcomeClick}>
