@@ -110,8 +110,8 @@ const CheckoutPage: React.FC = () => {
         if (window.confirm('제품을 주문하시겠습니까?')) {
             // 장바구니를 통한 결제인 경우, 결제가 동작하는 시점에 장바구니 데이터를 삭제
             if (!productFromDetailPage && !quantityFromDetailPage) {
-                localStorage.removeItem('cart');
-                localStorage.removeItem('totalPrice');
+                localStorage.removeItem(`cart-${userInfo.user_id}`);
+                localStorage.removeItem(`totalPrice-${userInfo.user_id}`);
             }
 
             const orderData = {
@@ -152,10 +152,10 @@ const CheckoutPage: React.FC = () => {
         } else {
             // 장바구니 페이지에서 넘어온 데이터를 로컬 스토리지에서 불러옴
             const cartFromLocalStorage = JSON.parse(
-                localStorage.getItem('cart') || '[]'
+                localStorage.getItem(`cart-${userInfo.user_id}`) || '[]'
             );
             const totalFromLocalStorage = JSON.parse(
-                localStorage.getItem('totalPrice') || '0'
+                localStorage.getItem(`totalPrice-${userInfo.user_id}`) || '0'
             );
 
             setCartItems(cartFromLocalStorage);

@@ -446,23 +446,23 @@ const UpperNavigation: React.FC = () => {
                         <SearchSuggestionsContainer show={showSuggestions}>
                             {hasSuggestions
                                 ? suggestions.map((suggestion, index) => (
-                                    <SuggestionItem
-                                        key={`${suggestion.type}-${index}`}
-                                        onClick={() =>
-                                            onSuggestionClick(
-                                                suggestion.value,
-                                                suggestion.type
-                                            )
-                                        }
-                                    >
-                                        {suggestion.value}
-                                    </SuggestionItem>
-                                ))
+                                      <SuggestionItem
+                                          key={`${suggestion.type}-${index}`}
+                                          onClick={() =>
+                                              onSuggestionClick(
+                                                  suggestion.value,
+                                                  suggestion.type
+                                              )
+                                          }
+                                      >
+                                          {suggestion.value}
+                                      </SuggestionItem>
+                                  ))
                                 : showSuggestions && (
-                                    <SuggestionItem>
-                                          검색 결과가 존재하지 않습니다.
+                                      <SuggestionItem>
+                                        검색 결과가 존재하지 않습니다.
                                     </SuggestionItem>
-                                  )}
+                                )}
                         </SearchSuggestionsContainer>
                     </SearchBarContainer>
 
@@ -489,9 +489,16 @@ const UpperNavigation: React.FC = () => {
                         )}
 
                         <Dropdown>
-                            <IconButton onClick={() => navigate('/shopcart')}>
-                                <FaShoppingCart />
-                            </IconButton>
+                            {isLoggedIn ? (
+                                <IconButton
+                                    onClick={() => navigate('/shopcart')}
+                                >
+                                    <FaShoppingCart />
+                                </IconButton>
+                            ) : (
+                                <></>
+                            )}
+
                             {/* <DropdownContentRight>
                                 <DropdownSectionTitle>
                                     언어 설정
@@ -542,25 +549,25 @@ const UpperNavigation: React.FC = () => {
                                 >
                                     {hasSuggestions
                                         ? suggestions.map(
-                                            (suggestion, index) => (
-                                                <SuggestionItem
-                                                    key={`${suggestion.type}-${index}`}
-                                                    onClick={() =>
-                                                          onSuggestionClick(
-                                                              suggestion.value,
-                                                            suggestion.type
-                                                        )
-                                                      }
-                                                  >
-                                                    {suggestion.value}
-                                                  </SuggestionItem>
-                                            )
-                                          )
+                                              (suggestion, index) => (
+                                                  <SuggestionItem
+                                                      key={`${suggestion.type}-${index}`}
+                                                      onClick={() =>
+                                                        onSuggestionClick(
+                                                            suggestion.value,
+                                                              suggestion.type
+                                                          )
+                                                    }
+                                                >
+                                                      {suggestion.value}
+                                                </SuggestionItem>
+                                              )
+                                        )
                                         : showSuggestions && (
-                                            <SuggestionItem>
-                                                  검색 결과가 존재하지 않습니다.
+                                              <SuggestionItem>
+                                                검색 결과가 존재하지 않습니다.
                                               </SuggestionItem>
-                                        )}
+                                          )}
                                 </SearchSuggestionsContainer>
                             </MobileSearchBarContainer>
                             {isLoggedIn ? (
@@ -585,8 +592,19 @@ const UpperNavigation: React.FC = () => {
                                     </DropdownLink>
                                 </UserButtonContainer>
                             )}
-                            <DropdownSectionTitle>기타</DropdownSectionTitle>
-                            <DropdownLink to="/shopcart">장바구니</DropdownLink>
+                            {isLoggedIn ? (
+                                <>
+                                    <DropdownSectionTitle>
+                                        기타
+                                    </DropdownSectionTitle>
+                                    <DropdownLink to="/shopcart">
+                                        <FaShoppingCart />
+                                        장바구니
+                                    </DropdownLink>
+                                </>
+                            ) : (
+                                <></>
+                            )}
                             {/* <DropdownSectionTitle>
                                 테마 설정
                             </DropdownSectionTitle>

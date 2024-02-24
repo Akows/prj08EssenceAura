@@ -199,7 +199,7 @@ const ProductDetailPage: React.FC = () => {
         ...state.product,
     }));
 
-    const { isLoggedIn } = useSelector((state) => ({
+    const { isLoggedIn, userInfo } = useSelector((state) => ({
         ...state.auth,
     }));
 
@@ -233,10 +233,17 @@ const ProductDetailPage: React.FC = () => {
     };
 
     const handlePlaceCart = () => {
+        if (!isLoggedIn) {
+            alert('로그인한 사용자만 장바구니 기능을 사용할 수 있습니다.');
+            return;
+        }
+
         if (window.confirm('장바구니에서 제품을 추가하시겠습니까?')) {
             if (quantity > 0) {
                 // 로컬 스토리지에서 현재 장바구니 아이템을 불러옵니다.
-                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const cart = JSON.parse(
+                    localStorage.getItem(`cart-${userInfo.user_id}`) || '[]'
+                );
 
                 // 선택된 상품이 장바구니에 이미 있는지 확인합니다.
                 const existingItemIndex = cart.findIndex(
@@ -260,7 +267,10 @@ const ProductDetailPage: React.FC = () => {
                 }
 
                 // 장바구니를 로컬 스토리지에 저장합니다.
-                localStorage.setItem('cart', JSON.stringify(cart));
+                localStorage.setItem(
+                    `cart-${userInfo.user_id}`,
+                    JSON.stringify(cart)
+                );
 
                 // 사용자를 장바구니 페이지로 이동시킵니다.
                 navigate('/shopcart');
@@ -273,13 +283,13 @@ const ProductDetailPage: React.FC = () => {
     };
 
     const handleCheckOrder = () => {
-        if (window.confirm('제품을 구매하시겠습니까?')) {
-            if (!isLoggedIn) {
-                alert('로그인한 사용자만 구매가 가능합니다.');
-                navigate('/login');
-                return;
-            }
+        if (!isLoggedIn) {
+            alert('로그인한 사용자만 제품을 구매할 수 있습니다.');
+            navigate('/login');
+            return;
+        }
 
+        if (window.confirm('제품을 구매하시겠습니까?')) {
             if (quantity === 0) {
                 alert('수량을 선택해주세요.');
                 return;

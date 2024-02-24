@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import CartItem from './CartItem';
 
@@ -27,6 +28,10 @@ const CartItemList: React.FC<CartItemListProps> = ({
     setCartItems,
     calculateAndSaveTotalPrice,
 }) => {
+    const { userInfo } = useSelector((state) => ({
+        ...state.auth,
+    }));
+
     const handleQuantityChange = (product_id: number, quantity: number) => {
         const newCartItems = cartItems.map((item) =>
             item.product_id === product_id
@@ -34,7 +39,10 @@ const CartItemList: React.FC<CartItemListProps> = ({
                 : item
         );
         setCartItems(newCartItems);
-        localStorage.setItem('cart', JSON.stringify(newCartItems));
+        localStorage.setItem(
+            `cart-${userInfo.user_id}`,
+            JSON.stringify(newCartItems)
+        );
         calculateAndSaveTotalPrice(newCartItems); // 총 가격 다시 계산 및 저장
     };
 
@@ -44,7 +52,10 @@ const CartItemList: React.FC<CartItemListProps> = ({
                 (item) => item.product_id !== product_id
             );
             setCartItems(newCartItems);
-            localStorage.setItem('cart', JSON.stringify(newCartItems));
+            localStorage.setItem(
+                `cart-${userInfo.user_id}`,
+                JSON.stringify(newCartItems)
+            );
             calculateAndSaveTotalPrice(newCartItems); // 총 가격 다시 계산 및 저장
         }
     };
@@ -61,7 +72,7 @@ const CartItemList: React.FC<CartItemListProps> = ({
                     />
                 ))
             ) : (
-                <div>Your cart is empty.</div>
+                <div>장바구니에 제품이 존재하지 않습니다.</div>
             )}
         </ItemListContainer>
     );

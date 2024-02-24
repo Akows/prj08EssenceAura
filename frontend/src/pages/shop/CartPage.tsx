@@ -37,7 +37,7 @@ const CartPage: React.FC = () => {
 
     const [cartItems, setCartItems] = useState([]);
 
-    const { isLoggedIn } = useSelector((state) => ({
+    const { isLoggedIn, userInfo } = useSelector((state) => ({
         ...state.auth,
     }));
 
@@ -46,7 +46,12 @@ const CartPage: React.FC = () => {
         const totalPrice = cartItems.reduce((total, item) => {
             return total + parseFloat(item.final_price) * item.quantity;
         }, 0);
-        localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
+
+        localStorage.setItem(
+            `totalPrice-${userInfo.user_id}`,
+            JSON.stringify(totalPrice)
+        );
+
         return totalPrice;
     };
 
@@ -61,15 +66,17 @@ const CartPage: React.FC = () => {
     };
 
     const handleCheckOrder = () => {
+        if (cartItems.length === 0) {
+            alert('구매할 제품이 존재하지않습니다.');
+            return;
+        }
+
         if (window.confirm('제품을 구매하시겠습니까?')) {
             if (!isLoggedIn) {
                 alert('로그인한 사용자만 구매가 가능합니다.');
                 navigate('/login');
                 return;
             }
-
-            console.log(isLoggedIn);
-
             navigate('/checkout');
         } else {
             return;
@@ -77,7 +84,9 @@ const CartPage: React.FC = () => {
     };
 
     useEffect(() => {
-        const savedCartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+        const savedCartItems = JSON.parse(
+            localStorage.getItem(`cart-${userInfo.user_id}`) || '[]'
+        );
         setCartItems(savedCartItems);
         calculateAndSaveTotalPrice(savedCartItems);
     }, []);
