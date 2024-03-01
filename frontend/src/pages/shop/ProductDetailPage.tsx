@@ -98,16 +98,52 @@ const FinalPrice = styled.span`
     font-weight: bold;
 `;
 
+const QuantityTitle = styled.h4`
+    font-size: 16px;
+    margin-bottom: 22px;
+    margin-right: 15px;
+    color: #333;
+`;
+
 const QuantitySelector = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 20px;
 `;
 
 const QuantityInput = styled.input`
     width: 50px;
     padding: 5px;
+    text-align: center;
+    margin: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    &:focus {
+        outline: none;
+        border-color: #e44d26;
+    }
+`;
+
+const IncrementButton = styled.button`
+    background-color: #e44d26;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    &:hover {
+        background-color: #f55f3b;
+    }
+`;
+
+const DecrementButton = styled(IncrementButton)`
+    // 동일한 스타일을 유지하면서 명시적으로 다른 컴포넌트로 구분
 `;
 
 const PurchaseSection = styled.div`
+    display: flex; // 버튼들을 가로로 배열
+    justify-content: space-between; // 버튼 사이에 공간을 균등하게 배분
     margin-top: 20px;
 
     @media (max-width: 768px) {
@@ -123,6 +159,7 @@ const Button = styled.button`
     font-size: 16px;
     cursor: pointer;
     margin-right: 10px;
+    flex: 1; // 영역의 절반을 차지하도록 flex 속성 적용
 
     &:hover {
         background-color: #f55f3b;
@@ -342,6 +379,36 @@ const ProductDetailPage: React.FC = () => {
                             <Description>
                                 {selectedProduct[0]?.description}
                             </Description>
+
+                            <QuantitySelector>
+                                <QuantityTitle>구매 수량</QuantityTitle>
+                                <DecrementButton
+                                    onClick={() =>
+                                        setQuantity(Math.max(1, quantity - 1))
+                                    }
+                                >
+                                    -
+                                </DecrementButton>
+                                <QuantityInput
+                                    type="number"
+                                    value={quantity}
+                                    onChange={handleQuantityChange}
+                                    min="1"
+                                />
+                                <IncrementButton
+                                    onClick={() => setQuantity(quantity + 1)}
+                                >
+                                    +
+                                </IncrementButton>
+                            </QuantitySelector>
+                            <PurchaseSection>
+                                <Button onClick={handlePlaceCart}>
+                                    장바구니에 추가
+                                </Button>
+                                <Button onClick={handleCheckOrder}>
+                                    지금 구매하기
+                                </Button>
+                            </PurchaseSection>
                         </ProductDetails>
                     </ProductSection>
                     <PriceSection>
@@ -385,19 +452,6 @@ const ProductDetailPage: React.FC = () => {
                 // selectedProduct가 비어있을 때 표시할 내용
                 <Section>상품 정보를 불러오는 중...</Section>
             )}
-
-            <QuantitySelector>
-                <QuantityInput
-                    type="number"
-                    value={quantity}
-                    onChange={handleQuantityChange}
-                    min="1" // 최소값 설정
-                />
-            </QuantitySelector>
-            <PurchaseSection>
-                <Button onClick={handlePlaceCart}>장바구니에 추가</Button>
-                <Button onClick={handleCheckOrder}>지금 구매하기</Button>
-            </PurchaseSection>
 
             {/* 탭 버튼들 */}
             <Tabs>
