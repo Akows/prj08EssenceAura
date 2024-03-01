@@ -48,11 +48,12 @@ const Dropdown = styled.div`
 `;
 
 const DropdownButton = styled.button`
+    width: 120px;
     background: #f8f9fa;
     border: 1px solid #ddd; // 테두리 추가
     cursor: pointer;
     padding: 10px;
-    margin-left: 10px;
+    margin-left: 20px;
     transition: background-color 0.3s ease; // 부드러운 배경 색상 변경 효과를 위해 추가
 
     &:hover {
@@ -67,9 +68,13 @@ const DropdownContent = styled.div`
     background-color: white; // 배경색 변경
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); // 그림자 효과 수정
     z-index: 1;
-    min-width: 160px; // 최소 너비 설정
+    min-width: 250px; // 최소 너비 설정
     border-radius: 4px; // 둥근 모서리
     overflow: hidden; // 내부 요소가 넘치지 않도록 설정
+
+    top: 100%; // 상위 버튼 바로 아래 위치
+    left: 10%; // 중앙 정렬을 위해 수정
+    transform: translateX(-50%); // 중앙 정렬을 위해 X축으로 -50% 이동
 
     /* ${Dropdown}:hover & {
         display: block; // 드롭다운 보이기
@@ -374,7 +379,7 @@ const UpperNavigation: React.FC = () => {
 
                         <Dropdown>
                             <DropdownButton onClick={toggleDropdown}>
-                                상품보기
+                                카테고리 보기
                             </DropdownButton>
                             <DropdownContent
                                 isOpen={isDropdownOpen}
@@ -450,23 +455,23 @@ const UpperNavigation: React.FC = () => {
                         <SearchSuggestionsContainer show={showSuggestions}>
                             {hasSuggestions
                                 ? suggestions.map((suggestion, index) => (
-                                    <SuggestionItem
-                                        key={`${suggestion.type}-${index}`}
-                                        onClick={() =>
-                                            onSuggestionClick(
-                                                suggestion.value,
-                                                suggestion.type
-                                            )
-                                        }
-                                    >
-                                        {suggestion.value}
-                                    </SuggestionItem>
-                                ))
+                                      <SuggestionItem
+                                          key={`${suggestion.type}-${index}`}
+                                          onClick={() =>
+                                              onSuggestionClick(
+                                                  suggestion.value,
+                                                  suggestion.type
+                                              )
+                                          }
+                                      >
+                                          {suggestion.value}
+                                      </SuggestionItem>
+                                  ))
                                 : showSuggestions && (
-                                    <SuggestionItem>
-                                          검색 결과가 존재하지 않습니다.
+                                      <SuggestionItem>
+                                        검색 결과가 존재하지 않습니다.
                                     </SuggestionItem>
-                                  )}
+                                )}
                         </SearchSuggestionsContainer>
                     </SearchBarContainer>
 
@@ -553,25 +558,25 @@ const UpperNavigation: React.FC = () => {
                                 >
                                     {hasSuggestions
                                         ? suggestions.map(
-                                            (suggestion, index) => (
-                                                <SuggestionItem
-                                                    key={`${suggestion.type}-${index}`}
-                                                    onClick={() =>
-                                                          onSuggestionClick(
-                                                              suggestion.value,
-                                                            suggestion.type
-                                                        )
-                                                      }
-                                                  >
-                                                    {suggestion.value}
-                                                  </SuggestionItem>
-                                            )
-                                          )
+                                              (suggestion, index) => (
+                                                  <SuggestionItem
+                                                      key={`${suggestion.type}-${index}`}
+                                                      onClick={() =>
+                                                        onSuggestionClick(
+                                                            suggestion.value,
+                                                              suggestion.type
+                                                          )
+                                                    }
+                                                >
+                                                      {suggestion.value}
+                                                </SuggestionItem>
+                                              )
+                                        )
                                         : showSuggestions && (
-                                            <SuggestionItem>
-                                                  검색 결과가 존재하지 않습니다.
+                                              <SuggestionItem>
+                                                검색 결과가 존재하지 않습니다.
                                               </SuggestionItem>
-                                        )}
+                                          )}
                                 </SearchSuggestionsContainer>
                             </MobileSearchBarContainer>
                             {isLoggedIn ? (
