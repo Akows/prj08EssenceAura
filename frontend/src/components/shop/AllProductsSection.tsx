@@ -18,7 +18,7 @@ const ProductsGrid = styled.div`
         auto-fill,
         minmax(200px, 1fr)
     ); /* 이것은 각 상품 카드의 최소 너비를 200px로 설정하고, 사용 가능한 공간에 따라 카드의 수를 채웁니다. */
-    gap: 20px;
+    gap: 50px;
 `;
 
 const AllProductsSection: React.FC = () => {

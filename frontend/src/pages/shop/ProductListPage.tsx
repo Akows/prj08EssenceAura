@@ -41,7 +41,7 @@ const ProductListTitle = styled.h2`
 const ProductGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 40px; // 간격을 30px로 증가
     margin-left: 40px; // Sidebar와의 간격 추가
 
     @media (max-width: 1024px) {

@@ -90,10 +90,12 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                     <CardTitle>{title}</CardTitle>
                     <CardPriceWrapper>
                         {discountRate > 0 && ( // 할인율이 0보다 클 때만 기존 가격 표시
-                            <CardPrice>{Math.round(Number(price))}원</CardPrice>
+                            <CardPrice>
+                                {Number(price).toLocaleString()}원
+                            </CardPrice>
                         )}
                         <CardDiscountedPrice>
-                            {Math.round(Number(final_price))}원
+                            {Number(final_price).toLocaleString()}원
                             {discountRate > 0 && ( // 할인율이 0보다 클 때만 할인률 표시
                                 <CardDiscountRate>
                                     {' '}

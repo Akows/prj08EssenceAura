@@ -89,7 +89,7 @@ const CartPage: React.FC = () => {
         );
         setCartItems(savedCartItems);
         calculateAndSaveTotalPrice(savedCartItems);
-    }, []);
+    }, [userInfo]);
 
     return (
         <CartContainer>
