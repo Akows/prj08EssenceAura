@@ -16,7 +16,7 @@ const ProductsGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(
         auto-fill,
-        minmax(200px, 1fr)
+        minmax(250px, 1fr)
     ); /* 이것은 각 상품 카드의 최소 너비를 200px로 설정하고, 사용 가능한 공간에 따라 카드의 수를 채웁니다. */
     gap: 50px;
 `;
@@ -97,7 +97,12 @@ const AllProductsSection: React.FC = () => {
 
     return (
         <>
-            <SectionTitle>BEST ITEM</SectionTitle>
+            <SectionTitle>ALL ITEM</SectionTitle>
+            <SectionTitle>
+                "향수의 모든 것: 우리가 선별한 특별한 컬렉션"
+            </SectionTitle>
+            <br />
+            <br />
 
             <ProductsGrid>
                 {mainPageProducts.map((product, index) => {

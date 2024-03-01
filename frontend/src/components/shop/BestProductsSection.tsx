@@ -70,6 +70,10 @@ const BestProductsSection: React.FC = () => {
     return (
         <>
             <SectionTitle>BEST ITEM</SectionTitle>
+            <SectionTitle>
+                "이번 시즌 가장 사랑받은 향수, 당신의 마음을 사로잡을
+                베스트셀러"
+            </SectionTitle>
 
             <TabList>
                 <Tab
