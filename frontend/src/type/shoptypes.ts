@@ -7,4 +7,6 @@ export type SortOption =
     | 'discount_rate_asc'
     | 'discount_rate_desc'
     | 'stock_asc'
-    | 'stock_desc';
+    | 'stock_desc'
+    | 'reviews_asc'
+    | 'reviews_desc';

@@ -49,7 +49,7 @@ const NonAdminRoute: React.FC<RouteProps> = ({ children }) => {
     const isAdmin = useSelector(
         (state: RootState) => state.auth.userInfo?.isAdmin
     );
-    return isLoggedIn && !isAdmin ? <>{children}</> : <Navigate to="/admin" />;
+    return isLoggedIn && !isAdmin ? <>{children}</> : <Navigate to="/shop" />;
 };
 
 function App() {
@@ -63,10 +63,6 @@ function App() {
                     <Route index element={<MainPage />} />
                     <Route path="shop" element={<ShopHomePage />} />
                     <Route path="shoplist" element={<ProductListPage />} />
-
-                    <Route path="shopcart" element={<CartPage />} />
-                    <Route path="checkout" element={<CheckoutPage />} />
-
                     <Route
                         path="shopdetail/:product_Id"
                         element={<ProductDetailPage />}
@@ -76,6 +72,27 @@ function App() {
                         path="confirm"
                         element={<PaymentConfirmationPage />}
                     />
+                    <Route path="sitemap" element={<Sitemap />} />
+                    <Route path="termsofservice" element={<TermsOfService />} />
+                    <Route path="privacypolicy" element={<PrivacyPolicy />} />
+
+                    <Route
+                        path="shopcart"
+                        element={
+                            <NonAdminRoute>
+                                <CartPage />
+                            </NonAdminRoute>
+                        }
+                    />
+                    <Route
+                        path="checkout"
+                        element={
+                            <NonAdminRoute>
+                                <CheckoutPage />
+                            </NonAdminRoute>
+                        }
+                    />
+
                     <Route
                         path="signup"
                         element={
@@ -116,10 +133,6 @@ function App() {
                             </AdminRoute>
                         }
                     />
-
-                    <Route path="sitemap" element={<Sitemap />} />
-                    <Route path="termsofservice" element={<TermsOfService />} />
-                    <Route path="privacypolicy" element={<PrivacyPolicy />} />
                 </Route>
             </Routes>
         </BrowserRouter>
