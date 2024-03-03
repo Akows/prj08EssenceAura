@@ -1,18 +1,7 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MdSearch } from 'react-icons/md';
-
-interface SearchBarProps {
-    searchKeyword: string;
-    setSearchKeyword: Dispatch<SetStateAction<string>>;
-    handleSearch: () => void;
-    showSuggestions: boolean;
-    setShowSuggestions: Dispatch<SetStateAction<boolean>>;
-    hasSuggestions: boolean;
-    suggestions: Array<{ type: string; value: string }>;
-    onSuggestionClick: (suggestion: string, type: string) => void;
-    keywordClearHandler: () => void;
-}
+import useSearchBar from '../../hooks/navigation/useSearchBar';
 
 const SearchInput = styled.input`
     border: none;
@@ -77,17 +66,19 @@ const ClearButton = styled.button`
     }
 `;
 
-const SearchBar: React.FC<SearchBarProps> = ({
-    searchKeyword,
-    setSearchKeyword,
-    handleSearch,
-    showSuggestions,
-    setShowSuggestions,
-    hasSuggestions,
-    suggestions,
-    onSuggestionClick,
-    keywordClearHandler,
-}) => {
+const SearchBar: React.FC = () => {
+    const {
+        searchKeyword,
+        setSearchKeyword,
+        suggestions,
+        hasSuggestions,
+        showSuggestions,
+        setShowSuggestions,
+        handleSearch,
+        onSuggestionClick,
+        keywordClearHandler,
+    } = useSearchBar();
+
     const [isSuggestionFocused, setIsSuggestionFocused] = useState(false);
 
     const onBlurHandler = () => {
