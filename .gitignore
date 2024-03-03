@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+# 환경변수, 코드 하드백업 파일 무시
 .env
+.zip
