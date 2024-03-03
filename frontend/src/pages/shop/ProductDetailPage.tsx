@@ -18,7 +18,7 @@ const PageContainer = styled.div`
     max-width: 800px;
     padding: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         padding: 10px;
     }
 `;
@@ -27,7 +27,7 @@ const ProductSection = styled.section`
     display: flex;
     margin-top: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         flex-direction: column;
         align-items: center;
     }
@@ -37,7 +37,7 @@ const ProductImage = styled.img`
     max-width: 300px;
     margin-right: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         margin-right: 0;
         margin-bottom: 20px;
     }
@@ -46,7 +46,7 @@ const ProductImage = styled.img`
 const ProductDetails = styled.div`
     flex: 1;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         text-align: center;
     }
 `;
@@ -146,7 +146,7 @@ const PurchaseSection = styled.div`
     justify-content: space-between; // 버튼 사이에 공간을 균등하게 배분
     margin-top: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         flex-direction: column;
     }
 `;
@@ -165,7 +165,7 @@ const Button = styled.button`
         background-color: #f55f3b;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         width: 100%;
         margin-right: 0;
         margin-bottom: 10px;
@@ -181,7 +181,7 @@ const Tabs = styled.div`
     justify-content: center;
     margin-top: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         flex-direction: column;
         align-items: stretch;
     }
@@ -206,7 +206,7 @@ const TabButton = styled.button<TabButtonProps>`
         background-color: white;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.vite_mobile_size}) {
         width: 100%;
         &:not(:last-child) {
             border-bottom: 1px solid #ddd;

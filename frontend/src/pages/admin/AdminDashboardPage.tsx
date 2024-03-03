@@ -11,7 +11,7 @@ const DashboardContainer = styled.div`
     max-width: 1200px;
     padding: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         padding: 10px;
     }
 `;

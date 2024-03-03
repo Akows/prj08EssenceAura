@@ -34,7 +34,7 @@ const SearchSuggestionsContainer = styled.div`
     z-index: 10;
     width: 50%; // 너비를 50%로 설정
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         top: 38px;
         left: 0; // 모바일 화면에서는 기존 설정 유지
         right: 0; // 모바일 화면에서는 기존 설정 유지
@@ -114,23 +114,23 @@ const SearchBar: React.FC = () => {
             <SearchSuggestionsContainer show={showSuggestions}>
                 {hasSuggestions
                     ? suggestions.map((suggestion, index) => (
-                          <SuggestionItem
-                              key={`${suggestion.type}-${index}`}
-                              onClick={() =>
-                                onSuggestionClick(
-                                    suggestion.value,
-                                    suggestion.type
-                                )
-                            }
-                        >
-                            {suggestion.value}
-                        </SuggestionItem>
-                      ))
+                        <SuggestionItem
+                            key={`${suggestion.type}-${index}`}
+                            onClick={() =>
+                                  onSuggestionClick(
+                                      suggestion.value,
+                                      suggestion.type
+                                  )
+                              }
+                          >
+                              {suggestion.value}
+                          </SuggestionItem>
+                    ))
                     : showSuggestions && (
-                          <SuggestionItem>
-                            검색 결과가 존재하지 않습니다.
+                        <SuggestionItem>
+                              검색 결과가 존재하지 않습니다.
                         </SuggestionItem>
-                    )}
+                      )}
             </SearchSuggestionsContainer>
         </>
     );

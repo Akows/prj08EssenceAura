@@ -37,7 +37,7 @@ const LoginContainer = styled.div`
     border: 1px solid #ddd;
     border-radius: 5px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         width: 100%; // 모바일 뷰에서의 너비
         flex-direction: column;
         justify-items: center;
@@ -49,7 +49,7 @@ const InfoContainer = styled.div`
     width: 50%; // 데스크톱 뷰에서는 정보 컨테이너가 전체 너비의 50%를 차지합니다.
     padding: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         width: 90%; // 모바일 뷰에서는 정보 컨테이너가 전체 너비를 차지합니다.
         padding: 20px 0;
     }

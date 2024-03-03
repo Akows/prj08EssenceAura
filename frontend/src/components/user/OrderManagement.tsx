@@ -21,7 +21,7 @@ export interface OrderDetail {
 }
 
 const OrderTable = styled.table`
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         // 모바일 화면에서 테이블의 레이아웃을 변경
         thead {
             display: none; // 테이블 헤더 숨김

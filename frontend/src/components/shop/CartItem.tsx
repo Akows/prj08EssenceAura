@@ -8,7 +8,7 @@ const ItemContainer = styled.div`
     border-bottom: 1px solid #eaeaea;
     align-items: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         flex-direction: column;
         align-items: flex-start;
     }
@@ -19,7 +19,7 @@ const Image = styled.img`
     height: 80px;
     margin-right: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         margin-right: 0;
         margin-bottom: 10px;
         width: 100%;
@@ -30,7 +30,7 @@ const Image = styled.img`
 const Title = styled.h3`
     flex: 1;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         margin-bottom: 10px;
         font-size: 24px;
         width: 100%;
@@ -42,7 +42,7 @@ const PriceQuantityContainer = styled.div`
     flex-direction: row;
     align-items: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         align-items: flex-start;
         width: 100%;
         margin-bottom: 10px;
@@ -57,7 +57,7 @@ const Price = styled.div`
     display: flex;
     align-items: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         padding: 0;
         padding-bottom: 10px;
         margin-right: 5px;
@@ -67,7 +67,7 @@ const Price = styled.div`
 const QuantityInput = styled.input`
     width: 50px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         margin-bottom: 10px;
     }
 `;
@@ -80,7 +80,7 @@ const RemoveButton = styled.button`
     color: #f44336;
     cursor: pointer;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         font-size: 22px;
         font-weight: bolder;
         order: 3;

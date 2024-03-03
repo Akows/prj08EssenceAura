@@ -19,7 +19,7 @@ const SortingBarContainer = styled.div`
     margin-bottom: 20px;
     width: 100%;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         justify-content: center;
     }
 `;
@@ -42,7 +42,7 @@ const SortButton = styled.button`
         font-weight: bold;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         flex-basis: calc(
             50% - 10px
         ); // 버튼 기본 너비를 조정하여 반응형으로 만듦
@@ -59,7 +59,7 @@ const DropdownSelect = styled.select`
     background: white;
     cursor: pointer;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         flex-basis: 100%; // 드롭다운이 모바일에서 전체 너비를 차지하도록 함
         margin: 5px 0; // 드롭다운 위아래에 마진 추가
     }

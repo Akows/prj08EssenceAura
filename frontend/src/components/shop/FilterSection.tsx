@@ -15,7 +15,7 @@ const FilterSectionContainer = styled.div`
     justify-content: center;
     margin-bottom: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         // 모바일 화면 크기에 따른 스타일 변경
         flex-direction: column; // 모바일에서는 세로 정렬
         align-items: center; // 세로 정렬 시 중앙 정렬
@@ -27,7 +27,7 @@ const PriceInput = styled.input`
     margin: 0 10px;
     border: 1px solid #ddd;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         // 모바일 화면 크기에 따른 스타일 변경
         width: 80%; // 모바일 환경에서 입력 필드 너비 조정
         margin: 5px 0; // 모바일에서는 상하 마진만 적용
@@ -45,7 +45,7 @@ const FilterButton = styled.button`
         background: #0056b3;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         // 모바일 화면 크기에 따른 스타일 변경
         width: 80%; // 모바일 환경에서 버튼 너비 조정
         margin-top: 10px; // 버튼 위의 마진 추가

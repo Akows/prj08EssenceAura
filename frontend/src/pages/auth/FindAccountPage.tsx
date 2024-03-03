@@ -19,8 +19,7 @@ const FindAccountPageContainer = styled.div`
     border-radius: 5px;
     margin-bottom: 120px;
 
-    @media (min-width: 768px) {
-        // 화면 너비가 768px 이상일 때 가로 배치를 적용
+    @media (min-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         flex-direction: row;
         align-items: stretch; // 이 속성이 두 섹션을 같은 높이로 만듭니다.
     }
@@ -36,7 +35,7 @@ const Section = styled.section`
         border-bottom: 1px solid #ddd; // 모바일 뷰에서는 섹션 사이에 구분선
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         width: 48%; // 섹션 너비를 48%로 설정
 
         &:first-child {

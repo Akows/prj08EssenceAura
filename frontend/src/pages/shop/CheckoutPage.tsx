@@ -4,8 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { createOrder } from '../../redux/order/orderThunk';
 
-const mobileSize = '768px';
-
 const CheckoutContainer = styled.div`
     width: 50%;
     background: #fff;
@@ -15,7 +13,7 @@ const CheckoutContainer = styled.div`
     margin: 30px;
     font-family: 'Open Sans', sans-serif;
 
-    @media (max-width: ${mobileSize}) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         width: 90%;
     }
 `;
@@ -56,7 +54,7 @@ const ProductSummary = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 10px;
-    @media (max-width: ${mobileSize}) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         flex-direction: column; // 모바일 환경에서는 위아래로 쌓임
     }
 `;

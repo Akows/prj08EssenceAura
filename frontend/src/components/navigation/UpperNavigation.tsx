@@ -26,7 +26,7 @@ const NavBar = styled.nav`
     padding: 10px;
     background-color: #f8f9fa;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         justify-content: space-between;
     }
 `;
@@ -79,14 +79,14 @@ const MobileMenuButton = styled.button`
     cursor: pointer;
     font-size: 24px;
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         display: block;
     }
 `;
 
 const MobileDropdownContent = styled(DropdownContent)`
     display: none;
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         display: flex;
         width: 95%;
         flex-direction: column; // 항목들을 세로로 정렬

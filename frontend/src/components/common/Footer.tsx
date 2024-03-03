@@ -19,7 +19,7 @@ const FooterTop = styled.div`
     justify-content: space-evenly; // 항목들을 균등하게 분포
     margin-bottom: 20px; // 하단 텍스트와의 여백
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         flex-direction: column;
     }
 `;
@@ -32,7 +32,7 @@ const FooterLink = styled.a`
         text-decoration: underline;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: ${import.meta.env.VITE_MOBILE_SIZE}) {
         margin-bottom: 5px;
     }
 `;
