@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
+import logoimage from '../../assets/logo2.png';
 
 // Props 인터페이스 정의
 interface IPageProps {
@@ -70,7 +71,7 @@ const EnterButton = styled(ExploreButton)`
     cursor: pointer; // 커서 포인터로 변경
 `;
 
-const EssenceAuraText = styled.div<INewImageTextProps>`
+const EssenceAuraLogo = styled.div<INewImageTextProps>`
     position: absolute; // 절대 위치
     top: 50%; // 위에서 50% 위치
     left: 50%; // 왼쪽에서 50% 위치
@@ -85,7 +86,7 @@ const EssenceAuraText = styled.div<INewImageTextProps>`
     animation-fill-mode: forwards; // 애니메이션이 끝난 상태를 유지
 `;
 
-const WelcomeText = styled(EssenceAuraText)`
+const WelcomeText = styled(EssenceAuraLogo)`
     border: 2px solid white; // 흰색 테두리 유지
     border-radius: 0; // 원형에서 사각형으로 변경
     width: 100%; // 영역을 화면 너비에 맞춤
@@ -237,9 +238,9 @@ const MainPage: React.FC = () => {
                 )}
                 {showEssenceAura && !showWelcome && (
                     <>
-                        <EssenceAuraText showNewContent={showEssenceAura}>
-                            향이 이끄는 곳으로
-                        </EssenceAuraText>
+                        <EssenceAuraLogo showNewContent={showEssenceAura}>
+                            <img src={logoimage} />
+                        </EssenceAuraLogo>
                         <ScrollDownText>
                             페이지를 아래로 스크롤/드래그 해주세요
                         </ScrollDownText>
@@ -247,6 +248,7 @@ const MainPage: React.FC = () => {
                 )}
                 {showWelcome && (
                     <WelcomeText onClick={handleWelcomeClick}>
+                        <p>향이 이끄는 곳으로</p>
                         <p>ESSENCEAURA</p>
                         <p>
                             당신의 특별한 순간을 더욱 빛나게 할 향수를
