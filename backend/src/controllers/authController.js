@@ -92,18 +92,19 @@ const loginHandler = async (req, res) => {
         // 리프래시 토큰은 Http Only 쿠키에 담아서 반환
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: true, // 항상 쿠키를 secure로 설정합니다. 로컬에서 테스트할 때는 이를 false로 설정할 수 있습니다.
+            sameSite: 'None', // 크로스 사이트 요청에서도 쿠키를 사용하려면 이렇게 설정합니다.
             path: '/',
-            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7일 후 만료
         });
 
         // 액세스 토큰은 로그인 정보와 함께 브라우저로 반환
         return res.json({
             message: '로그인 성공',
             accessToken,
+            refreshToken,
             userInfo: {
-                id: user.id,
+                user_id: user.user_id,
                 email: user.email,
                 username: user.username,
                 isAdmin
@@ -117,7 +118,8 @@ const loginHandler = async (req, res) => {
 
 // 리프레시 토큰을 기반으로 액세스 토큰을 재발급하는 기능
 const refreshTokenHandler = async (req, res) => {
-    const refreshToken = req.cookies['refreshToken'];
+    // const refreshToken = req.cookies['refreshToken'];
+    const refreshToken = req.body.refreshToken || req.headers['refresh-token'];
 
     if (!refreshToken) {
         return res.status(401).json({ message: '리프레시 토큰이 필요합니다.' });
@@ -156,7 +158,8 @@ const refreshTokenHandler = async (req, res) => {
 // 로그아웃 핸들러
 const logoutHandler = async (req, res) => {
     try {
-        const refreshToken = req.cookies['refreshToken'];
+        // const refreshToken = req.cookies['refreshToken'];
+        const refreshToken = req.body.refreshToken || req.headers['refresh-token'];
 
         if (!refreshToken) {
             return res.status(401).json({ message: '로그아웃을 위한 토큰이 없습니다.' });
@@ -177,7 +180,8 @@ const logoutHandler = async (req, res) => {
 
 // 로그인 상태 검증
 const checkAuthHandler = async (req, res) => {
-    const refreshToken = req.cookies['refreshToken'];
+    // const refreshToken = req.cookies['refreshToken'];
+    const refreshToken = req.body.refreshToken || req.headers['refresh-token'];
 
     if (!refreshToken) {
         return res.status(401).json({ message: '인증되지 않음' });

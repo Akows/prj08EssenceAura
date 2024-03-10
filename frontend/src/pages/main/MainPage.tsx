@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import logoimage from '../../assets/logo2.png';
+import logoimage from '../../assets/logo.png';
 
 // Props 인터페이스 정의
 interface IPageProps {
@@ -29,10 +29,11 @@ const Container = styled.div`
     overflow: ${({ expand }) =>
         expand ? 'auto' : 'hidden'}; // EnterButton 클릭 전 스크롤 영역 숨김
     background: white; // 주변 흰색 영역
+    border: 2px solid black;
 `;
 
 const Page = styled.div<IPageProps>`
-    background: black;
+    background: white;
     width: ${({ expand }) =>
         expand ? '100vw' : '80vw'}; // 확대되었을 때 화면 전체 너비
     height: ${({ expand }) =>
@@ -60,7 +61,7 @@ const EnterButton = styled(ExploreButton)`
     width: 100%;
     height: 100%;
     font-family: 'Black Han Sans', sans-serif;
-    color: white; // 텍스트 색상을 흰색으로 변경
+    color: black; // 텍스트 색상을 흰색으로 변경
     font-size: 4em; // 적당한 크기로 설정
     position: absolute; // 절대 위치
     top: 50%; // 위에서 50% 위치
@@ -77,7 +78,7 @@ const EssenceAuraLogo = styled.div<INewImageTextProps>`
     left: 50%; // 왼쪽에서 50% 위치
     font-family: 'Black Han Sans', sans-serif;
     transform: translate(-50%, -50%); // 정확한 중앙 위치를 위한 변환
-    color: white; // 텍스트 색상을 흰색으로 변경
+    color: black; // 텍스트 색상을 흰색으로 변경
     font-size: 4em; // 적당한 크기로 설정
     transition: opacity 1s; // 투명도 전환 효과
     opacity: ${({ showNewContent }) =>
@@ -87,7 +88,7 @@ const EssenceAuraLogo = styled.div<INewImageTextProps>`
 `;
 
 const WelcomeText = styled(EssenceAuraLogo)`
-    border: 2px solid white; // 흰색 테두리 유지
+    border: 2px solid black; // 흰색 테두리 유지
     border-radius: 0; // 원형에서 사각형으로 변경
     width: 100%; // 영역을 화면 너비에 맞춤
     height: auto; // 높이를 내용에 맞춤
@@ -135,7 +136,7 @@ const ScrollDownText = styled.div`
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Black Han Sans', sans-serif;
-    color: white;
+    color: black;
     font-size: 1.8em;
     text-align: center;
     cursor: pointer;

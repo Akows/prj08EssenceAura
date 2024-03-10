@@ -50,10 +50,18 @@ const useLogin = (): UseLoginReturn => {
                 // 로그인이 성공하게 되면 리프래시 토큰은 브라우저 쿠키에 저장됨.
                 const data = await response.json();
                 if (response.ok) {
+                    // 로컬 스토리지에 두 토큰 저장
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+
                     // Redux 스토어에 로그인 성공 상태 업데이트
                     dispatch(
-                        loginSuccess({ ...data, accessToken: data.accessToken })
-                    ); // 로그인 정보와, 액세스 토큰 저장
+                        // 로그인 정보와, 액세스 토큰 저장
+                        loginSuccess({
+                            ...data.userInfo,
+                            accessToken: data.accessToken,
+                        })
+                    );
 
                     // 로그인 성공 후 '/shop' 페이지로 리디렉션
                     navigate('/shop');

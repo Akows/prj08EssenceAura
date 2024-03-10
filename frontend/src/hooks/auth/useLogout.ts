@@ -12,11 +12,17 @@ const useLogout = () => {
 
     const handleLogout = async () => {
         setIsloading(true);
+        const refreshToken = localStorage.getItem('refreshToken');
+
         try {
             // 서버로 로그아웃 요청 보냄
-            const response = await fetchLogout();
+            const response = await fetchLogout(refreshToken);
 
             if (response.ok) {
+                // 로컬 스토리지에서 액세스 토큰 제거
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+
                 // Redux 스토어의 로그아웃 상태 업데이트
                 dispatch(logout());
 

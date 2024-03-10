@@ -21,17 +21,23 @@ export const useUserInfo = () => {
         isVerified: false,
     });
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태
-    const accessToken = useSelector(
-        (state: RootState) => state.auth.accessToken
-    );
+    // const accessToken = useSelector(
+    //     (state: RootState) => state.auth.accessToken
+    // );
 
     const [userOrders, setUserOrders] = useState([]); // 사용자 주문 내역 상태
+
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             setIsLoading(true); // 데이터 로드 시작
             try {
-                const response = await getUserInfoInformation(accessToken);
+                const response = await getUserInfoInformation(
+                    accessToken,
+                    refreshToken
+                );
                 setUserInfo(response[0]);
             } catch (error) {
                 // 오류 처리
@@ -43,7 +49,7 @@ export const useUserInfo = () => {
         const fetchUserOrders = async () => {
             setIsLoading(true); // 데이터 로드 시작
             try {
-                const orders = await getUserOrders(accessToken);
+                const orders = await getUserOrders(accessToken, refreshToken);
                 setUserOrders(orders[0]);
             } catch (error) {
                 // 오류 처리
@@ -59,7 +65,11 @@ export const useUserInfo = () => {
     const updateUserInfo = async (newUserInfo: UserUpdateInfo) => {
         setIsLoading(true); // 업데이트 시작
         try {
-            await updateUserInfoInformation(newUserInfo, accessToken);
+            await updateUserInfoInformation(
+                newUserInfo,
+                accessToken,
+                refreshToken
+            );
         } catch (error) {
             // 오류 처리
         } finally {
