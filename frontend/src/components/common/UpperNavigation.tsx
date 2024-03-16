@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { MdMenu } from 'react-icons/md';
 import useLogout from '../../hooks/auth/useLogout';
-import LoadingModal from '../common/LoadingModal';
-import SearchBar from './SearchBar';
-import DropdownMenu from './DropdownMenu';
-import UserActions from './UserActions';
-import UserActionsMobile from './UserActionsMobile';
+import LoadingModal from './LoadingModal';
+import SearchBar from '../navigation/SearchBar';
+import DropdownMenu from '../navigation/DropdownMenu';
+import UserActions from '../navigation/UserActions';
+import UserActionsMobile from '../navigation/UserActionsMobile';
 
 const NavBarContainer = styled.div`
     position: relative; // DropdownContent를 absolute 위치로 조정하기 위한 기준점

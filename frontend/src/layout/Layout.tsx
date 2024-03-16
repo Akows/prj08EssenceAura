@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from '../components/common/Footer';
-import ShopNavigation from '../components/navigation/UpperNavigation';
+import ShopNavigation from '../components/common/UpperNavigation';
 
 const MainContent = styled.main`
     display: flex;

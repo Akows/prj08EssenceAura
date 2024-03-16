@@ -40,8 +40,14 @@ export const validateRegistrationForm = (
     }
 
     // 비밀번호 복잡성 검사
-    if (formData.password && formData.password.length < 6) {
-        errors.password = '비밀번호는 6자 이상이어야 합니다.';
+    if (
+        formData.password &&
+        (formData.password.length < 8 ||
+            !/[A-Z]/.test(formData.password) ||
+            !/\d/.test(formData.password))
+    ) {
+        errors.password =
+            '비밀번호는 최소 8자 이상이며, 하나 이상의 숫자와 대문자를 포함해야 합니다.';
     }
 
     // 비밀번호 일치 검사
