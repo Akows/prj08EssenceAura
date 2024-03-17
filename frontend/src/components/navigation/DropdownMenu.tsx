@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // 드롭다운 메뉴 아이템 정의
 const menuItems = [
@@ -93,6 +93,14 @@ const DropdownButton = styled.button`
 `;
 
 const DropdownMenu: React.FC = ({ isOpen, toggleDropdown }) => {
+    const location = useLocation();
+
+    useEffect(() => {
+        if (isOpen) {
+            toggleDropdown(); // 드롭다운 메뉴 닫기
+        }
+    }, [location]); // 라우트 위치가 변경될 때마다 실행
+
     return (
         <DropdownMenuContainer>
             <DropdownButton onClick={toggleDropdown}>

@@ -57,7 +57,7 @@ const ClearButton = styled.button`
     cursor: pointer;
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 28px;
     display: flex;
     align-items: center;
     justify-content: center;

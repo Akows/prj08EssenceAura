@@ -155,6 +155,8 @@ const ScrollDownText = styled.div`
     }
 `;
 
+const InstructionText = styled(ScrollDownText)``;
+
 const MainPage: React.FC = () => {
     const [expand, setExpand] = useState(false);
     const [showEssenceAura, setShowEssenceAura] = useState(false);
@@ -235,7 +237,14 @@ const MainPage: React.FC = () => {
         <Container>
             <Page expand={expand}>
                 {!expand && (
-                    <EnterButton onClick={handleEnter}>어서오세요!</EnterButton>
+                    <>
+                        <EnterButton onClick={handleEnter}>
+                            어서오세요!
+                        </EnterButton>
+                        <InstructionText>
+                            페이지를 클릭/터치 해주세요
+                        </InstructionText>
+                    </>
                 )}
                 {showEssenceAura && !showWelcome && (
                     <>
@@ -248,14 +257,19 @@ const MainPage: React.FC = () => {
                     </>
                 )}
                 {showWelcome && (
-                    <WelcomeText onClick={handleWelcomeClick}>
-                        <p>향이 이끄는 곳으로</p>
-                        <p>ESSENCEAURA</p>
-                        <p>
-                            당신의 특별한 순간을 더욱 빛나게 할 향수를
-                            만나보세요.
-                        </p>
-                    </WelcomeText>
+                    <>
+                        <WelcomeText onClick={handleWelcomeClick}>
+                            <p>향이 이끄는 곳으로</p>
+                            <p>ESSENCEAURA</p>
+                            <p>
+                                당신의 특별한 순간을 더욱 빛나게 할 향수를
+                                만나보세요.
+                            </p>
+                        </WelcomeText>
+                        <InstructionText>
+                            페이지를 클릭/터치 해주세요
+                        </InstructionText>
+                    </>
                 )}
             </Page>
         </Container>

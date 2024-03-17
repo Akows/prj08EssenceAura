@@ -53,7 +53,7 @@ const SortButton = styled.button`
 `;
 
 const DropdownSelect = styled.select`
-    padding: 8px 12px;
+    padding: 8px 18px;
     margin: 5px;
     border: 1px solid #ddd;
     background: white;
@@ -112,14 +112,14 @@ const SortingBar: React.FC<SortingBarProps> = ({
                 할인율 낮은순
             </SortButton>
             <SortButton
-                className={currentSort === 'reviews_asc' ? 'active' : ''}
-                onClick={() => handleSortChange('reviews_asc')}
+                className={currentSort === 'created_at_asc' ? 'active' : ''}
+                onClick={() => handleSortChange('created_at_asc')}
             >
                 리뷰 많은순
             </SortButton>
             <SortButton
-                className={currentSort === 'reviews_desc' ? 'active' : ''}
-                onClick={() => handleSortChange('reviews_desc')}
+                className={currentSort === 'created_at_desc' ? 'active' : ''}
+                onClick={() => handleSortChange('created_at_desc')}
             >
                 리뷰 적은순
             </SortButton>
