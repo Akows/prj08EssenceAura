@@ -6,14 +6,11 @@
 
 ## ✔️ 프로젝트 상세 설명
 
-(리메이크 배포 링크)
-- `velog` [🔗Link](https://velog.io/@skyoffly/series/EssenceAura-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)
+- `velog` [🔗velog 포스트 시리즈](https://velog.io/@skyoffly/series/EssenceAura-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)
 
+## ✔️ 프로젝트 시연
 
-## ✔️ 프로젝트 시연 (프로젝트 배포)
-
-(리메이크 배포 링크)
-- `AWS` [🔗Link](http://essenceaura-production.s3-website.ap-northeast-2.amazonaws.com/)
+- `AWS` [🔗프로젝트 배포](http://essenceaura-production.s3-website.ap-northeast-2.amazonaws.com/)
 
 ### 🛫 시작 가이드
 
