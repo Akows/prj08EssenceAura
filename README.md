@@ -37,6 +37,16 @@ $ npm run start
 ![AWS EC2](https://img.shields.io/badge/-AWS_EC2-232F3E?style=flat-square&logo=amazon-ec2&logoColor=white)
 ![AWS RDS](https://img.shields.io/badge/-AWS_RDS-527FFF?style=flat-square&logo=amazon-rds&logoColor=white)
 
+## 프로젝트 소개
+
+Essence Aura'는 가상의 온라인 향수 쇼핑몰입니다. 프로젝트의 운영 및 배포를 AWS를 통해 구축하였으며, 안정적인 사용자 경험을 제공하고 백엔드 효율성을 극대화하기 위해 MySQL과 Express.js를 사용하여 복잡한 데이터베이스 관리와 로직 처리를 수행했습니다.
+
+회원가입부터 결제까지 다양한 기능을 구현하여 사용자와 관리자 모두 만족스러운 사용자 경험을 얻을 수 있게 하였으며, JWT를 활용한 인증 시스템과 Redux로 상태 관리를 최적화하여, 각 사용자의 편의성을 개선하고 관리자의 효율을 증대시켰습니다.
+
+반응형 웹 디자인을 중심으로 CSS Media Queries와 애니메이션을 활용하여 다양한 디바이스에서의 일관된 사용자 경험을 제공하며, Styled Components를 통한 세련된 스타일 관리를 도입하였습니다.
+
+페이지네이션과 무한 스크롤 기능을 통해 UI 로딩 시간을 최적화하고, 유효성 검사 및 안전한 쿼리 기법으로 보안을 강화하여 사용자 데이터 보호 및 서비스 신뢰성을 제고하였습니다.
+
 ## 구현 기능
 
 ### - 사용자 관련 기능:
